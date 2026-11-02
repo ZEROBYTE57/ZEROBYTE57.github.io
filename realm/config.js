@@ -24,6 +24,7 @@ window.REALM = {
     { platform: "Steam", handle: "VOIDSORROW57", url: "https://steamcommunity.com/profiles/76561199191324058", icon: "steam" },
     { platform: "Riot ID", handle: "Voidsorrow57#0557", url: "https://tracker.gg/valorant/profile/riot/Voidsorrow57%230557/overview", icon: "riot" },
     { platform: "Xbox", handle: "Voidsorrow38", url: "https://account.xbox.com/en-us/profile?gamertag=Voidsorrow38", icon: "xbox" },
+    { platform: "Clash of Clans", handle: "#PL0Q89L99", url: "https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=PL0Q89L99", icon: "coc" },
     { platform: "X / Twitter", handle: "@voidsorrow57", url: "https://x.com/voidsorrow57", icon: "x" },
   ],
 
@@ -43,6 +44,7 @@ window.REALM = {
   games: [
     { title: "Black Myth: Wukong", platform: "PC", genre: "Action RPG", status: "completed" },
     { title: "Subnautica", platform: "PC", genre: "Survival", status: "completed" },
+    { title: "Clash of Clans", platform: "Mobile", genre: "Strategy", status: "playing", note: "Player tag #PL0Q89L99" },
   ],
 
   // Gaming setup. `rig` is the main machine; `setup` rows fill the spec sheet.
