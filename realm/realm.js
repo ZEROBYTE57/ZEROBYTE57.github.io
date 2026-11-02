@@ -275,7 +275,7 @@
   }
 
   // ---------- loadout ----------
-  const ABBR = { discord: "DC", x: "X", steam: "ST", epic: "EG", riot: "RI", xbox: "XB", psn: "PS", twitch: "TW", itch: "IO" };
+  const ABBR = { discord: "DC", x: "X", steam: "ST", epic: "EG", riot: "RI", xbox: "XB", psn: "PS", twitch: "TW", itch: "IO", coc: "CC" };
   const hs = R.handles || [];
   [...hs.filter((h) => h.handle), ...hs.filter((h) => !h.handle)].forEach((h) => {
     const filled = !!h.handle;
