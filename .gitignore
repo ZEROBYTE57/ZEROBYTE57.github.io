@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Node (in case any tooling is added later)
+node_modules/
+npm-debug.log*
+
+# Secrets and local settings (API keys belong in GitHub repository secrets)
+.env
+.env.*
+*.key
+*.pem
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code local settings
+.claude/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+tmp/
+scratch/

@@ -1,0 +1,219 @@
+{
+ "updated": "2026-11-02T21:29:51+00:00",
+ "steam": {
+  "name": "VOIDSORROW57",
+  "avatar": "https://avatars.akamai.steamstatic.com/95409102e7bb4b1c0a57aabe4185e2a08b443ec1_full.jpg",
+  "url": "https://steamcommunity.com/profiles/76561199191324058",
+  "state": 1,
+  "playing": null,
+  "level": 10,
+  "gameCount": 10,
+  "recentHours": 0.0,
+  "recent": [
+   {
+    "appid": 578080,
+    "name": "PUBG: BATTLEGROUNDS",
+    "hours": 13.5
+   },
+   {
+    "appid": 1091500,
+    "name": "Cyberpunk 2077",
+    "hours": 33.0
+   },
+   {
+    "appid": 359550,
+    "name": "Tom Clancy's Rainbow Six Siege",
+    "hours": 13.1
+   }
+  ],
+  "source": "public-profile",
+  "totalHours": 130.7,
+  "top": [
+   {
+    "appid": 1091500,
+    "name": "Cyberpunk 2077",
+    "hours": 32.8,
+    "last": 1790682508
+   },
+   {
+    "appid": 578080,
+    "name": "PUBG: BATTLEGROUNDS",
+    "hours": 13.5,
+    "last": 1790723484
+   },
+   {
+    "appid": 1659420,
+    "name": "UNCHARTED™: Legacy of Thieves Collection",
+    "hours": 13.4,
+    "last": 1788802980
+   },
+   {
+    "appid": 359550,
+    "name": "Tom Clancy's Rainbow Six Siege",
+    "hours": 13.1,
+    "last": 1790578969
+   },
+   {
+    "appid": 730,
+    "name": "Counter-Strike 2",
+    "hours": 12.2,
+    "last": 1782753618
+   },
+   {
+    "appid": 2561580,
+    "name": "Horizon Zero Dawn™ Remastered",
+    "hours": 11.2,
+    "last": 1789676420
+   },
+   {
+    "appid": 1172470,
+    "name": "Apex Legends™",
+    "hours": 9.0,
+    "last": 1784816767
+   },
+   {
+    "appid": 208650,
+    "name": "Batman™: Arkham Knight",
+    "hours": 7.8,
+    "last": 1783508510
+   }
+  ],
+  "library": [
+   {
+    "appid": 1091500,
+    "name": "Cyberpunk 2077",
+    "hours": 32.8,
+    "last": 1790682508
+   },
+   {
+    "appid": 578080,
+    "name": "PUBG: BATTLEGROUNDS",
+    "hours": 13.5,
+    "last": 1790723484
+   },
+   {
+    "appid": 1659420,
+    "name": "UNCHARTED™: Legacy of Thieves Collection",
+    "hours": 13.4,
+    "last": 1788802980
+   },
+   {
+    "appid": 359550,
+    "name": "Tom Clancy's Rainbow Six Siege",
+    "hours": 13.1,
+    "last": 1790578969
+   },
+   {
+    "appid": 730,
+    "name": "Counter-Strike 2",
+    "hours": 12.2,
+    "last": 1782753618
+   },
+   {
+    "appid": 2561580,
+    "name": "Horizon Zero Dawn™ Remastered",
+    "hours": 11.2,
+    "last": 1789676420
+   },
+   {
+    "appid": 1172470,
+    "name": "Apex Legends™",
+    "hours": 9.0,
+    "last": 1784816767
+   },
+   {
+    "appid": 208650,
+    "name": "Batman™: Arkham Knight",
+    "hours": 7.8,
+    "last": 1783508510
+   },
+   {
+    "appid": 230410,
+    "name": "Warframe",
+    "hours": 4.2,
+    "last": 1783510229
+   },
+   {
+    "appid": 4704690,
+    "name": "MECCHA CHAMELEON",
+    "hours": 4.0,
+    "last": 1782666723
+   },
+   {
+    "appid": 1938090,
+    "name": "Call of Duty®",
+    "hours": 1.9,
+    "last": 1785823962
+   },
+   {
+    "appid": 1962700,
+    "name": "Subnautica 2",
+    "hours": 1.4,
+    "last": 1779190001
+   },
+   {
+    "appid": 1262600,
+    "name": "Need for Speed™ Rivals",
+    "hours": 0.9,
+    "last": 1785923539
+   },
+   {
+    "appid": 1797880,
+    "name": "Lost Light",
+    "hours": 0.8,
+    "last": 1704446744
+   },
+   {
+    "appid": 3564740,
+    "name": "Where Winds Meet",
+    "hours": 0.8,
+    "last": 1786043094
+   },
+   {
+    "appid": 2139460,
+    "name": "Once Human",
+    "hours": 0.7,
+    "last": 1722066482
+   },
+   {
+    "appid": 2051620,
+    "name": "Enlisted",
+    "hours": 0.6,
+    "last": 1778844513
+   },
+   {
+    "appid": 332950,
+    "name": "Dark Deception",
+    "hours": 0.2,
+    "last": 1679129605
+   },
+   {
+    "appid": 2281730,
+    "name": "Combat Master: Season 5",
+    "hours": 0.1,
+    "last": 1773338773
+   },
+   {
+    "appid": 2943740,
+    "name": "Prologue: Go Wayback!",
+    "hours": 0.1,
+    "last": 1783089488
+   },
+   {
+    "appid": 1815780,
+    "name": "Asphalt Legends ",
+    "hours": 0.1,
+    "last": 1783774617
+   }
+  ],
+  "librarySynced": "2026-11-02T21:18:31+00:00"
+ },
+ "tracker": [
+  {
+   "game": "valorant",
+   "platform": "riot",
+   "handle_in": "Voidsorrow57#0557",
+   "label": "Valorant"
+  }
+ ]
+}
