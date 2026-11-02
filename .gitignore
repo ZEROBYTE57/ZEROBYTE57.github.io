@@ -38,3 +38,6 @@ $RECYCLE.BIN/
 *.bak
 tmp/
 scratch/
+
+# Local notes (kept on disk, not published)
+README.md
