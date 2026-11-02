@@ -34,6 +34,7 @@
         <li><a href="#skills">Skills</a></li>
         <li><a href="#activity">Activity</a></li>
         <li><a href="#interests">Interests</a></li>
+        <li><a href="#writing">Writing</a></li>
         <li><a href="#contact">Contact</a></li>
         <li class="nav-pill" id="navPill" aria-hidden="true"></li>
       </ul>
@@ -225,7 +226,7 @@
 
           <article class="tile project wide">
             <div class="p-top">
-              <span class="tag">M.Tech Thesis · 2026</span>
+              <span class="tag">M.Tech Thesis</span>
               <span class="badge done">Completed</span>
               <a class="arrow" href="https://github.com/ZEROBYTE57/SMOTE-MVDCNN" target="_blank" rel="noopener" aria-label="View SMOTE-MVDCNN code on GitHub">↗</a>
             </div>
@@ -342,13 +343,6 @@
             <p class="p-big"><b data-k="gfg.solved">–</b> problems solved</p>
             <dl class="p-stats"><div><dt>Coding score</dt><dd data-k="gfg.score">–</dd></div></dl>
           </article>
-
-          <article class="tile platform" id="cf">
-            <div class="p-head"><span class="p-logo cf" aria-hidden="true">CF</span><div><h3>Codeforces</h3><a class="handle" data-link="codeforces" target="_blank" rel="noopener"></a></div></div>
-            <p class="p-big"><b data-k="cf.rating">–</b> rating</p>
-            <dl class="p-stats"><div><dt>Max rating</dt><dd data-k="cf.maxRating">–</dd></div><div><dt>Rank</dt><dd data-k="cf.rank" class="cap">–</dd></div></dl>
-          </article>
-
           <article class="tile platform" id="hr">
             <div class="p-head"><span class="p-logo hr" aria-hidden="true">HR</span><div><h3>HackerRank</h3><a class="handle" data-link="hackerrank" target="_blank" rel="noopener"></a></div></div>
             <p class="p-big"><b data-k="hr.count">–</b> skill badges</p>
@@ -364,16 +358,17 @@
         <div class="sec-head">
           <p class="label">05 — Beyond research</p>
           <h2 class="section-title">Technical <em>interests</em>.</h2>
+          <p class="sec-lede">I write about these on my <a class="inline-link" href="blog/">blog</a>. For the off-duty side, visit <a class="inline-link" href="realm/">404 Realm →</a></p>
         </div>
 
         <div class="bento">
           <article class="tile interest big">
             <span class="i-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17l6-6-6-6M12 19h8"/></svg></span>
             <h3>Linux and the command line</h3>
-            <p>Linux is my main development environment. I work from the terminal, automate routine tasks with Bash, and run experiments there.</p>
+            <p>Fedora is my daily driver, running a custom CachyOS kernel alongside the stock Fedora kernel. I have also used CachyOS, Ubuntu and Garuda, and I work from the terminal with Bash.</p>
             <div class="term" aria-hidden="true">
-              <div class="term-bar"><i></i><i></i><i></i><span>zsh</span></div>
-              <p><span class="t-p">$</span> nvidia-smi --query-gpu=name --format=csv</p>
+              <div class="term-bar"><i></i><i></i><i></i><span>fedora</span></div>
+              <p><span class="t-p">$</span> uname -r</p>
               <p><span class="t-p">$</span> python train.py --config configs/cxb.yaml</p>
               <p><span class="t-p">$</span> git commit -m "add CF-Site ablation" <span class="t-cursor"></span></p>
             </div>
@@ -433,12 +428,28 @@
       </div>
     </section>
 
+    <!-- WRITING (latest blog articles, loaded from blog/posts/index.json) -->
+    <section id="writing" class="section">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="label">07 — Writing</p>
+          <h2 class="section-title">Latest from the <em>blog</em>.</h2>
+          <p class="sec-lede">Write-ups behind my projects and notes on Linux, games and game development, connected in a knowledge graph.</p>
+        </div>
+        <div class="writing-grid" id="writingList"></div>
+        <div class="writing-cta">
+          <a class="btn primary" href="blog/">Read the blog <span aria-hidden="true">→</span></a>
+          <a class="btn" href="blog/#graph">Explore the graph <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
     <!-- CONTACT -->
     <section id="contact" class="section contact">
       <div class="wrap">
         <div class="tile contact-card">
           <div>
-            <p class="label">07 — Contact</p>
+            <p class="label">08 — Contact</p>
             <h2 class="section-title">Let's <em>work together</em>.</h2>
             <p class="contact-lede">Open to entry-level AI Engineer and Data Scientist roles. Email is the fastest way to reach me.</p>
           </div>
@@ -460,6 +471,8 @@
     <div class="wrap footer-inner">
       <p>© <span id="year">2026</span> Devisetty Lakshmi Srinivas</p>
       <p class="mono">Bengaluru · <span id="clock2">--:--</span> IST</p>
+      <a href="blog/" class="to-top">Blog ↗</a>
+      <a href="realm/" class="to-top">404 Realm ↗</a>
       <a href="#top" class="to-top">Back to top ↑</a>
     </div>
   </footer>

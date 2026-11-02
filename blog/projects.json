@@ -1,0 +1,30 @@
+[
+  {
+    "id": "cxb",
+    "title": "Connectome Explanation Benchmark (CXB)",
+    "summary": "M.Tech dissertation: scoring GNN explanations on ABIDE I connectomes against an exact ground truth.",
+    "url": "https://github.com/ZEROBYTE57/GNN-in-Medical-Imaging/tree/main/CXB",
+    "topics": ["machine-learning", "gnn", "explainable-ai", "medical-imaging", "pytorch"]
+  },
+  {
+    "id": "smote-mvdcnn",
+    "title": "SMOTE-Enhanced Multi-View CNN",
+    "summary": "M.Tech thesis: multi-view mammogram classification on CBIS-DDSM with SMOTE view completion.",
+    "url": "https://github.com/ZEROBYTE57/SMOTE-MVDCNN",
+    "topics": ["machine-learning", "computer-vision", "medical-imaging", "pytorch", "imbalanced-data"]
+  },
+  {
+    "id": "llm-preference",
+    "title": "LLM Response Preference Prediction",
+    "summary": "Kaggle Chatbot Arena: predicting which of two LLM answers a human preferred.",
+    "url": "https://github.com/ZEROBYTE57/LLM-Classfication-Finetuning",
+    "topics": ["machine-learning", "nlp", "llms", "kaggle"]
+  },
+  {
+    "id": "yolov3",
+    "title": "Road Object Detection (YOLOv3)",
+    "summary": "Intel Unnati: YOLOv3 / Darknet-53 implemented in PyTorch for Indian road scenes.",
+    "url": "https://github.com/ZEROBYTE57/intelunnati_INTEL-Trio",
+    "topics": ["machine-learning", "computer-vision", "object-detection", "pytorch"]
+  }
+]

@@ -1,0 +1,223 @@
+{
+ "updated": "2026-11-02T21:18:31+00:00",
+ "source": "steam-client-local",
+ "totalHours": 130.7,
+ "games": [
+  {
+   "appid": 1091500,
+   "name": "Cyberpunk 2077",
+   "type": "game",
+   "minutes": 1970,
+   "hours": 32.8,
+   "hours2w": 0.0,
+   "lastPlayed": 1790682508
+  },
+  {
+   "appid": 578080,
+   "name": "PUBG: BATTLEGROUNDS",
+   "type": "game",
+   "minutes": 812,
+   "hours": 13.5,
+   "hours2w": 0.0,
+   "lastPlayed": 1790723484
+  },
+  {
+   "appid": 1659420,
+   "name": "UNCHARTED™: Legacy of Thieves Collection",
+   "type": "game",
+   "minutes": 806,
+   "hours": 13.4,
+   "hours2w": 0.0,
+   "lastPlayed": 1788802980
+  },
+  {
+   "appid": 359550,
+   "name": "Tom Clancy's Rainbow Six Siege",
+   "type": "game",
+   "minutes": 788,
+   "hours": 13.1,
+   "hours2w": 0.0,
+   "lastPlayed": 1790578969
+  },
+  {
+   "appid": 730,
+   "name": "Counter-Strike 2",
+   "type": "game",
+   "minutes": 733,
+   "hours": 12.2,
+   "hours2w": 0.0,
+   "lastPlayed": 1782753618
+  },
+  {
+   "appid": 2561580,
+   "name": "Horizon Zero Dawn™ Remastered",
+   "type": "game",
+   "minutes": 673,
+   "hours": 11.2,
+   "hours2w": 0.0,
+   "lastPlayed": 1789676420
+  },
+  {
+   "appid": 1172470,
+   "name": "Apex Legends™",
+   "type": "game",
+   "minutes": 542,
+   "hours": 9.0,
+   "hours2w": 0.0,
+   "lastPlayed": 1784816767
+  },
+  {
+   "appid": 208650,
+   "name": "Batman™: Arkham Knight",
+   "type": "game",
+   "minutes": 466,
+   "hours": 7.8,
+   "hours2w": 0.0,
+   "lastPlayed": 1783508510
+  },
+  {
+   "appid": 230410,
+   "name": "Warframe",
+   "type": "game",
+   "minutes": 253,
+   "hours": 4.2,
+   "hours2w": 0.0,
+   "lastPlayed": 1783510229
+  },
+  {
+   "appid": 4704690,
+   "name": "MECCHA CHAMELEON",
+   "type": "game",
+   "minutes": 238,
+   "hours": 4.0,
+   "hours2w": 0.0,
+   "lastPlayed": 1782666723
+  },
+  {
+   "appid": 1938090,
+   "name": "Call of Duty®",
+   "type": "game",
+   "minutes": 112,
+   "hours": 1.9,
+   "hours2w": 0.0,
+   "lastPlayed": 1785823962
+  },
+  {
+   "appid": 622590,
+   "name": "App 622590",
+   "type": null,
+   "minutes": 89,
+   "hours": 1.5,
+   "hours2w": 0.0,
+   "lastPlayed": 1643880712
+  },
+  {
+   "appid": 1962700,
+   "name": "Subnautica 2",
+   "type": "game",
+   "minutes": 83,
+   "hours": 1.4,
+   "hours2w": 0.0,
+   "lastPlayed": 1779190001
+  },
+  {
+   "appid": 1262600,
+   "name": "Need for Speed™ Rivals",
+   "type": "game",
+   "minutes": 57,
+   "hours": 0.9,
+   "hours2w": 0.0,
+   "lastPlayed": 1785923539
+  },
+  {
+   "appid": 1797880,
+   "name": "Lost Light",
+   "type": "game",
+   "minutes": 50,
+   "hours": 0.8,
+   "hours2w": 0.0,
+   "lastPlayed": 1704446744
+  },
+  {
+   "appid": 3564740,
+   "name": "Where Winds Meet",
+   "type": "game",
+   "minutes": 49,
+   "hours": 0.8,
+   "hours2w": 0.0,
+   "lastPlayed": 1786043094
+  },
+  {
+   "appid": 2139460,
+   "name": "Once Human",
+   "type": "game",
+   "minutes": 40,
+   "hours": 0.7,
+   "hours2w": 0.0,
+   "lastPlayed": 1722066482
+  },
+  {
+   "appid": 2051620,
+   "name": "Enlisted",
+   "type": "game",
+   "minutes": 33,
+   "hours": 0.6,
+   "hours2w": 0.0,
+   "lastPlayed": 1778844513
+  },
+  {
+   "appid": 332950,
+   "name": "Dark Deception",
+   "type": "game",
+   "minutes": 15,
+   "hours": 0.2,
+   "hours2w": 0.0,
+   "lastPlayed": 1679129605
+  },
+  {
+   "appid": 813000,
+   "name": "App 813000",
+   "type": null,
+   "minutes": 10,
+   "hours": 0.2,
+   "hours2w": 0.0,
+   "lastPlayed": 1642698964
+  },
+  {
+   "appid": 2281730,
+   "name": "Combat Master: Season 5",
+   "type": "game",
+   "minutes": 9,
+   "hours": 0.1,
+   "hours2w": 0.0,
+   "lastPlayed": 1773338773
+  },
+  {
+   "appid": 2943740,
+   "name": "Prologue: Go Wayback!",
+   "type": "game",
+   "minutes": 7,
+   "hours": 0.1,
+   "hours2w": 0.0,
+   "lastPlayed": 1783089488
+  },
+  {
+   "appid": 1815780,
+   "name": "Asphalt Legends ",
+   "type": "game",
+   "minutes": 7,
+   "hours": 0.1,
+   "hours2w": 0.0,
+   "lastPlayed": 1783774617
+  },
+  {
+   "appid": 1182480,
+   "name": "App 1182480",
+   "type": null,
+   "minutes": 1,
+   "hours": 0.0,
+   "hours2w": 0.0,
+   "lastPlayed": 1785920988
+  }
+ ]
+}

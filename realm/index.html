@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>404 Realm · Voidsorrow</title>
+  <meta name="description" content="404 Realm: the gaming side of Devisetty Lakshmi Srinivas (Voidsorrow). Live Discord and Steam stats, playtime, loadout and side quests." />
+  <meta property="og:title" content="404 Realm · Voidsorrow" />
+  <meta property="og:description" content="Live gaming stats, playtime, loadout and side quests." />
+  <meta name="theme-color" content="#09090e" />
+  <link rel="icon" href="https://avatars.githubusercontent.com/u/95509860?s=64&v=4" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://discord.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="realm.css" />
+  <script defer src="config.js"></script>
+  <script defer src="realm.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Broadcast stinger (once per session) -->
+  <div class="stinger" id="stinger" aria-hidden="true"><i></i><i></i><i></i><span>404 REALM</span></div>
+
+  <header class="scorebug">
+    <a class="sb-logo" href="./"><b>404</b>REALM</a>
+    <nav aria-label="Sections">
+      <ul class="sb-nav" id="sbNav">
+        <li><a href="#live">Live</a></li>
+        <li><a href="#stats">Stats</a></li>
+        <li><a href="#loadout">Loadout</a></li>
+        <li><a href="#career">Career</a></li>
+        <li><a href="../blog/">Blog ↗</a></li>
+      </ul>
+    </nav>
+    <div class="sb-right">
+      <span class="onair"><i></i>LIVE</span>
+      <span class="sb-clock" id="clock">--:--</span>
+      <a class="sb-exit" href="../">Portfolio ↩</a>
+    </div>
+  </header>
+
+  <div class="ticker" aria-label="Live ticker">
+    <div class="ticker-track" id="tickerTrack"><span>Loading live feed…</span></div>
+  </div>
+
+  <main id="main">
+    <!-- HERO: player intro -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="kick"><span class="slant">Player intro</span> Season 2026</p>
+          <h1 class="name"><span id="nameA">VOID</span><span class="outline" id="nameB">SORROW</span></h1>
+          <p class="role" id="title">Developer · Gamer · Linux user</p>
+          <p class="bio" id="bio">Off the clock I play games, tinker with Linux and explore how games are built.</p>
+          <div class="hero-cta">
+            <a class="cta-rog" href="https://discord.gg/ZbmZp9K2Pb" target="_blank" rel="noopener">Join 404 Realm ↗</a>
+            <a class="cta-ghost" href="../blog/">Read the blog</a>
+          </div>
+        </div>
+
+        <aside class="pcard" aria-label="Player card">
+          <div class="pcard-art">
+            <span class="pnum">57</span>
+            <img src="https://avatars.githubusercontent.com/u/95509860?s=360&v=4" alt="Voidsorrow avatar" width="220" height="220" decoding="async" />
+          </div>
+          <div class="pcard-plate">
+            <div><small>Player</small><b id="cardTag">VOIDSORROW</b></div>
+            <div><small>Team</small><b>404 REALM</b></div>
+            <div><small>Role</small><b>AI Engineer</b></div>
+            <div><small>Region</small><b>IN · BLR</b></div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="wrap">
+        <ul class="statstrip" aria-label="Headline stats">
+          <li><b data-count id="hsOnline">–</b><span>Guild members online</span></li>
+          <li><b data-count id="hsHours">–</b><span id="hsHoursLabel">Hours tracked</span></li>
+          <li><b data-count id="hsSolved">–</b><span>LeetCode problems solved</span></li>
+          <li><b id="hsQuest">–</b><span id="hsQuestLabel">Main quest progress</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- LIVE -->
+    <section class="sec" id="live">
+      <div class="wrap">
+        <h2 class="sec-h"><span>01</span>Live now</h2>
+        <div class="live-grid">
+          <article class="card" id="presence" hidden>
+            <div class="card-top">
+              <img class="ava" id="pAvatar" alt="" width="48" height="48" />
+              <div><small class="cap">Discord status</small><h3 id="pName">–</h3></div>
+              <span class="status-pill"><i class="sdot" id="pDot"></i><span id="pStatus">offline</span></span>
+            </div>
+            <div id="pActivities"></div>
+          </article>
+
+          <article class="card" id="server">
+            <div class="card-top">
+              <img class="ava" id="gIcon" alt="" width="48" height="48" />
+              <div><small class="cap">Discord server</small><h3 id="gName">404 REALM</h3></div>
+              <span class="status-pill"><i class="sdot s-online"></i>Live</span>
+            </div>
+            <div class="mini-stats">
+              <div><b id="gOnline">–</b><span>Online</span></div>
+              <div><b id="gMembers">–</b><span>Members</span></div>
+              <div><b id="gPlaying">–</b><span>In a game</span></div>
+            </div>
+            <div class="avatars" id="gAvatars"></div>
+            <p class="cap" id="gNowLabel" hidden>Playing right now</p>
+            <ul class="now-playing" id="gNow"></ul>
+            <div class="channels" id="gChannels"></div>
+            <a class="cta-rog small" id="gJoin" href="https://discord.gg/ZbmZp9K2Pb" target="_blank" rel="noopener">Join server ↗</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="sec" id="stats">
+      <div class="wrap">
+        <h2 class="sec-h"><span>02</span>Season stats</h2>
+
+        <div id="steamBlock" hidden>
+          <article class="card steam-card">
+            <div class="card-top">
+              <img class="ava sq" id="sAvatar" alt="" width="48" height="48" />
+              <div><small class="cap">Steam <span id="steamUpdated"></span></small><h3 id="sName">–</h3></div>
+              <a class="status-pill link" id="sLink" target="_blank" rel="noopener">Profile ↗</a>
+            </div>
+            <div class="big-stats">
+              <div><b id="sLevel">–</b><span>Steam level</span></div>
+              <div><b id="sGames">–</b><span>Games owned</span></div>
+              <div><b id="sHours">–</b><span>Total hours</span></div>
+              <div><b id="sRecent">–</b><span>Hours, last 2 weeks</span></div>
+            </div>
+          </article>
+          <p class="cap sub">Recently played</p>
+          <div class="recent" id="sRecentList"></div>
+        </div>
+
+        <div id="trnBlock" hidden>
+          <p class="cap sub trn-head"><span class="trn-logo">TRN</span> Tracker Network <span id="trnUpdated"></span></p>
+          <div class="trn-grid" id="trnGrid"></div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="card" id="playtimeCard">
+            <div class="card-top plain"><div><small class="cap">All platforms</small><h3>Playtime leaderboard</h3></div></div>
+            <ol class="board" id="playtime"></ol>
+            <p class="cap total" id="playTotal"></p>
+          </article>
+          <article class="card">
+            <div class="card-top plain"><div><small class="cap">Any platform</small><h3>Library</h3></div></div>
+            <div class="library" id="library"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOADOUT -->
+    <section class="sec" id="loadout">
+      <div class="wrap">
+        <h2 class="sec-h"><span>03</span>Loadout &amp; rig</h2>
+        <div class="slots" id="slots"></div>
+        <div id="setup"></div>
+      </div>
+    </section>
+
+    <!-- CAREER -->
+    <section class="sec" id="career">
+      <div class="wrap">
+        <h2 class="sec-h"><span>04</span>Career mode</h2>
+        <div class="career-grid">
+          <article class="card quest-main">
+            <small class="cap">Main quest</small>
+            <h3 id="mqName">M.Tech AI &amp; ML</h3>
+            <p>Finish the dissertation on explainable graph neural networks and graduate in December 2026.</p>
+            <div class="xp"><span id="mqFill"></span></div>
+            <div class="xp-meta"><span id="mqPct">0%</span><span>Reward: degree</span></div>
+          </article>
+          <article class="card">
+            <small class="cap">Off-game stats · live from coding platforms</small>
+            <div class="record">
+              <div><b data-rec="gh">–</b><span>GitHub contributions</span></div>
+              <div><b data-rec="lc">–</b><span>LeetCode solved</span></div>
+              <div><b data-rec="gfg">–</b><span>GfG solved</span></div>
+              <div><b data-rec="hr">–</b><span>HackerRank stars</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOG -->
+    <section class="sec" id="blog">
+      <div class="wrap">
+        <h2 class="sec-h"><span>05</span>From the blog</h2>
+        <div class="blog-row" id="blogRow"></div>
+        <a class="cta-ghost" href="../blog/" style="margin-top:20px">All articles &amp; the graph ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-inner">
+      <span>© <span id="year">2026</span> VOIDSORROW · 404 REALM</span>
+      <span class="devlinks" id="devlinks"></span>
+      <a href="../">Professional portfolio ↩</a>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><b>🏆</b><div><small>Achievement unlocked</small><span id="toastText"></span></div></div>
+</body>
+</html>

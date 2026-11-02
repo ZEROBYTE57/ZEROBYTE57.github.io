@@ -111,6 +111,24 @@ if ("IntersectionObserver" in window && !reduceMotion) {
   });
 }
 
+// Writing: latest blog articles.
+const writing = document.getElementById("writingList");
+if (writing) {
+  fetch("blog/posts/index.json").then((r) => r.json()).then((posts) => {
+    const fmtD = (d) => new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    writing.replaceChildren(...posts.slice(0, 3).map((p) => {
+      const a = document.createElement("a");
+      a.className = "tile write-card"; a.href = "blog/post.html?p=" + encodeURIComponent(p.slug);
+      const t = document.createElement("time"); t.textContent = `${fmtD(p.date)} · ${p.minutes} min read`;
+      const h = document.createElement("h3"); h.textContent = p.title;
+      const s = document.createElement("p"); s.textContent = p.summary || "";
+      const ul = document.createElement("ul"); ul.className = "chips";
+      p.tags.slice(0, 4).forEach((x) => { const li = document.createElement("li"); li.textContent = "#" + x; ul.append(li); });
+      a.append(t, h, s, ul); return a;
+    }));
+  }).catch(() => { writing.closest("section").hidden = true; });
+}
+
 // Navigation: highlight the section on screen with a sliding pill.
 const links = [...document.querySelectorAll(".nav-links a")];
 const pill = document.getElementById("navPill");
