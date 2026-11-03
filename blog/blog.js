@@ -4,8 +4,10 @@
   const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
   const getJSON = (u) => fetch(u).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
   const fmtDate = (d) => new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const page = document.body.dataset.page;
   const PORTFOLIO_PROJECTS = "../#projects";
+  const shortTitle = (t) => t.replace(/\s*\(.*\)$/, "");
 
   // ---------- shared: theme toggle (same preference as the portfolio), year, tile glow ----------
   const root = document.documentElement;
@@ -21,59 +23,76 @@
     t.style.setProperty("--mx", `${e.clientX - r.left}px`); t.style.setProperty("--my", `${e.clientY - r.top}px`);
   }, { passive: true });
 
-  // ---------- graph data: posts, projects and topics ----------
-  function buildGraph(posts, projects) {
+  // ---------- graph data: posts, projects, GitHub notes and topics ----------
+  function buildGraph(posts, projects, notes) {
     const nodes = [], links = [], seen = new Set(), ids = new Set();
     const add = (n) => { if (!ids.has(n.id)) { ids.add(n.id); nodes.push(n); } };
     const link = (a, b) => { const k = a < b ? a + "|" + b : b + "|" + a; if (a !== b && !seen.has(k)) { seen.add(k); links.push({ source: a, target: b }); } };
-    const projIds = new Set(projects.map((p) => p.id)), postIds = new Set(posts.map((p) => p.slug));
-    projects.forEach((p) => {
-      add({ id: "project:" + p.id, label: p.title.replace(/\s*\(.*\)$/, ""), type: "project", ref: p });
-      p.topics.forEach((t) => { add({ id: "tag:" + t, label: t, type: "tag" }); link("project:" + p.id, "tag:" + t); });
-    });
+    const projIds = new Set(projects.map((p) => p.id)), postIds = new Set(posts.map((p) => p.slug)), noteIds = new Set(notes.map((n) => n.id));
+    const topicLinks = (id, topics) => topics.forEach((t) => { add({ id: "tag:" + t, label: t, type: "tag" }); link(id, "tag:" + t); });
+    projects.forEach((p) => { add({ id: "project:" + p.id, label: shortTitle(p.title), type: "project", ref: p }); topicLinks("project:" + p.id, p.topics); });
+    notes.forEach((n) => { add({ id: "note:" + n.id, label: n.title, type: "note", ref: n }); topicLinks("note:" + n.id, n.topics); });
     posts.forEach((p) => {
       add({ id: "post:" + p.slug, label: p.title, type: "post", ref: p });
-      p.tags.forEach((t) => { add({ id: "tag:" + t, label: t, type: "tag" }); link("post:" + p.slug, "tag:" + t); });
+      topicLinks("post:" + p.slug, p.tags);
       [...(p.related || []), ...(p.links || [])].forEach((x) => {
         if (projIds.has(x)) link("post:" + p.slug, "project:" + x);
+        else if (noteIds.has(x)) link("post:" + p.slug, "note:" + x);
         else if (postIds.has(x)) link("post:" + p.slug, "post:" + x);
       });
     });
     return { nodes, links };
   }
-  const nodeUrl = (n) => n.type === "post" ? `post.html?p=${encodeURIComponent(n.ref.slug)}` : n.type === "project" ? PORTFOLIO_PROJECTS : `./?tag=${encodeURIComponent(n.label)}`;
+  const nodeUrl = (n) => n.type === "post" ? `post.html?p=${encodeURIComponent(n.ref.slug)}`
+    : n.type === "project" ? PORTFOLIO_PROJECTS : n.type === "note" ? n.ref.url : `./?tag=${encodeURIComponent(n.label)}`;
+  const openNode = (n) => { const u = nodeUrl(n); if (n.type === "note") window.open(u, "_blank", "noopener"); else location.href = u; };
+  const loadAll = () => Promise.all([getJSON("posts/index.json"), getJSON("projects.json"), getJSON("notes.json").catch(() => [])]);
 
   // ================= INDEX =================
   function index() {
-    Promise.all([getJSON("posts/index.json"), getJSON("projects.json")]).then(([posts, projects]) => {
+    loadAll().then(([posts, projects, notes]) => {
       const projById = Object.fromEntries(projects.map((p) => [p.id, p]));
-      const topics = [...new Set([...posts.flatMap((p) => p.tags), ...projects.flatMap((p) => p.topics)])];
+      const noteById = Object.fromEntries(notes.map((n) => [n.id, n]));
+      const topics = [...new Set([...posts.flatMap((p) => p.tags), ...projects.flatMap((p) => p.topics), ...notes.flatMap((n) => n.topics)])];
       const stats = $("#blogStats");
-      [[posts.length, "articles"], [topics.length, "topics"], [projects.length, "linked projects"]].forEach(([n, l]) => {
-        const li = el("li"); li.append(el("b", null, String(n)), document.createTextNode(" " + l)); stats.append(li);
+      [[posts.length, "article"], [notes.length, "GitHub note"], [projects.length, "linked project"], [topics.length, "topic"]].forEach(([n, l]) => {
+        const li = el("li"); li.append(el("b", null, String(n)), document.createTextNode(" " + (n === 1 ? l : l + "s"))); stats.append(li);
       });
 
-      // Graph
-      const { nodes, links } = buildGraph(posts, projects);
-      const hint = $("#graphHint"), hintText = hint.textContent;
+      // Graph + hover card
+      const { nodes, links } = buildGraph(posts, projects, notes);
+      const tip = $("#graphTip");
+      if (matchMedia("(pointer: coarse)").matches) $("#graphHint").textContent = "Tap a node to open it · drag nodes sideways · use + and − to zoom";
+      const KIND = { post: "Article", project: "Portfolio project", note: "GitHub note", tag: "Topic" };
+      const ACTION = { post: "Click to read", project: "Click to view in portfolio", note: "Click to open on GitHub", tag: "Click to filter articles" };
       const g = window.KnowledgeGraph($("#graphCanvas"), {
         nodes, links, zoom: innerWidth < 700 ? 0.75 : 1,
         onOpen: (n) => {
           if (n.type === "tag") { setTag(n.label); document.getElementById("postsTitle").scrollIntoView({ behavior: "smooth" }); }
-          else location.href = nodeUrl(n);
+          else openNode(n);
         },
-        onHover: (n) => {
-          hint.textContent = !n ? hintText : n.type === "post" ? `Article · ${n.ref.title} · click to read`
-            : n.type === "project" ? `Portfolio project · ${n.ref.title} · click to view` : `Topic · #${n.label} · click to filter articles`;
+        onHover: (n, x, y) => {
+          if (!n) { tip.hidden = true; return; }
+          const summary = n.ref?.summary || "";
+          tip.innerHTML = `<small>${KIND[n.type]}</small><b>${esc(n.type === "tag" ? "#" + n.label : n.ref?.title || n.label)}</b>${summary ? `<span>${esc(summary)}</span><br>` : ""}<small style="margin-top:6px">${ACTION[n.type]}</small>`;
+          const w = tip.parentElement.clientWidth;
+          tip.style.left = Math.min(Math.max(x, 140), w - 140) + "px"; tip.style.top = Math.max(y, 120) + "px";
+          tip.hidden = false;
         },
       });
       $("#zoomIn").addEventListener("click", () => g.zoom(1.25));
       $("#zoomOut").addEventListener("click", () => g.zoom(0.8));
-      $("#zoomReset").addEventListener("click", () => g.reset());
+      $("#zoomReset").addEventListener("click", () => { $("#graphFind").value = ""; g.reset(); g.setFocus(tag === "all" ? null : "tag:" + tag); });
+      $("#graphFind").addEventListener("input", (e) => g.find(e.target.value));
+      const hidden = new Set();
+      document.querySelectorAll(".lg").forEach((b) => b.addEventListener("click", () => {
+        const t = b.dataset.type, on = b.getAttribute("aria-pressed") === "true";
+        b.setAttribute("aria-pressed", String(!on)); on ? hidden.add(t) : hidden.delete(t);
+        g.setHidden(hidden);
+      }));
 
       // List + filters
-      const params = new URLSearchParams(location.search);
-      let tag = params.get("tag") || "all";
+      let tag = new URLSearchParams(location.search).get("tag") || "all";
       const postTags = ["all", ...new Set(posts.flatMap((p) => p.tags))];
       if (!postTags.includes(tag)) tag = "all";
       const filters = $("#filters");
@@ -97,8 +116,11 @@
           if (p.summary) body.append(el("p", null, p.summary));
           const chips = el("ul", "chips");
           p.tags.forEach((x) => chips.append(el("li", null, "#" + x)));
-          [...new Set([...(p.related || []), ...(p.links || [])])].filter((x) => projById[x]).forEach((x) => chips.append(el("li", "chip-proj", "◆ " + projById[x].title.replace(/\s*\(.*\)$/, ""))));
-          const mins = el("li", null, `${p.minutes} min read`); chips.append(mins);
+          const refs = [...new Set([...(p.related || []), ...(p.links || [])])];
+          refs.filter((x) => projById[x]).forEach((x) => chips.append(el("li", "chip-proj", "◆ " + shortTitle(projById[x].title))));
+          const nNotes = refs.filter((x) => noteById[x]).length;
+          if (nNotes) chips.append(el("li", "chip-note", `${nNotes} GitHub note${nNotes > 1 ? "s" : ""}`));
+          chips.append(el("li", null, `${p.minutes} min read`));
           body.append(chips); a.append(t, body); return a;
         }));
         if (!shown.length) $("#posts").append(el("p", "empty", "No articles match. Try another topic or search."));
@@ -115,43 +137,50 @@
     const fail = (m) => { $("#postTitle").textContent = "Article not found"; $("#article").replaceChildren(el("p", "empty", m)); };
     if (!/^[a-z0-9][a-z0-9-]*$/i.test(slug || "")) return fail("This link looks broken. Head back to the blog.");
 
-    Promise.all([getJSON("posts/index.json"), getJSON("projects.json"), fetch(`posts/${slug}.md`).then((r) => (r.ok ? r.text() : Promise.reject(r.status)))])
-      .then(([posts, projects, md]) => {
+    Promise.all([loadAll(), fetch(`posts/${slug}.md`).then((r) => (r.ok ? r.text() : Promise.reject(r.status)))])
+      .then(([[posts, projects, notes], md]) => {
         const i = posts.findIndex((p) => p.slug === slug);
         const meta = posts[i] || { slug, title: slug, date: "", tags: [], related: [], links: [], minutes: 1 };
         const postBy = Object.fromEntries(posts.map((p) => [p.slug, p]));
         const projBy = Object.fromEntries(projects.map((p) => [p.id, p]));
+        const noteBy = Object.fromEntries(notes.map((n) => [n.id, n]));
         document.title = `${meta.title} · Blog · Devisetty Lakshmi Srinivas`;
         $("#postTitle").textContent = meta.title;
         $("#postMeta").textContent = [meta.date && fmtDate(meta.date), `${meta.minutes} min read`].filter(Boolean).join(" · ");
         meta.tags.forEach((t) => $("#postTags").append(Object.assign(el("a", null, "#" + t), { href: `./?tag=${encodeURIComponent(t)}` })));
 
-        // [[wikilinks]] -> links to posts or portfolio projects.
+        // [[wikilinks]] -> posts, portfolio projects or GitHub notes.
         let body = md.replace(/^---[\s\S]*?\n---\s*\n/, "").replace(/<!--[\s\S]*?-->/g, "");
         body = body.replace(/\[\[([a-z0-9][a-z0-9-]*)(?:\|([^\]]+))?\]\]/gi, (m, id, text) => {
           id = id.toLowerCase();
-          if (postBy[id]) return `<a class="wikilink" href="post.html?p=${id}">${(text || postBy[id].title).replace(/</g, "&lt;")}</a>`;
-          if (projBy[id]) return `<a class="wikilink proj" href="${PORTFOLIO_PROJECTS}">${(text || projBy[id].title).replace(/</g, "&lt;")}</a>`;
-          return (text || id).replace(/</g, "&lt;");
+          if (postBy[id]) return `<a class="wikilink" href="post.html?p=${id}">${esc(text || postBy[id].title)}</a>`;
+          if (projBy[id]) return `<a class="wikilink proj" href="${PORTFOLIO_PROJECTS}">${esc(text || projBy[id].title)}</a>`;
+          if (noteBy[id]) return `<a class="wikilink note" href="${noteBy[id].url}">${esc(text || noteBy[id].title)}</a>`;
+          return esc(text || id);
         });
-        const html = window.marked ? marked.parse(body) : body.replace(/</g, "&lt;");
+        const html = window.marked ? marked.parse(body) : esc(body);
         $("#article").innerHTML = window.DOMPurify ? DOMPurify.sanitize(html) : html;
         $("#article").querySelectorAll("img").forEach((img) => { const s = img.getAttribute("src"); if (s && !/^(https?:|\/|data:)/.test(s)) img.src = "posts/" + s; img.loading = "lazy"; img.decoding = "async"; });
         $("#article").querySelectorAll("a[href^='http']").forEach((a) => { a.target = "_blank"; a.rel = "noopener"; });
 
-        // Related projects
-        const rel = [...new Set([...(meta.related || []), ...(meta.links || [])])].filter((x) => projBy[x]);
+        // Sidebar: related projects, linked GitHub notes, backlinks
+        const refs = [...new Set([...(meta.related || []), ...(meta.links || [])])];
+        const rel = refs.filter((x) => projBy[x]);
         if (rel.length) {
           $("#relatedTile").hidden = false;
           rel.forEach((x) => { const li = el("li"), a = Object.assign(el("a", null, projBy[x].title), { href: PORTFOLIO_PROJECTS }); a.append(el("small", null, projBy[x].summary)); li.append(a); $("#related").append(li); });
         }
-        // Backlinks: other posts that link here.
+        const linkedNotes = refs.filter((x) => noteBy[x]);
+        if (linkedNotes.length) {
+          $("#notesTile").hidden = false;
+          linkedNotes.forEach((x) => { const li = el("li"), a = Object.assign(el("a", null, noteBy[x].title + " ↗"), { href: noteBy[x].url, target: "_blank", rel: "noopener" }); a.append(el("small", null, noteBy[x].summary)); li.append(a); $("#notes").append(li); });
+        }
         const back = posts.filter((p) => p.slug !== slug && (p.links || []).includes(slug));
         if (back.length) back.forEach((p) => { const li = el("li"), a = Object.assign(el("a", null, p.title), { href: `post.html?p=${p.slug}` }); a.append(el("small", null, fmtDate(p.date))); li.append(a); $("#backlinks").append(li); });
         else $("#backlinks").append(el("li", "none", "No other articles link here yet."));
 
         // Local graph: this post plus everything within two hops.
-        const full = buildGraph(posts, projects);
+        const full = buildGraph(posts, projects, notes);
         const me = "post:" + slug, keep = new Set([me]);
         for (let hop = 0; hop < 2; hop++) {
           full.links.forEach((l) => { if (keep.has(l.source) || keep.has(l.target)) { keep.add(l.source); keep.add(l.target); } });
@@ -161,10 +190,9 @@
           nodes: full.nodes.filter((n) => keep.has(n.id)),
           links: full.links.filter((l) => keep.has(l.source) && keep.has(l.target)),
           focus: me, zoom: 0.8, labelsAt: 0.7,
-          onOpen: (n) => { if (n.id !== me) location.href = nodeUrl(n); },
+          onOpen: (n) => { if (n.id !== me) openNode(n); },
         });
 
-        // Prev / next
         const nav = $("#postNav"), newer = posts[i - 1], older = posts[i + 1];
         if (older) { const a = Object.assign(el("a", "prev"), { href: `post.html?p=${older.slug}` }); a.append(el("small", null, "← Older"), el("b", null, older.title)); nav.append(a); }
         if (newer) { const a = Object.assign(el("a", "next"), { href: `post.html?p=${newer.slug}` }); a.append(el("small", null, "Newer →"), el("b", null, newer.title)); nav.append(a); }
@@ -179,4 +207,16 @@
   }
 
   ({ index, post })[page]?.();
+})();
+
+// Mobile menu: the nav opens as a dropdown under the dock below 920px.
+(() => {
+  const dock = document.querySelector(".dock"), btn = document.getElementById("menuBtn");
+  if (!dock || !btn) return;
+  const set = (open) => { dock.classList.toggle("open", open); btn.setAttribute("aria-expanded", String(open)); btn.setAttribute("aria-label", open ? "Close menu" : "Open menu"); };
+  btn.addEventListener("click", () => set(!dock.classList.contains("open")));
+  dock.querySelectorAll(".nav-links a").forEach((a) => a.addEventListener("click", () => set(false)));
+  document.addEventListener("click", (e) => { if (!dock.contains(e.target)) set(false); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+  addEventListener("resize", () => { if (innerWidth > 920) set(false); }, { passive: true });
 })();

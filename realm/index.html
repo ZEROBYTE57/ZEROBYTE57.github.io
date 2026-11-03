@@ -28,13 +28,15 @@
     <nav aria-label="Sections">
       <ul class="sb-nav" id="sbNav">
         <li><a href="#live">Live</a></li>
-        <li><a href="#stats">Stats</a></li>
-        <li><a href="#loadout">Loadout</a></li>
         <li><a href="#career">Career</a></li>
-        <li><a href="../blog/">Blog ↗</a></li>
+        <li><a href="#stats">Stats</a></li>
+        <li><a href="#rig">Rig</a></li>
+        <li><a href="#lobby">Lobby</a></li>
+        <li><a href="#blog">Blog</a></li>
       </ul>
     </nav>
     <div class="sb-right">
+      <button class="sb-menu" id="sbMenu" type="button" aria-label="Open sections menu" aria-expanded="false"><span></span></button>
       <span class="onair"><i></i>LIVE</span>
       <span class="sb-clock" id="clock">--:--</span>
       <a class="sb-exit" href="../">Portfolio ↩</a>
@@ -52,7 +54,8 @@
         <div class="hero-copy">
           <p class="kick"><span class="slant">Player intro</span> Season 2026</p>
           <h1 class="name"><span id="nameA">VOID</span><span class="outline" id="nameB">SORROW</span></h1>
-          <p class="role" id="title">Developer · Gamer · Linux user</p>
+          <p class="motto">Gamers don't die, they <em>respawn</em>.</p>
+          <p class="role" id="title">Developer · Gamer · root@fedora</p>
           <p class="bio" id="bio">Off the clock I play games, tinker with Linux and explore how games are built.</p>
           <div class="hero-cta">
             <a class="cta-rog" href="https://discord.gg/ZbmZp9K2Pb" target="_blank" rel="noopener">Join 404 Realm ↗</a>
@@ -84,7 +87,7 @@
       </div>
     </section>
 
-    <!-- LIVE -->
+    <!-- 01 LIVE -->
     <section class="sec" id="live">
       <div class="wrap">
         <h2 class="sec-h"><span>01</span>Live now</h2>
@@ -119,61 +122,10 @@
       </div>
     </section>
 
-    <!-- STATS -->
-    <section class="sec" id="stats">
-      <div class="wrap">
-        <h2 class="sec-h"><span>02</span>Season stats</h2>
-
-        <div id="steamBlock" hidden>
-          <article class="card steam-card">
-            <div class="card-top">
-              <img class="ava sq" id="sAvatar" alt="" width="48" height="48" />
-              <div><small class="cap">Steam <span id="steamUpdated"></span></small><h3 id="sName">–</h3></div>
-              <a class="status-pill link" id="sLink" target="_blank" rel="noopener">Profile ↗</a>
-            </div>
-            <div class="big-stats">
-              <div><b id="sLevel">–</b><span>Steam level</span></div>
-              <div><b id="sGames">–</b><span>Games owned</span></div>
-              <div><b id="sHours">–</b><span>Total hours</span></div>
-              <div><b id="sRecent">–</b><span>Hours, last 2 weeks</span></div>
-            </div>
-          </article>
-          <p class="cap sub">Recently played</p>
-          <div class="recent" id="sRecentList"></div>
-        </div>
-
-        <div id="trnBlock" hidden>
-          <p class="cap sub trn-head"><span class="trn-logo">TRN</span> Tracker Network <span id="trnUpdated"></span></p>
-          <div class="trn-grid" id="trnGrid"></div>
-        </div>
-
-        <div class="stats-grid">
-          <article class="card" id="playtimeCard">
-            <div class="card-top plain"><div><small class="cap">All platforms</small><h3>Playtime leaderboard</h3></div></div>
-            <ol class="board" id="playtime"></ol>
-            <p class="cap total" id="playTotal"></p>
-          </article>
-          <article class="card">
-            <div class="card-top plain"><div><small class="cap">Any platform</small><h3>Library</h3></div></div>
-            <div class="library" id="library"></div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- LOADOUT -->
-    <section class="sec" id="loadout">
-      <div class="wrap">
-        <h2 class="sec-h"><span>03</span>Loadout &amp; rig</h2>
-        <div class="slots" id="slots"></div>
-        <div id="setup"></div>
-      </div>
-    </section>
-
-    <!-- CAREER -->
+    <!-- 02 CAREER -->
     <section class="sec" id="career">
       <div class="wrap">
-        <h2 class="sec-h"><span>04</span>Career mode</h2>
+        <h2 class="sec-h"><span>02</span>Career mode</h2>
         <div class="career-grid">
           <article class="card quest-main">
             <small class="cap">Main quest</small>
@@ -195,10 +147,63 @@
       </div>
     </section>
 
-    <!-- BLOG -->
+    <!-- 03 SEASON STATS -->
+    <section class="sec" id="stats">
+      <div class="wrap">
+        <h2 class="sec-h"><span>03</span>Season stats</h2>
+
+        <div id="steamBlock" hidden>
+          <article class="card steam-card">
+            <div class="card-top">
+              <img class="ava sq" id="sAvatar" alt="" width="48" height="48" />
+              <div><small class="cap">Steam <span id="steamUpdated"></span></small><h3 id="sName">–</h3></div>
+              <a class="status-pill link" id="sLink" target="_blank" rel="noopener">Profile ↗</a>
+            </div>
+            <div class="big-stats">
+              <div><b id="sLevel">–</b><span>Steam level</span></div>
+              <div><b id="sGames">–</b><span>Games owned</span></div>
+              <div><b id="sHours">–</b><span>Total hours</span></div>
+              <div><b id="sRecent">–</b><span>Hours, last 2 weeks</span></div>
+            </div>
+          </article>
+          <p class="cap sub">Recently played</p>
+          <div class="recent" id="sRecentList"></div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="card" id="playtimeCard">
+            <div class="card-top plain"><div><small class="cap">All platforms</small><h3>Playtime leaderboard</h3></div></div>
+            <ol class="board" id="playtime"></ol>
+            <p class="cap total" id="playTotal"></p>
+          </article>
+          <article class="card" id="libraryCard">
+            <div class="card-top plain"><div><small class="cap">All platforms</small><h3>Library</h3></div></div>
+            <div class="library" id="library"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 MY RIG -->
+    <section class="sec" id="rig">
+      <div class="wrap">
+        <h2 class="sec-h"><span>04</span>My rig</h2>
+        <div id="setup"></div>
+      </div>
+    </section>
+
+    <!-- 05 LOBBY (gamer handles + Tracker Network) -->
+    <section class="sec" id="lobby">
+      <div class="wrap">
+        <h2 class="sec-h"><span>05</span>Lobby</h2>
+        <p class="squad-lede">Add me, join the server or look me up on the trackers.</p>
+        <div class="slots" id="slots"></div>
+      </div>
+    </section>
+    <!-- 06 BLOG -->
     <section class="sec" id="blog">
       <div class="wrap">
-        <h2 class="sec-h"><span>05</span>From the blog</h2>
+        <h2 class="sec-h"><span>06</span>From the blog</h2>
         <div class="blog-row" id="blogRow"></div>
         <a class="cta-ghost" href="../blog/" style="margin-top:20px">All articles &amp; the graph ↗</a>
       </div>

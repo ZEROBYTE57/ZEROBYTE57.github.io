@@ -37,13 +37,14 @@
       <svg class="i-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       <svg class="i-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
     </button>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
   </header>
 
   <main id="main" class="wrap blog-main">
     <header class="blog-hero">
       <p class="label">Blog</p>
       <h1>Notes on <em>models</em>, machines and games.</h1>
-      <p class="lede">Longer write-ups behind my portfolio projects, plus what I explore on the side: Linux, games and game development. Every post is linked to its topics and projects in the graph below.</p>
+      <p class="lede">Longer write-ups behind my portfolio projects, plus what I explore on the side: Linux, games and game development. Every post is linked to its topics, my GitHub notes and my projects in the graph below.</p>
       <ul class="blog-stats" id="blogStats" aria-label="Blog statistics"></ul>
     </header>
 
@@ -54,17 +55,23 @@
           <p class="graph-hint" id="graphHint">Drag nodes · scroll to zoom · drag the background to pan · click to open</p>
         </div>
         <div class="graph-tools">
-          <ul class="legend" aria-label="Legend">
-            <li><i class="lg-post"></i>Post</li>
-            <li><i class="lg-project"></i>Project</li>
-            <li><i class="lg-tag"></i>Topic</li>
-          </ul>
+          <label class="sr" for="graphFind">Find in graph</label>
+          <input class="graph-find" id="graphFind" type="search" placeholder="Find in graph…" autocomplete="off" />
           <button type="button" class="gbtn-s" id="zoomIn" aria-label="Zoom in">+</button>
           <button type="button" class="gbtn-s" id="zoomOut" aria-label="Zoom out">−</button>
-          <button type="button" class="gbtn-s" id="zoomReset" aria-label="Reset view">⟲</button>
+          <button type="button" class="gbtn-s" id="zoomReset" aria-label="Fit graph to view">⟲</button>
         </div>
       </div>
-      <canvas class="graph-canvas" id="graphCanvas" role="img" aria-label="Interactive graph linking blog posts, topics and portfolio projects"></canvas>
+      <div class="legend" role="group" aria-label="Show or hide node types">
+        <button type="button" class="lg" data-type="post" aria-pressed="true"><i class="lg-post"></i>Articles</button>
+        <button type="button" class="lg" data-type="project" aria-pressed="true"><i class="lg-project"></i>Projects</button>
+        <button type="button" class="lg" data-type="note" aria-pressed="true"><i class="lg-note"></i>GitHub notes</button>
+        <button type="button" class="lg" data-type="tag" aria-pressed="true"><i class="lg-tag"></i>Topics</button>
+      </div>
+      <div class="graph-stage">
+        <canvas class="graph-canvas" id="graphCanvas" role="img" aria-label="Interactive graph linking blog articles, GitHub notes, topics and portfolio projects"></canvas>
+        <div class="graph-tip" id="graphTip" hidden></div>
+      </div>
     </section>
 
     <section class="posts-sec" aria-labelledby="postsTitle">

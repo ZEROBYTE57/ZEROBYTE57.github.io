@@ -88,7 +88,32 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 :root[data-theme="dark"] .i-sun { display: none; }
 :root[data-theme="dark"] .i-moon { display: block; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .i-sun { display: none; } :root:not([data-theme="light"]) .i-moon { display: block; } }
-@media (max-width: 920px) { .dock nav { display: none; } .theme-toggle { margin-left: auto; } }
+/* Menu button: shown only below 920px, opens the nav as a dropdown panel */
+.menu-btn { display: none; flex: none; width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; place-items: center; }
+.menu-btn span, .menu-btn span::before, .menu-btn span::after { display: block; width: 16px; height: 1.5px; background: currentColor; border-radius: 2px; transition: transform .25s, opacity .2s; }
+.menu-btn span { position: relative; }
+.menu-btn span::before, .menu-btn span::after { content: ""; position: absolute; left: 0; }
+.menu-btn span::before { top: -5px; } .menu-btn span::after { top: 5px; }
+.dock.open .menu-btn span { background: transparent; }
+.dock.open .menu-btn span::before { transform: translateY(5px) rotate(45deg); }
+.dock.open .menu-btn span::after { transform: translateY(-5px) rotate(-45deg); }
+@media (max-width: 920px) {
+  .dock { padding: 6px 6px 6px 18px; gap: 8px; border-radius: 26px; flex-wrap: wrap; }
+  .dock .theme-toggle { margin-left: auto; }
+  .menu-btn { display: grid; }
+  .dock nav { display: none; width: 100%; order: 3; margin: 0; }
+  .dock.open { background: var(--surface); }
+  .dock.open nav { display: block; animation: drop .22s ease-out; }
+  .dock .nav-links { flex-direction: column; gap: 2px; padding: 6px 0 8px; border-top: 1px solid var(--border); margin-top: 6px; }
+  .dock .nav-links a { padding: 12px 14px; font-size: 16px; border-radius: 14px; }
+  .dock .nav-links a:hover, .dock .nav-links a.active { background: var(--surface-2); }
+  .nav-pill { display: none; }
+}
+@keyframes drop { from { opacity: 0; transform: translateY(-6px); } }
+
+/* Grid and flex children may shrink below their content width (prevents page-wide overflow) */
+.hero-grid > *, .about-grid > *, .project-grid > *, .skills > *, .activity-grid > *, .bento > *, .ach-grid > *,
+.contact-card > *, .writing-grid > *, .p-body > *, .gh, .heatmap-wrap { min-width: 0; }
 
 /* ============ TILES (shared card style) ============ */
 .tile { position: relative; isolation: isolate; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); transition: transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s; }
@@ -346,13 +371,17 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 .i-icon { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-ink); margin-bottom: 6px; transition: transform .3s; }
 .interest:hover .i-icon { transform: rotate(-8deg) scale(1.06); }
 .i-icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.term { margin-top: auto; background: #0c0c0e; border: 1px solid #232327; border-radius: 14px; padding: 0 16px 16px; font-family: var(--mono); line-height: 1.9; }
+.term { margin-top: auto; background: #0c0c0e; border: 1px solid #232327; border-radius: 14px; padding: 0 16px 16px; font-family: var(--mono); line-height: 1.85; }
 .term-bar { display: flex; align-items: center; gap: 6px; padding: 12px 0 8px; }
 .term-bar i { width: 10px; height: 10px; border-radius: 50%; background: #3f3f46; }
+.term-bar i:nth-child(1) { background: #ff5f57; } .term-bar i:nth-child(2) { background: #febc2e; } .term-bar i:nth-child(3) { background: #28c840; }
 .term-bar span { margin-left: auto; font-size: 12px; color: #a1a1aa; }
 .term p { color: #e4e4e7; font-size: 13px; overflow-wrap: anywhere; }
+.term .t-o { color: #a1a1aa; padding-left: 14px; }
+.term .t-ok { color: #4ade80; }
 .t-p { color: #6cc5cf; margin-right: 4px; }
 .t-cursor { display: inline-block; width: 7px; height: 14px; background: #6cc5cf; vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+.term-body { min-height: 13.5em; }
 @media (max-width: 900px) { .bento { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .bento { grid-template-columns: 1fr; } .interest.big { grid-row: auto; } }
 

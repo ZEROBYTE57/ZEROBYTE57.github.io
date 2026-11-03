@@ -1,0 +1,37 @@
+[
+  {
+    "id": "pytorch-notes",
+    "title": "Intermediate Deep Learning with PyTorch",
+    "summary": "Course notes: PyTorch datasets and OOP, optimizers, training and evaluation of robust neural nets.",
+    "url": "https://github.com/ZEROBYTE57/Deep-Learning/blob/main/Intermediate-Deep-Learning-With-Pytorch.md",
+    "topics": ["deep-learning", "pytorch", "machine-learning"]
+  },
+  {
+    "id": "text-analysis-notes",
+    "title": "Text data analysis notes",
+    "summary": "Statistical checks, bag of words and TF-IDF, and pre-trained embeddings for text data.",
+    "url": "https://github.com/ZEROBYTE57/LLM-Classfication-Finetuning/blob/main/Notes.md",
+    "topics": ["nlp", "llms", "machine-learning"]
+  },
+  {
+    "id": "gnn-architectures",
+    "title": "GNN architectures and benchmarks",
+    "summary": "A survey of graph neural network architectures and the benchmarks used to compare them.",
+    "url": "https://github.com/ZEROBYTE57/GNN-in-Medical-Imaging/blob/main/GNN/Provide_a_list_of_all_the_GNN_architectures_bechm.pdf",
+    "topics": ["gnn", "deep-learning"]
+  },
+  {
+    "id": "retinal-gnn-review",
+    "title": "Literature review: retinal vessel graphs",
+    "summary": "A curated reading list on graph models for retinal vessel analysis and how to report results.",
+    "url": "https://github.com/ZEROBYTE57/GNN-in-Medical-Imaging/blob/main/Retinal-GNN/literature-review-scopus.md",
+    "topics": ["gnn", "research", "medical-imaging"]
+  },
+  {
+    "id": "algorithm-design",
+    "title": "Advanced Algorithmic Design assignments",
+    "summary": "Assignments and classwork from the Advanced Algorithmic Design course, in Java.",
+    "url": "https://github.com/ZEROBYTE57/Advanced-Algorithemic-Design-24AM601",
+    "topics": ["algorithms", "java"]
+  }
+]

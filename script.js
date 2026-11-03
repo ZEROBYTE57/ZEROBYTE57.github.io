@@ -157,3 +157,37 @@ addEventListener("scroll", () => {
   if (scrollY < innerHeight * 0.4) { links.forEach((a) => a.classList.remove("active")); movePill(null); }
 }, { passive: true });
 addEventListener("resize", () => movePill(document.querySelector(".nav-links a.active")));
+
+// Mobile menu: the nav opens as a dropdown under the dock below 920px.
+(() => {
+  const dock = document.querySelector(".dock"), btn = document.getElementById("menuBtn");
+  if (!dock || !btn) return;
+  const set = (open) => { dock.classList.toggle("open", open); btn.setAttribute("aria-expanded", String(open)); btn.setAttribute("aria-label", open ? "Close menu" : "Open menu"); };
+  btn.addEventListener("click", () => set(!dock.classList.contains("open")));
+  dock.querySelectorAll(".nav-links a").forEach((a) => a.addEventListener("click", () => set(false)));
+  document.addEventListener("click", (e) => { if (!dock.contains(e.target)) set(false); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+  addEventListener("resize", () => { if (innerWidth > 920) set(false); }, { passive: true });
+})();
+
+// Linux env terminal: types each command, then reveals its output (static if reduced motion).
+(() => {
+  const body = document.getElementById("termBody");
+  if (!body || matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  const lines = [...body.children].map((p) => ({ cmd: p.classList.contains("t-cmd"), html: p.innerHTML, cls: p.className, text: p.textContent.replace(/^\$\s*/, "") }));
+  body.replaceChildren();
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  async function play() {
+    for (const l of lines) {
+      const p = document.createElement("p"); p.className = l.cls; body.append(p);
+      if (!l.cmd) { await sleep(180); p.innerHTML = l.html; continue; }
+      if (!l.text.trim()) { p.innerHTML = l.html; continue; }      // final prompt with cursor
+      p.innerHTML = '<span class="t-p">$</span> <span class="typed"></span><span class="t-cursor"></span>';
+      const t = p.querySelector(".typed");
+      for (const ch of l.text) { t.textContent += ch; await sleep(28 + Math.random() * 40); }
+      await sleep(260); p.querySelector(".t-cursor").remove();
+    }
+  }
+  const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); play(); } }, { threshold: 0.4 });
+  io.observe(body);
+})();

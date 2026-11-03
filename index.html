@@ -43,6 +43,7 @@
       <svg class="i-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       <svg class="i-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
     </button>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
   </header>
 
   <main id="main">
@@ -145,21 +146,23 @@
       <div class="wrap">
         <div class="sec-head">
           <p class="label">01 — About</p>
-          <h2 class="section-title">Research-minded, <em>evaluation-first</em>.</h2>
+          <h2 class="section-title">Broken runs forge <em>better models</em>.</h2>
         </div>
 
         <div class="about-grid">
           <div class="tile prose">
             <p>
               I am completing an <strong>M.Tech in Computer Science and Engineering (AI and ML)</strong>
-              at Amrita Vishwa Vidyapeetham, graduating in December 2026. My dissertation builds a
-              benchmark that tests whether explanations from graph neural networks point to real
-              disease signal or to scanner artefacts.
+              at Amrita Vishwa Vidyapeetham and will graduate in December 2026. My dissertation builds a
+              benchmark to test whether explanations from graph neural networks point to real disease
+              signals or to scanner artefacts.
             </p>
             <p>
-              I care about evaluation that holds up: patient-level splits, leakage-free pipelines and
-              robustness under domain shift. I work across the full project, from data preparation and
-              exploratory analysis to training, evaluation and explainability.
+              I enjoy problems that need both <strong>first-principles thinking</strong> and
+              <strong>careful engineering</strong>. I break a vague question into testable pieces, build the
+              simplest thing that could work, then try hard to prove it wrong. I read papers to borrow ideas,
+              write clean and reproducible code, and treat evaluation and failure analysis as part of the
+              work, not an afterthought.
             </p>
           </div>
 
@@ -183,22 +186,23 @@
         <div class="tile workflow">
           <p class="tile-label">How I work</p>
           <ol class="pipeline">
-            <li><span class="step">01</span><b>Data</b><p>Collect, clean and validate. Split by patient or site to prevent leakage.</p></li>
-            <li><span class="step">02</span><b>Explore</b><p>Exploratory analysis, statistics and feature engineering.</p></li>
-            <li><span class="step">03</span><b>Model</b><p>CNNs, GNNs and transformers in PyTorch, sized to the problem.</p></li>
-            <li><span class="step">04</span><b>Evaluate</b><p>Held-out tests, the right metric and robustness checks.</p></li>
-            <li><span class="step">05</span><b>Explain</b><p>Attribution with Captum to confirm the model learned the right signal.</p></li>
+            <li><span class="step">01</span><b>Frame</b><p>Pin down the real question, the constraints and what success looks like.</p></li>
+            <li><span class="step">02</span><b>Research</b><p>Read papers and docs, study prior work and pick the right approach.</p></li>
+            <li><span class="step">03</span><b>Prototype</b><p>Build the simplest working baseline fast, then improve it step by step.</p></li>
+            <li><span class="step">04</span><b>Validate</b><p>Test hard: clean splits, ablations, failure cases and honest metrics.</p></li>
+            <li><span class="step">05</span><b>Ship &amp; share</b><p>Clean code, version control, documentation and a clear write-up.</p></li>
           </ol>
         </div>
       </div>
     </section>
 
-    <!-- PROJECTS -->
+    <!-- PROJECTS (most recent first: in progress, then completed) -->
     <section id="projects" class="section">
       <div class="wrap">
         <div class="sec-head">
           <p class="label">02 — Projects</p>
           <h2 class="section-title">Selected <em>work</em>.</h2>
+          <p class="sec-lede">Most recent first: a path from computer vision through graph learning and LLMs, building toward data science and AI engineering.</p>
         </div>
 
         <div class="project-grid">
@@ -226,6 +230,29 @@
 
           <article class="tile project wide">
             <div class="p-top">
+              <span class="tag">Kaggle · 2026</span>
+              <span class="badge wip">In progress</span>
+              <a class="arrow" href="https://github.com/ZEROBYTE57/LLM-Classfication-Finetuning" target="_blank" rel="noopener" aria-label="View LLM preference project on GitHub">↗</a>
+            </div>
+            <div class="p-body">
+              <div>
+                <h3>LLM Response Preference Prediction</h3>
+                <p>
+                  Predicting which of two LLM answers a human preferred (A, B or tie) on 57K Chatbot Arena
+                  battles across 64 LLMs, evaluated on log loss.
+                </p>
+              </div>
+              <ul class="points">
+                <li>Analyzed per-model win, loss and tie rates to understand how preferences vary across models.</li>
+                <li>Found and fixed a pipeline bug that broke Kaggle scoring, then shipped a validated baseline.</li>
+                <li>Now adding TF-IDF text features to move beyond model-identity signals.</li>
+              </ul>
+            </div>
+            <ul class="chips"><li>pandas</li><li>scikit-learn</li><li>Matplotlib</li><li>Seaborn</li></ul>
+          </article>
+
+          <article class="tile project wide">
+            <div class="p-top">
               <span class="tag">M.Tech Thesis</span>
               <span class="badge done">Completed</span>
               <a class="arrow" href="https://github.com/ZEROBYTE57/SMOTE-MVDCNN" target="_blank" rel="noopener" aria-label="View SMOTE-MVDCNN code on GitHub">↗</a>
@@ -248,40 +275,33 @@
             <ul class="chips"><li>PyTorch</li><li>CLAHE</li><li>SMOTE</li><li>scikit-learn</li></ul>
           </article>
 
-          <article class="tile project">
+          <article class="tile project wide">
             <div class="p-top">
-              <span class="tag">Kaggle · 2026</span>
-              <span class="badge wip">In progress</span>
-              <a class="arrow" href="https://github.com/ZEROBYTE57/LLM-Classfication-Finetuning" target="_blank" rel="noopener" aria-label="View LLM preference project on GitHub">↗</a>
-            </div>
-            <h3>LLM Response Preference Prediction</h3>
-            <p>
-              Predicting human preference (A, B or tie) on 57K Chatbot Arena battles across 64 LLMs,
-              evaluated on log loss. Analyzed per-model win, loss and tie rates, fixed a pipeline bug
-              that broke Kaggle scoring, and shipped a validated baseline. Now adding TF-IDF text features.
-            </p>
-            <ul class="chips"><li>pandas</li><li>scikit-learn</li><li>Seaborn</li></ul>
-          </article>
-
-          <article class="tile project">
-            <div class="p-top">
-              <span class="tag">Intel Unnati · 2023</span>
+              <span class="tag">Intel Unnati Industrial Training · 2023</span>
               <span class="badge done">Completed</span>
               <a class="arrow" href="https://github.com/ZEROBYTE57/intelunnati_INTEL-Trio" target="_blank" rel="noopener" aria-label="View road object detection project on GitHub">↗</a>
             </div>
-            <h3>Road Object Detection using YOLOv3</h3>
-            <p>
-              Implemented YOLOv3 (Darknet-53) in PyTorch, including the config parser, pre-trained
-              weight loader and detection layers. Wrote the post-processing (box decoding, IoU,
-              confidence thresholding, non-maximum suppression) and timed inference against an OpenCV DNN pipeline.
-            </p>
-            <ul class="chips"><li>PyTorch</li><li>OpenCV</li><li>NumPy</li></ul>
+            <div class="p-body">
+              <div>
+                <h3>Road Object Detection using YOLOv3</h3>
+                <p>
+                  A YOLOv3 (Darknet-53) object detector implemented from the ground up in PyTorch for
+                  Indian road scenes.
+                </p>
+              </div>
+              <ul class="points">
+                <li>Implemented YOLOv3 in PyTorch, including the config parser, pre-trained weight loader and detection layers.</li>
+                <li>Wrote the post-processing pipeline: bounding box decoding, IoU, confidence thresholding and non-maximum suppression.</li>
+                <li>Ran inference on 416×416 Indian Driving Dataset images and timed it against an OpenCV DNN pipeline.</li>
+              </ul>
+            </div>
+            <ul class="chips"><li>PyTorch</li><li>OpenCV</li><li>NumPy</li><li>Matplotlib</li></ul>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- SKILLS -->
+    <!-- SKILLS (from the resume) -->
     <section id="skills" class="section">
       <div class="wrap">
         <div class="sec-head">
@@ -289,12 +309,12 @@
           <h2 class="section-title">Technical <em>toolkit</em>.</h2>
         </div>
         <div class="skills">
-          <div class="tile skill"><h3><span class="sg-icon">{ }</span>Languages</h3><ul class="chips"><li>Python</li><li>C</li><li>C++</li><li>Java</li><li>Bash</li><li>SQL</li></ul></div>
-          <div class="tile skill"><h3><span class="sg-icon">∇</span>Machine learning and deep learning</h3><ul class="chips"><li>PyTorch</li><li>PyTorch Geometric</li><li>Hugging Face Transformers</li><li>Captum</li><li>scikit-learn</li><li>OpenCV</li></ul></div>
-          <div class="tile skill"><h3><span class="sg-icon">◇</span>Methods</h3><ul class="chips"><li>CNNs</li><li>GNNs</li><li>Computer vision</li><li>NLP</li><li>Object detection</li><li>Explainable AI</li><li>Fine-tuning</li><li>Transfer learning</li><li>Model evaluation</li></ul></div>
-          <div class="tile skill"><h3><span class="sg-icon">∑</span>Data science and analytics</h3><ul class="chips"><li>pandas</li><li>NumPy</li><li>SciPy</li><li>statsmodels</li><li>Matplotlib</li><li>Seaborn</li><li>EDA</li><li>Feature engineering</li><li>Hypothesis testing</li><li>Survival analysis</li></ul></div>
-          <div class="tile skill"><h3><span class="sg-icon">⌘</span>Databases and tools</h3><ul class="chips"><li>MySQL</li><li>MongoDB</li><li>Git</li><li>GitHub</li><li>Jupyter</li><li>Google Colab</li><li>Linux</li></ul></div>
-          <div class="tile skill"><h3><span class="sg-icon">⟨⟩</span>Core computer science</h3><ul class="chips"><li>Data structures and algorithms</li><li>OOP</li><li>Operating systems</li><li>Algorithm design</li></ul></div>
+          <div class="tile skill"><h3><span class="sg-icon">{ }</span>Programming languages</h3><ul class="chips"><li>Python</li><li>C</li><li>C++</li><li>Java</li><li>Bash</li><li>SQL</li></ul></div>
+          <div class="tile skill"><h3><span class="sg-icon">∇</span>ML and DL frameworks</h3><ul class="chips"><li>PyTorch</li><li>PyTorch Geometric</li><li>Hugging Face Transformers</li><li>Captum</li><li>scikit-learn</li><li>OpenCV</li></ul></div>
+          <div class="tile skill"><h3><span class="sg-icon">◇</span>ML and DL techniques</h3><ul class="chips"><li>Model evaluation</li><li>Fine-tuning</li><li>Transfer learning</li><li>CNNs</li><li>GNNs</li><li>Computer vision</li><li>NLP</li><li>Explainable AI</li><li>Object detection</li></ul></div>
+          <div class="tile skill"><h3><span class="sg-icon">∑</span>Data science and analytics</h3><ul class="chips"><li>pandas</li><li>NumPy</li><li>SciPy</li><li>statsmodels</li><li>Matplotlib</li><li>Seaborn</li><li>Data preprocessing</li><li>EDA</li><li>Feature engineering</li><li>Statistical analysis</li><li>Hypothesis testing</li><li>Data visualization</li><li>Survival analysis</li></ul></div>
+          <div class="tile skill"><h3><span class="sg-icon">⌘</span>Databases and tools</h3><ul class="chips"><li>MySQL</li><li>MongoDB</li><li>Git</li><li>GitHub</li><li>Jupyter Notebook</li><li>Google Colab</li><li>Linux</li></ul></div>
+          <div class="tile skill"><h3><span class="sg-icon">⟨⟩</span>Core computer science</h3><ul class="chips"><li>Data structures and algorithms</li><li>Object-oriented programming</li><li>Operating systems</li><li>Algorithm design</li></ul></div>
         </div>
       </div>
     </section>
@@ -364,14 +384,42 @@
         <div class="bento">
           <article class="tile interest big">
             <span class="i-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17l6-6-6-6M12 19h8"/></svg></span>
-            <h3>Linux and the command line</h3>
-            <p>Fedora is my daily driver, running a custom CachyOS kernel alongside the stock Fedora kernel. I have also used CachyOS, Ubuntu and Garuda, and I work from the terminal with Bash.</p>
-            <div class="term" aria-hidden="true">
-              <div class="term-bar"><i></i><i></i><i></i><span>fedora</span></div>
-              <p><span class="t-p">$</span> uname -r</p>
-              <p><span class="t-p">$</span> python train.py --config configs/cxb.yaml</p>
-              <p><span class="t-p">$</span> git commit -m "add CF-Site ablation" <span class="t-cursor"></span></p>
+            <h3>Linux env</h3>
+            <p>Fedora is my flavour of Linux. I test different kernels and CPU schedulers on it, and currently run a custom CachyOS kernel alongside the stock Fedora kernel. Before settling on Fedora I also ran CachyOS, Ubuntu and Garuda.</p>
+            <div class="term" aria-label="Terminal session on Fedora" role="img">
+              <div class="term-bar"><i></i><i></i><i></i><span>voidsorrow@fedora:~</span></div>
+              <div class="term-body" id="termBody">
+                <p class="t-cmd"><span class="t-p">$</span> whoami</p>
+                <p class="t-o">voidsorrow</p>
+                <p class="t-cmd"><span class="t-p">$</span> uname -r | grep -o cachyos</p>
+                <p class="t-o">cachyos</p>
+                <p class="t-cmd"><span class="t-p">$</span> sudo dnf upgrade --refresh -y</p>
+                <p class="t-o">Complete!</p>
+                <p class="t-cmd"><span class="t-p">$</span> systemctl --failed --quiet &amp;&amp; echo "all systems nominal"</p>
+                <p class="t-o t-ok">all systems nominal</p>
+                <p class="t-cmd"><span class="t-p">$</span> <span class="t-cursor"></span></p>
+              </div>
             </div>
+          </article>
+          <article class="tile interest">
+            <span class="i-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg></span>
+            <h3>Algorithms and problem solving</h3>
+            <p>I write code the way algorithms are designed: define the problem precisely, reason about complexity before the first line, and choose the data structure that makes the solution almost obvious.</p>
+          </article>
+          <article class="tile interest">
+            <span class="i-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5M8 11h6M11 8v6"/></svg></span>
+            <h3>Explainable AI</h3>
+            <p>Checking what a model actually learned: attribution methods, shortcut detection and explanations that can be verified, not just visualised.</p>
+          </article>
+          <article class="tile interest">
+            <span class="i-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></span>
+            <h3>LLMs and generative AI</h3>
+            <p>How large language models are fine-tuned, evaluated and compared, from human-preference data to how a model's behaviour changes with its training.</p>
+          </article>
+          <article class="tile interest">
+            <span class="i-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span>
+            <h3>Systems and performance</h3>
+            <p>Getting more out of the hardware: kernel and scheduler tuning on Linux, efficient GPU training and finding where slow code really spends its time.</p>
           </article>
           <article class="tile interest">
             <span class="i-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.3 5H6.7a4 4 0 0 0-4 3.6l-.6 6A3 3 0 0 0 5 18c1 0 1.6-.5 2.1-1.2L8.5 15h7l1.4 1.8c.5.7 1.1 1.2 2.1 1.2a3 3 0 0 0 2.9-3.4l-.6-6A4 4 0 0 0 17.3 5z"/></svg></span>
@@ -384,14 +432,9 @@
             <p>Writing clean, tested code in Python, C, C++ and Java, from small tools and scripts to full implementations.</p>
           </article>
           <article class="tile interest">
-            <span class="i-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg></span>
-            <h3>Algorithms and problem solving</h3>
-            <p>Data structures, algorithm design and competitive programming. Global rank 4,774 in TCS CodeVita Season 11.</p>
-          </article>
-          <article class="tile interest">
             <span class="i-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg></span>
             <h3>Web development</h3>
-            <p>Client web development with HTML, CSS, JavaScript and WordPress. This site is hand-written without frameworks.</p>
+            <p>Fast, accessible interfaces in plain HTML, CSS and JavaScript. This site is hand-built without frameworks, with live data feeds and its own graph engine.</p>
           </article>
         </div>
       </div>
