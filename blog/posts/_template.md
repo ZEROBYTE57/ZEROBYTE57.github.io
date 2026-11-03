@@ -13,8 +13,10 @@ HOW TO PUBLISH A POST
 2. Fill in the fields above.
    tags:    topics, e.g. machine-learning, linux, games, gamedev, pytorch, gnn, nlp
    related: portfolio projects this post is about: cxb, smote-mvdcnn, llm-preference, yolov3
+   GitHub notes (blog/notes.json) can be linked too: pytorch-notes, text-analysis-notes,
+   gnn-architectures, retinal-gnn-review, algorithm-design
 3. Write the post below in Markdown.
-   Link to another post or project Obsidian-style: [[other-post-slug]] or [[cxb|my dissertation]].
+   Link to another post, project or GitHub note Obsidian-style: [[other-post-slug]], [[cxb|my dissertation]] or [[pytorch-notes]].
    Every link shows up as an edge in the blog graph and as a backlink on the other post.
 4. Run:  python scripts/build_posts.py   (updates blog/posts/index.json)
 Files starting with "_" (like this one) are never published.

@@ -6,15 +6,20 @@
   "tags": [
    "meta",
    "machine-learning",
+   "deep-learning",
    "linux",
    "games",
    "gamedev"
   ],
   "related": [],
-  "summary": "Short notes written while learning: what this blog covers and how to read it.",
+  "summary": "Short notes written while learning, plus my study notes from GitHub, all linked in one place.",
   "minutes": 1,
   "links": [
-   "cxb"
+   "algorithm-design",
+   "gnn-architectures",
+   "pytorch-notes",
+   "retinal-gnn-review",
+   "text-analysis-notes"
   ]
  }
 ]

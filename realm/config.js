@@ -5,8 +5,8 @@
 window.REALM = {
   player: {
     tag: "VOIDSORROW",
-    title: "Developer · Gamer · Linux user",
-    bio: "Off the clock I play games, run Fedora with a custom CachyOS kernel and explore how games are built. This is my corner of the internet for that side of me.",
+    title: "Developer · Gamer · root@fedora",
+    bio: "Off the clock I play games, pick a kernel at the GRUB menu like it is a character select screen, keep Fedora on a custom CachyOS build and explore how games are built. This is my corner of the internet for that side of me.",
     // Degree progress drives the XP bar. Change the quest when the next one starts.
     quest: { name: "M.Tech AI & ML", start: "2024-08-01", end: "2026-12-31" },
   },
@@ -17,12 +17,12 @@ window.REALM = {
     "Articles live on the blog, linked in a knowledge graph",
   ],
 
-  // Gamer handles. Only filled-in rows are shown.
+  // Gamer handles, shown in "Lobby". Only filled-in rows are shown.
+  // Tracker Network profiles (e.g. Valorant) come from data/profiles.json -> tracker and are added automatically.
   handles: [
     { platform: "Discord server", handle: "404 Realm", url: "https://discord.gg/ZbmZp9K2Pb", icon: "discord" },
     { platform: "Discord", handle: "zerobyte57", url: "https://discord.com/users/1511750310970785922", icon: "discord" },
     { platform: "Steam", handle: "VOIDSORROW57", url: "https://steamcommunity.com/profiles/76561199191324058", icon: "steam" },
-    { platform: "Riot ID", handle: "Voidsorrow57#0557", url: "https://tracker.gg/valorant/profile/riot/Voidsorrow57%230557/overview", icon: "riot" },
     { platform: "Xbox", handle: "Voidsorrow38", url: "https://account.xbox.com/en-us/profile?gamertag=Voidsorrow38", icon: "xbox" },
     { platform: "Clash of Clans", handle: "#PL0Q89L99", url: "https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=PL0Q89L99", icon: "coc" },
     { platform: "X / Twitter", handle: "@voidsorrow57", url: "https://x.com/voidsorrow57", icon: "x" },
@@ -47,21 +47,26 @@ window.REALM = {
     { title: "Clash of Clans", platform: "Mobile", genre: "Strategy", status: "playing", note: "Player tag #PL0Q89L99" },
   ],
 
-  // Gaming setup. `rig` is the main machine; `setup` rows fill the spec sheet.
-  rig: { name: "ASUS ROG Strix G16", model: "G614JV · 2023 · 16-inch gaming laptop" },
-  setup: [
-    { label: "CPU", value: "Intel Core i7-13650HX", detail: "14 cores · 13th gen", icon: "cpu" },
-    { label: "GPU", value: "NVIDIA GeForce RTX 4060 Laptop", detail: "8 GB GDDR6", icon: "gpu" },
-    { label: "Memory", value: "16 GB DDR5", detail: "4800 MT/s", icon: "ram" },
-    { label: "Storage", value: "2 TB NVMe SSD", detail: "WD_BLACK SN850X 1 TB + Micron 2400 1 TB", icon: "ssd" },
-    { label: "Display", value: "16\" 1920 × 1200", detail: "165 Hz", icon: "display" },
-    { label: "Daily OS", value: "Fedora Linux", detail: "Custom CachyOS kernel + stock Fedora kernel", icon: "os" },
-    { label: "Also runs", value: "Windows 11", detail: "Distros used: Fedora · CachyOS · Ubuntu · Garuda", icon: "os" },
-    { label: "Keyboard", value: "Ant Esports Apex 100 Mini", detail: "", icon: "keyboard" },
-    { label: "Mouse", value: "Razer DeathAdder V3", detail: "", icon: "mouse" },
-    { label: "Headset", value: "boAt Rockerz 650 Pro", detail: "", icon: "headset" },
-    { label: "Controller", value: "Cosmic Byte Ares Pro", detail: "", icon: "pad" },
-  ],
+  // "My rig": the laptop drawing sits between `specs` (left) and `accessories` (right).
+  rig: {
+    name: "ASUS ROG Strix G16",
+    model: "G614JV · 2023 · 16-inch gaming laptop",
+    specs: [
+      { label: "CPU", value: "Intel Core i7-13650HX", detail: "14 cores · 13th gen", icon: "cpu" },
+      { label: "GPU", value: "NVIDIA GeForce RTX 4060 Laptop", detail: "8 GB GDDR6", icon: "gpu" },
+      { label: "Memory", value: "16 GB DDR5", detail: "4800 MT/s", icon: "ram" },
+      { label: "Storage", value: "2 TB NVMe SSD", detail: "WD_BLACK SN850X 1 TB + Micron 2400 1 TB", icon: "ssd" },
+      { label: "Display", value: "16\" 1920 × 1200", detail: "165 Hz", icon: "display" },
+      { label: "Daily OS", value: "Fedora Linux", detail: "Custom CachyOS kernel + stock Fedora kernel", icon: "os" },
+      { label: "Also runs", value: "Windows 11", detail: "Distros used: Fedora · CachyOS · Ubuntu · Garuda", icon: "os" },
+    ],
+    accessories: [
+      { label: "Keyboard", value: "Ant Esports Apex 100 Mini", detail: "", icon: "keyboard" },
+      { label: "Mouse", value: "Razer DeathAdder V3", detail: "", icon: "mouse" },
+      { label: "Headset", value: "boAt Rockerz 650 Pro", detail: "", icon: "headset" },
+      { label: "Controller", value: "Cosmic Byte Ares Pro", detail: "", icon: "pad" },
+    ],
+  },
 
   // Developer profiles shown in the footer.
   devLinks: [

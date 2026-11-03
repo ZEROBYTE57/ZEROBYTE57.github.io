@@ -226,65 +226,38 @@
     } else $("#library").replaceWith(empty("Library syncing. Add games from any platform to <code>realm/config.js</code> → <code>games</code>."));
   });
 
-  // ---------- Tracker Network ----------
-  // Handles live in data/profiles.json -> tracker; stats come from data/gaming.json (GitHub Action + TRN_API_KEY).
+  // ---------- Lobby: gamer handles + Tracker Network profiles ----------
+  const ABBR = { discord: "DC", x: "X", steam: "ST", epic: "EG", riot: "RI", valorant: "VA", xbox: "XB", psn: "PS", twitch: "TW", itch: "IO", coc: "CC" };
+  function slot({ platform, handle, url, icon, extra }) {
+    const node = url ? Object.assign(el("a", "card slot"), { href: url, target: "_blank", rel: "noopener" }) : el("div", "card slot");
+    const t = el("div"); t.append(el("small", null, platform), el("b", null, handle));
+    if (extra) t.append(el("span", "slot-extra", extra));
+    node.append(el("span", "slot-ic", ABBR[icon] || "◆"), t);
+    return node;
+  }
+  (R.handles || []).filter((h) => h.handle).forEach((h) => $("#slots").append(slot(h)));
+
+  // Tracker Network: handles in data/profiles.json -> tracker; ranks/stats (if any) in data/gaming.json.
   const trnUrl = (e) => `https://tracker.gg/${e.game}/profile/${e.platform}/${encodeURIComponent(e.handle_in || e.handle)}/overview`;
   function renderTracker(g) {
     getJSON("../data/profiles.json").catch(() => ({})).then((prof) => {
       const synced = new Map((g.tracker || []).map((x) => [`${x.game}|${x.platform}|${x.handle_in}`, x]));
       const entries = (prof.tracker || []).filter((e) => e.handle && e.game && e.platform)
         .map((e) => ({ ...e, handle_in: e.handle, ...(synced.get(`${e.game}|${e.platform}|${e.handle}`) || {}) }));
+      entries.forEach((e) => {
+        const top = (e.stats || []).slice(0, 2).map((s) => `${s.name} ${s.value}`).join(" · ");
+        $("#slots").append(slot({
+          platform: `${e.label || e.game} · Tracker Network`, handle: e.handle || e.handle_in, url: trnUrl(e),
+          icon: e.game === "valorant" ? "valorant" : "riot", extra: [e.rank?.name, top].filter(Boolean).join(" · ") || "View stats on tracker.gg ↗",
+        }));
+      });
       if (!entries.length) return;
-      $("#trnBlock").hidden = false;
-      if (g.updated && (g.tracker || []).some((x) => x.stats)) $("#trnUpdated").textContent = "· synced " + new Date(g.updated).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-      $("#trnGrid").replaceChildren(...entries.map((e) => {
-        const c = el("article", "card trn");
-        const top = el("div", "trn-top");
-        if (e.avatar) top.append(Object.assign(el("img", "ava"), { src: e.avatar, alt: "", width: 44, height: 44, loading: "lazy" }));
-        const id = el("div"); id.append(el("h3", null, e.label || e.game), el("small", null, e.handle || e.handle_in));
-        top.append(id, el("span", "status-pill", e.platform));
-        c.append(top);
-        if (e.rank) {
-          const r = el("div", "rank");
-          if (e.rank.icon) r.append(Object.assign(el("img"), { src: e.rank.icon, alt: "", width: 40, height: 40, loading: "lazy" }));
-          const t = el("div"); t.append(el("b", null, e.rank.name), el("small", null, e.rank.value ? `Rating ${e.rank.value}` : "Current rank"));
-          r.append(t); c.append(r);
-        }
-        if ((e.stats || []).length) {
-          const grid = el("div", "trn-stats");
-          e.stats.forEach((s) => {
-            const d = el("div"); d.append(el("b", null, s.value), el("span", null, s.name));
-            if (s.percentile != null) {
-              const top = Math.max(0.1, Math.round((100 - s.percentile) * 10) / 10);
-              d.append(el("em", null, `Top ${top}%`));
-              const pb = el("div", "pbar"), i = el("i"); i.style.width = Math.min(100, s.percentile) + "%"; pb.append(i); d.append(pb);
-            }
-            grid.append(d);
-          });
-          c.append(grid);
-        } else {
-          c.append(el("p", "trn-note", "Full stats and match history are on Tracker Network."));
-        }
-        c.append(Object.assign(el("a", "trn-link", "View on tracker.gg ↗"), { href: trnUrl(e), target: "_blank", rel: "noopener" }));
-        return c;
-      }));
       const ranked = entries.find((e) => e.rank);
-      if (ranked) setTicker("trn", "TRN", `${ranked.label || ranked.game} · ${ranked.rank.name}`, "c");
-      else setTicker("trn", "TRN", `Tracker profiles: ${entries.map((e) => e.label || e.game).join(" · ")}`, "c");
+      setTicker("trn", "TRN", ranked ? `${ranked.label || ranked.game} · ${ranked.rank.name}` : `Tracker: ${entries.map((e) => e.label || e.game).join(" · ")}`, "c");
     });
   }
 
-  // ---------- loadout ----------
-  const ABBR = { discord: "DC", x: "X", steam: "ST", epic: "EG", riot: "RI", xbox: "XB", psn: "PS", twitch: "TW", itch: "IO", coc: "CC" };
-  const hs = R.handles || [];
-  [...hs.filter((h) => h.handle), ...hs.filter((h) => !h.handle)].forEach((h) => {
-    const filled = !!h.handle;
-    const node = filled && h.url ? Object.assign(el("a", "card slot"), { href: h.url, target: "_blank", rel: "noopener" }) : el("div", "card slot" + (filled ? "" : " locked"));
-    const t = el("div"); t.append(el("small", null, h.platform), el("b", null, filled ? h.handle : "Slot locked"));
-    node.append(el("span", "slot-ic", ABBR[h.icon] || "◆"), t);
-    $("#slots").append(node);
-  });
-  // Rig spec sheet (only rows with a value are shown).
+  // ---------- My rig: "Main rig" panel (left) + spec and accessory cards (right) ----------
   const SPEC_ICONS = {
     cpu: '<rect x="6" y="6" width="12" height="12" rx="1"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
     gpu: '<rect x="2" y="6" width="20" height="11" rx="1"/><circle cx="9" cy="11.5" r="3"/><circle cx="16" cy="11.5" r="2"/><path d="M5 17v3M9 17v3"/>',
@@ -297,31 +270,42 @@
     headset: '<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="14" width="5" height="7" rx="1"/><rect x="17" y="14" width="5" height="7" rx="1"/>',
     pad: '<path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.3 5H6.7a4 4 0 0 0-4 3.6l-.6 6A3 3 0 0 0 5 18c1 0 1.6-.5 2.1-1.2L8.5 15h7l1.4 1.8c.5.7 1.1 1.2 2.1 1.2a3 3 0 0 0 2.9-3.4l-.6-6A4 4 0 0 0 17.3 5z"/>',
   };
-  const specs = (R.setup || []).filter((s) => s.value);
-  if (specs.length) {
-    const card = el("article", "card rig-card");
-    const id = el("div", "rig-id");
-    id.append(el("small", null, "Main rig"), el("h3", null, R.rig?.name || "My setup"));
-    if (R.rig?.model) id.append(el("p", null, R.rig.model));
-    // Generic line-art laptop with an RGB keyboard strip (decorative, no logos).
-    id.insertAdjacentHTML("beforeend", `<svg class="rig-glyph" viewBox="0 0 240 150" aria-hidden="true">
-      <defs><linearGradient id="rgb" x1="0" x2="1"><stop offset="0" stop-color="#ff2e4f"/><stop offset=".5" stop-color="#d94dff"/><stop offset="1" stop-color="#5cd3ff"/></linearGradient></defs>
-      <path class="k" d="M40 14h160l6 6v86H34V20z"/><path class="s" d="M46 24h148v74H46z"/>
-      <path class="s" d="M60 40l30 20M150 34l-26 30M170 80l-40-6"/>
-      <path class="k" d="M14 112h212l-10 22H24z"/><path class="glow" d="M40 120h160"/><path class="s" d="M100 128h40"/></svg>`);
-    const grid = el("div", "specs-grid");
-    specs.forEach((s) => {
-      const row = el("div", "spec");
-      const ic = el("span", "spec-ic"); ic.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${SPEC_ICONS[s.icon] || SPEC_ICONS.cpu}</svg>`;
-      const t = el("div"); t.append(el("small", null, s.label), el("b", null, s.value));
-      if (s.detail) t.append(el("span", null, s.detail));
-      row.append(ic, t); grid.append(row);
-    });
-    card.append(id, grid);
-    $("#setup").append(card);
-    const gpu = specs.find((s) => s.icon === "gpu");
-    setTicker("rig", "RIG", [R.rig?.name, gpu?.value].filter(Boolean).join(" · "), "v");
+  function specItem(s) {
+    const li = el("li", "spec-item");
+    const ic = el("span", "spec-ic"); ic.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${SPEC_ICONS[s.icon] || SPEC_ICONS.cpu}</svg>`;
+    const t = el("div"); t.append(el("small", null, s.label), el("b", null, s.value));
+    if (s.detail) t.append(el("span", null, s.detail));
+    li.append(ic, t);
+    return li;
   }
+  const rigCfg = R.rig || {};
+  const rigSpecs = (rigCfg.specs || []).filter((s) => s.value), rigGear = (rigCfg.accessories || []).filter((s) => s.value);
+  if (rigSpecs.length || rigGear.length) {
+    const wrap = el("div", "rig-wrap");
+    const id = el("article", "card rig-id");
+    id.append(el("small", null, "Main rig"), el("h3", null, rigCfg.name || "My setup"));
+    if (rigCfg.model) id.append(el("p", null, rigCfg.model));
+    // Line-art laptop: sharp square corners, thin bezels, flat base and an RGB strip (decorative, no logos).
+    id.insertAdjacentHTML("beforeend", `<svg class="rig-glyph" viewBox="0 0 240 150" aria-hidden="true">
+      <defs><linearGradient id="rgb" gradientUnits="userSpaceOnUse" x1="44" y1="0" x2="196" y2="0"><stop offset="0" stop-color="#ff2e4f"/><stop offset=".5" stop-color="#d94dff"/><stop offset="1" stop-color="#5cd3ff"/></linearGradient></defs>
+      <rect class="k" x="38" y="12" width="164" height="96"/>
+      <rect class="s" x="42.5" y="16.5" width="155" height="85"/>
+      <path class="s" d="M62 38l26 16M146 32l-22 28M166 82l-38-6"/>
+      <path class="k" d="M30 110H210V114H222V132H18V114H30Z"/>
+      <path class="glow" d="M40 122H200"/>
+      <path class="s" d="M100 128H140"/></svg>`);
+    const lists = el("div", "rig-lists");
+    const specUl = el("ul", "spec-col specs-side"); specUl.setAttribute("aria-label", "PC specs");
+    const gearUl = el("ul", "spec-col gear-side"); gearUl.setAttribute("aria-label", "Accessories");
+    rigSpecs.forEach((s) => specUl.append(specItem(s)));
+    rigGear.forEach((s) => gearUl.append(specItem(s)));
+    if (rigSpecs.length) lists.append(specUl);
+    if (rigGear.length) lists.append(gearUl);
+    wrap.append(id, lists);
+    $("#setup").append(wrap);
+    const gpu = rigSpecs.find((s) => s.icon === "gpu");
+    setTicker("rig", "RIG", [rigCfg.name, gpu?.value].filter(Boolean).join(" · "), "v");
+  } else $("#rig").hidden = true;
 
   // ---------- footer links ----------
   (R.devLinks || []).forEach((d) => $("#devlinks").append(Object.assign(el("a", null, d.label), { href: d.url, target: "_blank", rel: "noopener" })));
@@ -352,9 +336,20 @@
     links.forEach((a) => { const s = document.querySelector(a.getAttribute("href")); if (s) spy.observe(s); });
     if (!reduce) {
       const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -6% 0px" });
-      document.querySelectorAll(".sec-h, .sec .card:not(.rgame), .statstrip li").forEach((n, i) => {
+      document.querySelectorAll(".sec-h, .sec .card:not(.rgame), .statstrip li, .spec-item, .rig-art").forEach((n, i) => {
         n.style.setProperty("--d", `${(i % 4) * 0.06}s`); n.classList.add("rv"); io.observe(n);
       });
     }
+  }
+
+  // ---------- Section menu (phones and tablets) ----------
+  const sb = document.querySelector(".scorebug"), sbBtn = $("#sbMenu");
+  if (sb && sbBtn) {
+    const setMenu = (open) => { sb.classList.toggle("open", open); sbBtn.setAttribute("aria-expanded", String(open)); sbBtn.setAttribute("aria-label", open ? "Close sections menu" : "Open sections menu"); };
+    sbBtn.addEventListener("click", () => setMenu(!sb.classList.contains("open")));
+    sb.querySelectorAll(".sb-nav a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+    document.addEventListener("click", (e) => { if (!sb.contains(e.target)) setMenu(false); });
+    addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
+    addEventListener("resize", () => { if (innerWidth > 900) setMenu(false); }, { passive: true });
   }
 })();
