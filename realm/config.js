@@ -6,7 +6,7 @@ window.REALM = {
   player: {
     tag: "VOIDSORROW",
     title: "Developer · Gamer · root@fedora",
-    bio: "Off the clock I play games, pick a kernel at the GRUB menu like it is a character select screen, keep Fedora on a custom CachyOS build and explore how games are built. This is my corner of the internet for that side of me.",
+    bio: "Off the grid, I live in the terminal, chase lower latency across multiple kernels and dig into how games are built. This is my corner of the internet for all of it.",
     // Degree progress drives the XP bar. Change the quest when the next one starts.
     quest: { name: "M.Tech AI & ML", start: "2024-08-01", end: "2026-12-31" },
   },
