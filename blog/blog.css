@@ -17,11 +17,14 @@
 .blog-stats b { color: var(--accent-ink); font-weight: 500; }
 
 /* Graph */
-.graph-canvas { --g-post: var(--accent); --g-tag: var(--muted); --g-line: var(--border-strong); --g-text: var(--text); --g-dim: var(--border);
-  --g-font: 500 12px "Geist", system-ui, sans-serif; display: block; width: 100%; height: 480px; border-radius: 14px; touch-action: none; cursor: grab;
-  background: radial-gradient(circle at 1px 1px, var(--border) 1px, transparent 0) 0 0 / 22px 22px, var(--surface-2); }
+.graph-canvas { --g-post: var(--accent); --g-current: var(--accent); --g-visited: var(--accent-ink); --g-tag: var(--muted); --g-line: var(--border-strong); --g-line-active: var(--accent); --g-text: var(--text); --g-bg: var(--surface-2);
+  --g-font-family: "Geist", system-ui, sans-serif; display: block; width: 100%; height: 480px; border-radius: 14px; touch-action: none; cursor: grab;
+  background: radial-gradient(120% 90% at 50% 40%, color-mix(in srgb, var(--accent) 7%, var(--surface-2)), var(--surface-2) 70%); }
+.graph-canvas { --g-star: var(--muted); }
+/* Sidebar local graph, Quartz-style: grey nodes, the current page in the accent colour */
+.graph-canvas.small { --g-post: var(--muted); --g-visited: var(--accent-ink); }
 .graph-canvas:active { cursor: grabbing; }
-.graph-canvas.small { height: 260px; }
+.graph-canvas.small { height: 280px; }
 @media (max-width: 720px) { .graph-canvas { height: 380px; } }
 /* Touch screens: vertical swipes scroll the page; horizontal drags still move nodes */
 @media (pointer: coarse) { .graph-canvas { touch-action: pan-y; height: 340px; } .graph-canvas.small { height: 240px; } .graph-hint { font-size: 13.5px; } }
@@ -136,3 +139,19 @@
 .side-list a:hover { color: var(--accent-ink); }
 .side-list small { display: block; color: var(--muted); font-size: 13.5px; font-weight: 400; }
 .side-list .none { color: var(--muted); font-size: 14.5px; }
+
+/* Graph expand button + fullscreen global graph */
+.side-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.side-head .tile-label { margin-bottom: 0; }
+.graph-expand { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--muted); cursor: pointer; transition: color .2s, border-color .2s; }
+.graph-expand:hover { color: var(--accent-ink); border-color: var(--accent); }
+.graph-expand svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.graph-modal { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 24px; background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); animation: modalIn .2s ease-out; }
+@keyframes modalIn { from { opacity: 0; } }
+.graph-modal-box { width: min(1200px, 100%); height: min(820px, 100%); display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border-strong); box-shadow: 0 30px 80px -30px rgba(0,0,0,.5); }
+.graph-modal-head { display: flex; align-items: center; gap: 14px; padding: 2px 4px; }
+.graph-modal-head h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -.02em; }
+.graph-modal-hint { color: var(--muted); font-size: 13.5px; }
+.graph-modal-close { margin-left: auto; }
+.graph-canvas.modal { flex: 1; height: auto; min-height: 0; touch-action: none; }
+@media (max-width: 600px) { .graph-modal { padding: 0; } .graph-modal-box { border-radius: 0; height: 100%; } .graph-modal-hint { display: none; } }
