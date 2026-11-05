@@ -163,6 +163,49 @@
         $("#article").querySelectorAll("img").forEach((img) => { const s = img.getAttribute("src"); if (s && !/^(https?:|\/|data:)/.test(s)) img.src = "posts/" + s; img.loading = "lazy"; img.decoding = "async"; });
         $("#article").querySelectorAll("a[href^='http']").forEach((a) => { a.target = "_blank"; a.rel = "noopener"; });
 
+        // Code blocks -> terminal windows. In shell blocks, "$ " lines are commands,
+        // "# " lines are comments and anything else is output. A first line like
+        // "# file: /etc/foo.toml" becomes the window title.
+        $("#article").querySelectorAll("pre > code").forEach((code) => {
+          const pre = code.parentElement;
+          const lang = ((code.className.match(/language-(\S+)/) || [])[1] || "").toLowerCase();
+          let lines = code.textContent.replace(/\n$/, "").split("\n");
+          // Only blocks with "$ " prompts get command/output colouring; scripts stay plain.
+          const shell = /^(bash|sh|shell|console|zsh|fish)$/.test(lang) && lines.some((l) => l.startsWith("$ "));
+          let title = shell ? "zerobyte@fedora: ~" : lang || "text";
+          const file = lines[0].match(/^(?:#|\/\/)\s*file:\s*(.+)$/i);
+          if (file) { title = file[1].trim(); lines = lines.slice(1); }
+          // Tag each line; a line after a command ending in "\" continues that command.
+          let cont = false;
+          const kinds = lines.map((l) => {
+            const k = l.startsWith("$ ") ? "cmd" : cont ? "more" : /^#( |$)/.test(l) ? "comment" : "out";
+            cont = (k === "cmd" || k === "more") && /\\\s*$/.test(l);
+            return k;
+          });
+          const copyText = shell
+            ? lines.flatMap((l, i) => kinds[i] === "cmd" ? [l.slice(2)] : kinds[i] === "more" ? [l] : []).join("\n")
+            : lines.join("\n");
+          if (shell) {
+            code.innerHTML = lines.map((l, i) =>
+              kinds[i] === "cmd" ? `<span class="t-prompt">$</span> <span class="t-cmd">${esc(l.slice(2))}</span>`
+              : kinds[i] === "more" ? `<span class="t-cmd">${esc(l)}</span>`
+              : kinds[i] === "comment" ? `<span class="t-comment">${esc(l)}</span>`
+              : `<span class="t-out">${esc(l)}</span>`).join("\n");
+          } else code.textContent = lines.join("\n");
+
+          const term = el("div", "term"), bar = el("div", "term-bar");
+          const copy = Object.assign(el("button", "term-copy", "Copy"), { type: "button" });
+          copy.setAttribute("aria-label", "Copy commands");
+          copy.addEventListener("click", async () => {
+            try { await navigator.clipboard.writeText(copyText); copy.textContent = "Copied"; }
+            catch (e) { copy.textContent = "Failed"; }
+            setTimeout(() => { copy.textContent = "Copy"; }, 1500);
+          });
+          bar.append(el("span", "term-dots"), el("span", "term-title", title), copy);
+          pre.replaceWith(term);
+          term.append(bar, pre);
+        });
+
         // Sidebar: related projects, linked GitHub notes, backlinks
         const refs = [...new Set([...(meta.related || []), ...(meta.links || [])])];
         const rel = refs.filter((x) => projBy[x]);
