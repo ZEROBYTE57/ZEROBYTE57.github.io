@@ -46,6 +46,33 @@
   const nodeUrl = (n) => n.type === "post" ? `post.html?p=${encodeURIComponent(n.ref.slug)}`
     : n.type === "project" ? PORTFOLIO_PROJECTS : n.type === "note" ? n.ref.url : `./?tag=${encodeURIComponent(n.label)}`;
   const openNode = (n) => { const u = nodeUrl(n); if (n.type === "note") window.open(u, "_blank", "noopener"); else location.href = u; };
+  // Pages the reader has opened, shown in a different shade in the graphs (like Quartz).
+  const VISITED_KEY = "blog-visited";
+  const getVisited = () => { try { return new Set(JSON.parse(localStorage.getItem(VISITED_KEY) || "[]")); } catch (e) { return new Set(); } };
+  const markVisited = (id) => { try { const v = getVisited(); v.add(id); localStorage.setItem(VISITED_KEY, JSON.stringify([...v])); } catch (e) {} };
+
+  // Fullscreen global graph, opened from the expand button next to each graph.
+  function openGlobalGraph(data, focusId) {
+    const overlay = el("div", "graph-modal");
+    overlay.setAttribute("role", "dialog"); overlay.setAttribute("aria-modal", "true"); overlay.setAttribute("aria-label", "Global graph");
+    const box = el("div", "graph-modal-box");
+    const head = el("div", "graph-modal-head");
+    head.append(el("h2", null, "Global graph"), el("span", "graph-modal-hint", "Drag · scroll or pinch to zoom · click a node to open"));
+    const close = Object.assign(el("button", "gbtn-s graph-modal-close", "✕"), { type: "button" });
+    close.setAttribute("aria-label", "Close global graph");
+    head.append(close);
+    const canvas = el("canvas", "graph-canvas modal");
+    box.append(head, canvas); overlay.append(box); document.body.append(overlay);
+    document.body.style.overflow = "hidden";
+    const g = window.KnowledgeGraph(canvas, { nodes: data.nodes, links: data.links, mode: "global", focus: focusId, visited: getVisited(), onOpen: openNode });
+    const shut = () => { g.destroy(); overlay.remove(); document.body.style.overflow = ""; removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") shut(); };
+    close.addEventListener("click", shut);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) shut(); });
+    addEventListener("keydown", onKey);
+    close.focus();
+  }
+
   const loadAll = () => Promise.all([getJSON("posts/index.json"), getJSON("projects.json"), getJSON("notes.json").catch(() => [])]);
 
   // ================= INDEX =================
@@ -66,7 +93,7 @@
       const KIND = { post: "Article", project: "Portfolio project", note: "GitHub note", tag: "Topic" };
       const ACTION = { post: "Click to read", project: "Click to view in portfolio", note: "Click to open on GitHub", tag: "Click to filter articles" };
       const g = window.KnowledgeGraph($("#graphCanvas"), {
-        nodes, links, zoom: innerWidth < 700 ? 0.75 : 1,
+        nodes, links, mode: "global", visited: getVisited(),
         onOpen: (n) => {
           if (n.type === "tag") { setTag(n.label); document.getElementById("postsTitle").scrollIntoView({ behavior: "smooth" }); }
           else openNode(n);
@@ -84,6 +111,7 @@
       $("#zoomOut").addEventListener("click", () => g.zoom(0.8));
       $("#zoomReset").addEventListener("click", () => { $("#graphFind").value = ""; g.reset(); g.setFocus(tag === "all" ? null : "tag:" + tag); });
       $("#graphFind").addEventListener("input", (e) => g.find(e.target.value));
+      $("#graphExpand")?.addEventListener("click", () => openGlobalGraph({ nodes, links }, tag === "all" ? null : "tag:" + tag));
       const hidden = new Set();
       document.querySelectorAll(".lg").forEach((b) => b.addEventListener("click", () => {
         const t = b.dataset.type, on = b.getAttribute("aria-pressed") === "true";
@@ -222,19 +250,18 @@
         if (back.length) back.forEach((p) => { const li = el("li"), a = Object.assign(el("a", null, p.title), { href: `post.html?p=${p.slug}` }); a.append(el("small", null, fmtDate(p.date))); li.append(a); $("#backlinks").append(li); });
         else $("#backlinks").append(el("li", "none", "No other articles link here yet."));
 
-        // Local graph: this post plus everything within two hops.
+        // Local graph: this post and what it links to directly (depth 1, like Quartz).
         const full = buildGraph(posts, projects, notes);
         const me = "post:" + slug, keep = new Set([me]);
-        for (let hop = 0; hop < 2; hop++) {
-          full.links.forEach((l) => { if (keep.has(l.source) || keep.has(l.target)) { keep.add(l.source); keep.add(l.target); } });
-          if (keep.size > 40) break;
-        }
+        markVisited(me);
+        full.links.forEach((l) => { if (l.source === me) keep.add(l.target); if (l.target === me) keep.add(l.source); });
         window.KnowledgeGraph($("#localGraph"), {
           nodes: full.nodes.filter((n) => keep.has(n.id)),
           links: full.links.filter((l) => keep.has(l.source) && keep.has(l.target)),
-          focus: me, zoom: 0.8, labelsAt: 0.7,
+          mode: "local", focus: me, visited: getVisited(),
           onOpen: (n) => { if (n.id !== me) openNode(n); },
         });
+        $("#graphExpand")?.addEventListener("click", () => openGlobalGraph(full, me));
 
         const nav = $("#postNav"), newer = posts[i - 1], older = posts[i + 1];
         if (older) { const a = Object.assign(el("a", "prev"), { href: `post.html?p=${older.slug}` }); a.append(el("small", null, "← Older"), el("b", null, older.title)); nav.append(a); }
