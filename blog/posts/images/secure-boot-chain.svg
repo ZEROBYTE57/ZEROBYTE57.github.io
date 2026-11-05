@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" width="760" height="300" role="img" aria-labelledby="t d">
+  <title id="t">Secure Boot signing chain</title>
+  <desc id="d">UEFI firmware checks shim, shim loads your MOK keys, the Linux kernel checks module signatures, and the NVIDIA module loads only if it is signed with your enrolled MOK key. MOK keys reach the kernel only while Secure Boot is on.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#71717a"/>
+    </marker>
+  </defs>
+  <style>
+    .t { font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #f4f4f5; text-anchor: middle; }
+    .s { font: 400 12.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #a1a1aa; text-anchor: middle; }
+    .n { font: 400 12.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #a1a1aa; }
+    .bad { font: 500 12.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #f87171; text-anchor: middle; }
+    .box { fill: #17171a; stroke: #2e2e33; stroke-width: 1.5; }
+    .hi { fill: #0f2226; stroke: #45b5c2; stroke-width: 2; }
+    .ln { stroke: #71717a; stroke-width: 1.5; fill: none; }
+  </style>
+
+  <rect width="760" height="300" rx="16" fill="#0c0c0e"/>
+
+  <!-- Top row: the boot chain -->
+  <rect class="box" x="15" y="30" width="160" height="80" rx="10"/>
+  <text class="t" x="95" y="62">UEFI firmware</text>
+  <text class="s" x="95" y="82">Checks shim against</text>
+  <text class="s" x="95" y="98">Microsoft's key</text>
+
+  <rect class="box" x="205" y="30" width="160" height="80" rx="10"/>
+  <text class="t" x="285" y="62">shim</text>
+  <text class="s" x="285" y="82">Signed by Microsoft,</text>
+  <text class="s" x="285" y="98">loads your MOK keys</text>
+
+  <rect class="box" x="395" y="30" width="160" height="80" rx="10"/>
+  <text class="t" x="475" y="62">Linux kernel</text>
+  <text class="s" x="475" y="82">Fedora or CachyOS,</text>
+  <text class="s" x="475" y="98">verifies modules</text>
+
+  <rect class="hi" x="585" y="30" width="160" height="80" rx="10"/>
+  <text class="t" x="665" y="62">NVIDIA module</text>
+  <text class="s" x="665" y="82">Built by akmods,</text>
+  <text class="s" x="665" y="98">signed with MOK key</text>
+
+  <path class="ln" d="M175 70H203" marker-end="url(#a)"/>
+  <path class="ln" d="M365 70H393" marker-end="url(#a)"/>
+  <path class="ln" d="M555 70H583" marker-end="url(#a)"/>
+
+  <!-- What happens when the signature is wrong -->
+  <text class="bad" x="665" y="138">Unsigned or wrong key:</text>
+  <text class="bad" x="665" y="156">"Key was rejected"</text>
+
+  <!-- MOK list -->
+  <path class="ln" d="M285 110V188" marker-end="url(#a)"/>
+  <rect class="box" x="205" y="190" width="160" height="80" rx="10"/>
+  <text class="t" x="285" y="222">MOK list</text>
+  <text class="s" x="285" y="242">Your akmods key,</text>
+  <text class="s" x="285" y="258">enrolled once</text>
+
+  <path class="ln" d="M365 230H475V112" marker-end="url(#a)"/>
+  <text class="n" x="490" y="214">Passed to the kernel only</text>
+  <text class="n" x="490" y="232">while Secure Boot is on</text>
+</svg>

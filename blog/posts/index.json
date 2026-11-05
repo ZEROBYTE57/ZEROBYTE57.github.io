@@ -1,5 +1,99 @@
 [
  {
+  "slug": "cachyos-kernel-on-fedora",
+  "title": "CachyOS kernel on Fedora with signed NVIDIA drivers",
+  "date": "2026-11-05",
+  "tags": [
+   "linux",
+   "fedora",
+   "kernel",
+   "nvidia"
+  ],
+  "related": [],
+  "summary": "A start-to-finish guide to running the CachyOS kernel on Fedora with Secure Boot on and the NVIDIA driver signed, based on what worked on my ROG laptop.",
+  "minutes": 6,
+  "links": [
+   "fedora-on-rog-strix-g16",
+   "nvidia-secure-boot-fixes",
+   "schedulers-on-linux"
+  ]
+ },
+ {
+  "slug": "fedora-on-rog-strix-g16",
+  "title": "Fedora on an ASUS ROG Strix G16",
+  "date": "2026-11-05",
+  "tags": [
+   "linux",
+   "fedora",
+   "laptop",
+   "nvidia"
+  ],
+  "related": [],
+  "summary": "Notes from three months of running Fedora 43 and 44 on an ROG Strix G16, covering audio, power, the CachyOS kernel, NVIDIA under Secure Boot, and the mistakes that broke things.",
+  "minutes": 5,
+  "links": [
+   "cachyos-kernel-on-fedora",
+   "nvidia-hybrid-graphics-fedora",
+   "nvidia-secure-boot-fixes",
+   "schedulers-on-linux"
+  ]
+ },
+ {
+  "slug": "nvidia-hybrid-graphics-fedora",
+  "title": "NVIDIA hybrid graphics on a ROG laptop with Fedora",
+  "date": "2026-11-05",
+  "tags": [
+   "linux",
+   "fedora",
+   "nvidia",
+   "games"
+  ],
+  "related": [],
+  "summary": "How I get games and apps onto the RTX 4060 instead of the Intel iGPU on Fedora, with supergfxctl, PRIME offload and per-app fixes for Steam, DaVinci Resolve, Kdenlive and VLC.",
+  "minutes": 3,
+  "links": [
+   "cachyos-kernel-on-fedora",
+   "fedora-on-rog-strix-g16"
+  ]
+ },
+ {
+  "slug": "nvidia-secure-boot-fixes",
+  "title": "When NVIDIA breaks under Secure Boot on Fedora",
+  "date": "2026-11-05",
+  "tags": [
+   "linux",
+   "fedora",
+   "nvidia",
+   "secure-boot"
+  ],
+  "related": [],
+  "summary": "Three ways the NVIDIA driver broke on my Fedora laptop with Secure Boot, what caused each one, and the purge-and-rebuild fix that worked.",
+  "minutes": 3,
+  "links": [
+   "cachyos-kernel-on-fedora",
+   "fedora-on-rog-strix-g16"
+  ]
+ },
+ {
+  "slug": "schedulers-on-linux",
+  "title": "Schedulers on Linux",
+  "date": "2026-11-05",
+  "tags": [
+   "linux",
+   "fedora",
+   "kernel",
+   "schedulers"
+  ],
+  "related": [],
+  "summary": "An overview of Linux CPU schedulers (EEVDF, BORE, BMQ and sched-ext), which one suits which workload, and how to run sched-ext schedulers on Fedora with scxctl.",
+  "minutes": 6,
+  "links": [
+   "cachyos-kernel-on-fedora",
+   "fedora-on-rog-strix-g16",
+   "welcome"
+  ]
+ },
+ {
   "slug": "welcome",
   "title": "Beginner notes",
   "date": "2026-11-03",
