@@ -1,5 +1,25 @@
 [
  {
+  "slug": "brain-disorders-ml-literature",
+  "title": "Machine learning for brain disorders, what the literature says",
+  "date": "2026-11-08",
+  "tags": [
+   "machine-learning",
+   "gnn",
+   "medical-imaging",
+   "research"
+  ],
+  "related": [
+   "cxb"
+  ],
+  "summary": "A short review of how graph neural networks and other models are used to study autism, ADHD, depression and schizophrenia from brain scans, how well they work, and where the field still falls short.",
+  "minutes": 6,
+  "links": [
+   "cxb",
+   "gnn-architectures"
+  ]
+ },
+ {
   "slug": "cachyos-kernel-on-fedora",
   "title": "CachyOS kernel on Fedora with signed NVIDIA drivers",
   "date": "2026-11-05",
