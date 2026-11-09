@@ -8,7 +8,7 @@
   <link rel="icon" href="https://avatars.githubusercontent.com/u/95509860?s=64&v=4" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Instrument+Serif:ital@0;1&family=Nunito:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css" />
   <link rel="stylesheet" href="blog.css" />
   <script>try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
@@ -48,11 +48,16 @@
         <h1 id="postTitle">Loading…</h1>
         <p class="post-meta" id="postMeta"></p>
       </header>
+      <details class="toc-mobile" id="tocMobile" hidden><summary>On this page</summary><ol class="toc" id="tocM"></ol></details>
       <div class="prose-body" id="article"></div>
       <nav class="post-nav" id="postNav" aria-label="More articles"></nav>
     </article>
 
     <aside class="post-side" aria-label="Connections">
+      <div class="tile side-tile" id="tocTile" hidden>
+        <p class="tile-label">On this page</p>
+        <ol class="toc" id="toc"></ol>
+      </div>
       <div class="tile side-tile">
         <div class="side-head"><p class="tile-label">Local graph</p><button type="button" class="graph-expand" id="graphExpand" aria-label="Open global graph" title="Global graph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>
         <canvas class="graph-canvas small" id="localGraph" role="img" aria-label="Graph of this article's connections"></canvas>

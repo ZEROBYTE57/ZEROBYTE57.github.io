@@ -21,6 +21,7 @@
   --shadow: 0 1px 0 rgba(9,9,11,.03), 0 12px 32px -18px rgba(9,9,11,.18);
   --radius: 20px;
   --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Space Grotesk", "Geist", system-ui, sans-serif;
   --mono: "Geist Mono", ui-monospace, monospace;
   --serif: "Instrument Serif", Georgia, serif;
   color-scheme: light;
@@ -48,6 +49,8 @@ a { color: inherit; }
 img { max-width: 100%; display: block; }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { line-height: 1.15; }
+/* Sub headings in Space Grotesk; main titles (h1, section titles) stay Geist */
+h2:not(.section-title), h3 { font-family: var(--display); }
 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: 0; }
 ::selection { background: var(--accent-soft); color: var(--text); }
 .mono { font-family: var(--mono); }
@@ -242,7 +245,7 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 .section-title em { color: var(--accent-ink); font-size: 1.1em; }
 .sec-lede { color: var(--muted); margin-top: 12px; max-width: 60ch; }
 .updated { font-family: var(--mono); font-size: 13.5px; }
-@media (max-width: 720px) { .section { padding-top: 72px; } }
+@media (max-width: 720px) { .section { padding-top: 60px; } }
 
 /* About */
 .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 16px; }
@@ -438,3 +441,29 @@ a.row:hover { padding-left: 6px; color: var(--accent-ink); }
   .caret, .t-cursor, .pipeline::after, .graph .flow { display: none; }
   .heatmap i { opacity: 1; }
 }
+
+/* ---------- small UI polish ---------- */
+/* Smooth colour change when switching light/dark */
+/* Theme switch: one crossfade of the whole page (View Transitions API) */
+::view-transition-old(root) { animation: none; }
+::view-transition-new(root) { animation: theme-in .4s ease both; }
+@keyframes theme-in { from { opacity: 0; } }
+/* Animated underline on inline links */
+.inline-link { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; padding-bottom: 1px; transition: background-size .25s ease; }
+.inline-link:hover { background-size: 100% 2px; }
+.contact-links a, .to-top { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat; transition: background-size .25s ease, color .2s, border-color .2s; }
+.contact-links a:hover, .to-top:hover { background-size: 100% 1.5px; }
+/* Floating back-to-top button (added by script) */
+.fab-top { position: fixed; right: 20px; bottom: 20px; z-index: 55; width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); box-shadow: var(--shadow); cursor: pointer;
+  opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .25s, transform .25s, border-color .2s; }
+.fab-top.show { opacity: 1; transform: none; pointer-events: auto; }
+.fab-top:hover { border-color: var(--accent); color: var(--accent-ink); }
+.fab-top svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+@media (prefers-reduced-motion: reduce) { .fab-top { transition: none; } }
+
+
+/* ---------- hero panel style 1: particle portrait ---------- */
+.art .particles { position: absolute; inset: 0; width: 100%; height: 100%; display: none; cursor: crosshair; touch-action: pan-y; }
+.art.is-particles .particles { display: block; }
+.art.is-particles .hero-art { display: none; }

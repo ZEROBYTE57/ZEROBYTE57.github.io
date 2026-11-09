@@ -7,7 +7,8 @@ const systemDark = () => window.matchMedia("(prefers-color-scheme: dark)").match
 toggle.addEventListener("click", () => {
   const current = root.dataset.theme || (systemDark() ? "dark" : "light");
   const next = current === "dark" ? "light" : "dark";
-  root.dataset.theme = next;
+  const apply = () => { root.dataset.theme = next; };
+  if (document.startViewTransition && !reduceMotion) document.startViewTransition(apply); else apply();
   try { localStorage.setItem("theme", next); } catch (e) {}
 });
 
@@ -157,6 +158,8 @@ addEventListener("scroll", () => {
   if (scrollY < innerHeight * 0.4) { links.forEach((a) => a.classList.remove("active")); movePill(null); }
 }, { passive: true });
 addEventListener("resize", () => movePill(document.querySelector(".nav-links a.active")));
+// The active link widens as its ▸ marker animates in; keep the pill matched to it while that happens.
+if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a = document.querySelector(".nav-links a.active"); if (a) movePill(a); }); links.forEach((a) => ro.observe(a)); }
 
 // Mobile menu: the nav opens as a dropdown under the dock below 920px.
 (() => {
@@ -190,4 +193,115 @@ addEventListener("resize", () => movePill(document.querySelector(".nav-links a.a
   }
   const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); play(); } }, { threshold: 0.4 });
   io.observe(body);
+})();
+
+// Floating back-to-top button.
+(() => {
+  const fab = document.createElement("button");
+  fab.className = "fab-top"; fab.type = "button"; fab.setAttribute("aria-label", "Back to top");
+  fab.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+  fab.addEventListener("click", () => scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));
+  document.body.append(fab);
+  const onScroll = () => fab.classList.toggle("show", scrollY > 700);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+})();
+
+
+// Hero panel: particle portrait. The avatar is rebuilt from dots that scatter from the cursor and drift back.
+(() => {
+  const tile = document.querySelector(".tile.art"), cv = tile && tile.querySelector(".particles");
+  const src = tile && tile.querySelector(".avatar");
+  if (!cv || !src) return;
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ctx = cv.getContext("2d");
+  const img = new Image(); img.crossOrigin = "anonymous"; img.src = src.src;
+  let W = 0, H = 0, dpr = 1, dots = [], dust = [], accent = "#45b5c2", dark = true, running = false, visible = true, raf = 0, t0 = performance.now();
+  const mouse = { x: -1e4, y: -1e4 };
+  const readAccent = () => {
+    const cs = getComputedStyle(document.documentElement);
+    accent = cs.getPropertyValue("--accent").trim() || accent;
+    const th = document.documentElement.dataset.theme; dark = th ? th === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    if (still && W) frame(performance.now());
+  };
+
+  function build() {
+    const r = cv.getBoundingClientRect(); dpr = Math.min(devicePixelRatio || 1, 2);
+    W = r.width; H = r.height; if (!W || !H) return;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const R = Math.min(W, H) * 0.36, N = W < 420 ? 56 : 72, step = (2 * R) / N, cx = W / 2, cy = H / 2;
+    const off = document.createElement("canvas"); off.width = off.height = N;
+    const o = off.getContext("2d"); o.drawImage(img, 0, 0, N, N);
+    let px; try { px = o.getImageData(0, 0, N, N).data; } catch (e) { return false; }
+    const old = dots; dots = [];
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const dx = x - N / 2 + .5, dy = y - N / 2 + .5;
+      if (dx * dx + dy * dy > (N / 2) ** 2) continue;
+      const i = (y * N + x) * 4, lum = (0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2]) / 255;
+      const tx = cx + dx * step, ty = cy + dy * step, prev = old[dots.length];
+      dots.push({ tx, ty, x: prev ? prev.x : Math.random() * W, y: prev ? prev.y : Math.random() * H, vx: 0, vy: 0,
+        step, lum, c: `rgb(${px[i]},${px[i + 1]},${px[i + 2]})`, ph: Math.random() * 6.28 });
+    }
+    // Ring of accent dots around the portrait.
+    const ringN = Math.round(2 * Math.PI * (R + step * 3) / (step * 1.6));
+    for (let k = 0; k < ringN; k++) {
+      const a = (k / ringN) * Math.PI * 2, rr = R + step * 3;
+      dots.push({ tx: cx + Math.cos(a) * rr, ty: cy + Math.sin(a) * rr, x: Math.random() * W, y: Math.random() * H, vx: 0, vy: 0, s: step * .3, c: null, ph: a, ring: true });
+    }
+    dust = Array.from({ length: 40 }, () => ({ a: Math.random() * 6.28, r: R * (1.15 + Math.random() * .5), sp: (Math.random() * .5 + .2) * (Math.random() < .5 ? -1 : 1) / 1000, s: Math.random() * 1.4 + .4 }));
+    return true;
+  }
+
+  function frame(now) {
+    const t = now - t0; ctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2;
+    ctx.fillStyle = accent;
+    for (const d of dust) {
+      const a = d.a + t * d.sp; ctx.globalAlpha = .35 + .25 * Math.sin(t / 900 + d.a);
+      ctx.beginPath(); ctx.arc(cx + Math.cos(a) * d.r, cy + Math.sin(a) * d.r * .92, d.s, 0, 6.283); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (!dark) {
+      // Light mode: a dark round "screen" so the photo reads the same as in dark mode.
+      const R = Math.min(W, H) * 0.36, g = ctx.createRadialGradient(cx, cy, R * .2, cx, cy, R * 1.08);
+      g.addColorStop(0, "#14262a"); g.addColorStop(.75, "#0b0f12"); g.addColorStop(1, "#0b0f12");
+      ctx.save(); ctx.shadowColor = accent; ctx.shadowBlur = 28; ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, R * 1.06, 0, 6.283); ctx.fill(); ctx.restore();
+    }
+    const RAD = Math.min(W, H) * 0.16, R2 = RAD * RAD;
+    for (const d of dots) {
+      if (!still) {
+        const ddx = d.x - mouse.x, ddy = d.y - mouse.y, dist2 = ddx * ddx + ddy * ddy;
+        if (dist2 < R2) { const f = (1 - dist2 / R2) * 2.6, dist = Math.sqrt(dist2) || 1; d.vx += (ddx / dist) * f; d.vy += (ddy / dist) * f; }
+        const wob = Math.sin(t / 1400 + d.ph) * .6;
+        d.vx += (d.tx + wob - d.x) * .045; d.vy += (d.ty + Math.cos(t / 1600 + d.ph) * .6 - d.y) * .045;
+        d.vx *= .86; d.vy *= .86; d.x += d.vx; d.y += d.vy;
+      } else { d.x = d.tx; d.y = d.ty; }
+      if (d.ring) { ctx.fillStyle = accent; ctx.globalAlpha = .45 + .45 * Math.sin(t / 700 + d.ph * 3); }
+      else { ctx.fillStyle = d.c; ctx.globalAlpha = 1; }
+      const sz = d.ring ? d.s : d.step * (0.28 + 0.2 * d.lum);
+      ctx.beginPath(); ctx.arc(d.x, d.y, sz, 0, 6.283); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (running && !still) raf = requestAnimationFrame(frame);
+  }
+  const start = () => { if (running || !visible || document.hidden) return; running = true; raf = requestAnimationFrame(frame); };
+  const stop = () => { running = false; cancelAnimationFrame(raf); };
+
+  img.onload = () => {
+    readAccent();
+    if (build() === false) return;            // image unreadable: keep the original panel
+    tile.classList.add("is-particles");
+    if (still) { frame(performance.now()); return; }
+    start();
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? start() : stop(); }).observe(tile);
+    document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
+  };
+  const setPt = (e) => { const r = cv.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; };
+  cv.addEventListener("pointermove", setPt, { passive: true });
+  cv.addEventListener("pointerdown", setPt, { passive: true });
+  cv.addEventListener("pointerleave", () => { mouse.x = mouse.y = -1e4; });
+  cv.addEventListener("pointerup", (e) => { if (e.pointerType !== "mouse") mouse.x = mouse.y = -1e4; });
+  new ResizeObserver(() => { if (tile.classList.contains("is-particles")) { build(); if (still) frame(performance.now()); } }).observe(cv);
+  new MutationObserver(readAccent).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readAccent);
 })();

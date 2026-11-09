@@ -13,8 +13,10 @@
   const root = document.documentElement;
   $("#themeToggle").addEventListener("click", () => {
     const cur = root.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    root.dataset.theme = cur === "dark" ? "light" : "dark";
-    try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+    const next = cur === "dark" ? "light" : "dark";
+    const apply = () => { root.dataset.theme = next; };
+    if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(apply); else apply();
+    try { localStorage.setItem("theme", next); } catch (e) {}
   });
   $("#year").textContent = new Date().getFullYear();
   document.addEventListener("pointermove", (e) => {
@@ -234,6 +236,49 @@
           term.append(bar, pre);
         });
 
+        // Heading links + table of contents ("On this page") with the current section highlighted.
+        const slugify = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+        const heads = [...$("#article").querySelectorAll("h2, h3")], used = new Set();
+        heads.forEach((h) => {
+          let id = slugify(h.textContent) || "section"; while (used.has(id)) id += "-x"; used.add(id); h.id = id;
+          const a = Object.assign(el("a", "h-anchor", "#"), { href: "#" + id }); a.setAttribute("aria-label", `Link to "${h.textContent}"`);
+          a.addEventListener("click", (e) => {
+            e.preventDefault(); history.replaceState(null, "", "#" + id); h.scrollIntoView({ behavior: "smooth" });
+            navigator.clipboard?.writeText(location.href).then(() => { a.classList.add("copied"); setTimeout(() => a.classList.remove("copied"), 1200); }).catch(() => {});
+          });
+          h.prepend(a);
+        });
+        if (heads.length >= 3) {
+          const build = (ol) => heads.forEach((h) => {
+            const li = el("li", h.tagName === "H3" ? "lvl3" : "lvl2"), a = Object.assign(el("a", null, h.textContent.replace(/^#/, "")), { href: "#" + h.id });
+            a.dataset.target = h.id; li.append(a); ol.append(li);
+          });
+          build($("#toc")); build($("#tocM"));
+          $("#tocTile").hidden = false; $("#tocMobile").hidden = false;
+          $("#tocM").addEventListener("click", (e) => { if (e.target.closest("a")) $("#tocMobile").open = false; });
+          // Highlight the last heading scrolled past (or the first one near the top of the article).
+          const links = [...document.querySelectorAll(".toc a")];
+          let ticking = false;
+          const update = () => {
+            ticking = false;
+            let cur = heads[0];
+            for (const h of heads) { if (h.getBoundingClientRect().top < 130) cur = h; else break; }
+            links.forEach((a) => a.classList.toggle("active", a.dataset.target === cur.id));
+          };
+          addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+          update();
+        }
+        if (location.hash) { const t = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (t) setTimeout(() => t.scrollIntoView(), 50); }
+
+        // Click-to-zoom for images and diagrams.
+        $("#article").querySelectorAll("img").forEach((img) => img.addEventListener("click", () => {
+          const lb = el("div", "lightbox"); lb.setAttribute("role", "dialog"); lb.setAttribute("aria-label", img.alt || "Image");
+          lb.append(Object.assign(el("img"), { src: img.src, alt: img.alt }));
+          const close = () => { lb.remove(); removeEventListener("keydown", onKey); };
+          const onKey = (e) => { if (e.key === "Escape") close(); };
+          lb.addEventListener("click", close); addEventListener("keydown", onKey); document.body.append(lb);
+        }));
+
         // Sidebar: related projects, linked GitHub notes, backlinks
         const refs = [...new Set([...(meta.related || []), ...(meta.links || [])])];
         const rel = refs.filter((x) => projBy[x]);
@@ -289,4 +334,15 @@
   document.addEventListener("click", (e) => { if (!dock.contains(e.target)) set(false); });
   addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
   addEventListener("resize", () => { if (innerWidth > 920) set(false); }, { passive: true });
+})();
+
+// Floating back-to-top button + smooth theme fade (shared polish).
+(() => {
+  const fab = document.createElement("button");
+  fab.className = "fab-top"; fab.type = "button"; fab.setAttribute("aria-label", "Back to top");
+  fab.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+  fab.addEventListener("click", () => scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));
+  document.body.append(fab);
+  const onScroll = () => fab.classList.toggle("show", scrollY > 700);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
 })();
