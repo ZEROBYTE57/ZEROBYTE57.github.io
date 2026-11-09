@@ -324,7 +324,7 @@ if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a 
   }).catch(() => {});
 })();
 
-// Floating dock (bottom right, stacked above back-to-top): Blog + 404 Realm icon buttons with a count and a live dot. Shows after the hero, hides once the
+// Floating dock (bottom centre, macOS style): Blog + 404 Realm with an article count and a live dot. Shows after the hero, hides once the
 // "Off the grid" section (which has the full cards) or the contact section is on screen.
 (() => {
   const hero = document.querySelector(".hero"), beyond = document.getElementById("writing");
@@ -332,15 +332,15 @@ if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a 
   const dock = document.createElement("nav");
   dock.className = "explore-dock"; dock.setAttribute("aria-label", "Blog and 404 Realm");
   dock.innerHTML =
-    '<a class="ed-btn ed-blog" href="blog/" aria-label="Blog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5z"/><path d="M8 7h6M8 11h6"/></svg>' +
-      '<b class="ed-count" id="edCount" hidden></b><span class="ed-label" aria-hidden="true"><span>Blog</span><span id="edCountLabel">articles</span></span></a>' +
-    '<a class="ed-btn ed-realm" href="realm/" aria-label="404 Realm"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15.5 12h.01M18 13.5h.01"/></svg>' +
-      '<i class="ed-live" aria-hidden="true"></i><span class="ed-label" aria-hidden="true"><span>404 Realm</span><span>● live</span></span></a>';
+    '<a class="ed-btn ed-blog" href="blog/"><span class="ed-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5z"/><path d="M8 7h6M8 11h6"/></svg><b class="ed-count" id="edCount" hidden></b></span>' +
+      '<span class="ed-text">Blog<small id="edCountLabel">articles</small></span></a>' +
+    '<span class="ed-sep" aria-hidden="true"></span>' +
+    '<a class="ed-btn ed-realm" href="realm/"><span class="ed-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15.5 12h.01M18 13.5h.01"/></svg><i class="ed-live" aria-hidden="true"></i></span>' +
+      '<span class="ed-text">404 Realm<small>● live</small></span></a>';
   document.body.append(dock);
   fetch("blog/posts/index.json").then((r) => r.json()).then((p) => {
     const n = dock.querySelector("#edCount"); n.textContent = p.length; n.hidden = false;
     dock.querySelector("#edCountLabel").textContent = p.length + " articles";
-    dock.querySelector(".ed-blog").setAttribute("aria-label", "Blog, " + p.length + " articles");
   }).catch(() => {});
   const update = () => {
     const past = hero.getBoundingClientRect().bottom < 0;
