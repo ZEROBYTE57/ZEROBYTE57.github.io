@@ -236,6 +236,9 @@
           term.append(bar, pre);
         });
 
+        // Wide tables scroll sideways on small screens instead of pushing the page wider.
+        $("#article").querySelectorAll("table").forEach((t) => { const w = el("div", "table-wrap"); t.replaceWith(w); w.append(t); });
+
         // Heading links + table of contents ("On this page") with the current section highlighted.
         const slugify = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
         const heads = [...$("#article").querySelectorAll("h2, h3")], used = new Set();

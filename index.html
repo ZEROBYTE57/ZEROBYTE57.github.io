@@ -34,7 +34,7 @@
         <li><a href="#skills">Skills</a></li>
         <li><a href="#activity">Activity</a></li>
         <li><a href="#interests">Interests</a></li>
-        <li><a href="#writing">Writing</a></li>
+        <li><a href="#writing">404 Realm</a></li>
         <li><a href="#contact">Contact</a></li>
         <li class="nav-pill" id="navPill" aria-hidden="true"></li>
       </ul>
@@ -115,15 +115,15 @@
             <p class="mini-sub">Entry-level AI Engineer and Data Scientist roles</p>
           </div>
           <div class="tile mini">
-            <p class="mini-label">Local time</p>
-            <p class="mini-value mono" id="clock">--:--</p>
-            <p class="mini-sub">Bengaluru, India (IST)</p>
-          </div>
-          <div class="tile mini">
             <p class="mini-label">Education</p>
             <p class="mini-value">M.Tech, AI and ML</p>
             <p class="mini-sub">Amrita Vishwa Vidyapeetham · December 2026</p>
           </div>
+          <a class="tile mini mini-post" id="miniPost" href="blog/">
+            <p class="mini-label">Latest blog <span class="mp-arrow" aria-hidden="true">↗</span></p>
+            <p class="mini-value" id="miniPostTitle">Notes on models, machines and games</p>
+            <p class="mini-sub" id="miniPostMeta">On the blog</p>
+          </a>
         </div>
       </div>
     </section>
@@ -203,7 +203,7 @@
         <div class="sec-head">
           <p class="label">02 — Projects</p>
           <h2 class="section-title">Selected <em>work</em>.</h2>
-          <p class="sec-lede">Most recent first: a path from computer vision through graph learning and LLMs, building toward data science and AI engineering.</p>
+          <p class="sec-lede">Pixels → graphs → tokens: projects across computer vision, graph neural networks and LLMs, building toward data science and AI engineering.</p>
         </div>
 
         <div class="project-grid">
@@ -320,11 +320,42 @@
       </div>
     </section>
 
+    <!-- ACHIEVEMENTS -->
+    <section id="achievements" class="section">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="label">04 — Achievements</p>
+          <h2 class="section-title">Certifications and <em>recognition</em>.</h2>
+        </div>
+        <div class="ach-grid">
+          <div class="tile">
+            <p class="tile-label">Recognition</p>
+            <ul class="list"><li><div class="row"><span>TCS CodeVita Season 11, global rank 4,774</span><em>Competitive programming</em></div></li></ul>
+            <p class="tile-label spaced">Certifications</p>
+            <ul class="list">
+              <li><div class="row"><span>Intermediate Deep Learning with PyTorch</span><em>DataCamp</em></div></li>
+              <li><div class="row"><span>Power Platform Fundamentals</span><em>Microsoft</em></div></li>
+              <li><div class="row"><span>Crash Course on Python</span><em>Google</em></div></li>
+            </ul>
+          </div>
+          <div class="tile">
+            <p class="tile-label">Notes and reports</p>
+            <ul class="list">
+              <li><a class="row" href="https://github.com/ZEROBYTE57/Deep-Learning/blob/main/Intermediate-Deep-Learning-With-Pytorch.md" target="_blank" rel="noopener"><span>Intermediate Deep Learning with PyTorch</span><em>Notes ↗</em></a></li>
+              <li><a class="row" href="https://github.com/ZEROBYTE57/Advanced-Algorithemic-Design-24AM601" target="_blank" rel="noopener"><span>Advanced Algorithmic Design (Java)</span><em>Assignments ↗</em></a></li>
+              <li><a class="row" href="https://github.com/ZEROBYTE57/SMOTE-MVDCNN/blob/main/SMOTE%2BMVDCNN_Phase_1.pptx" target="_blank" rel="noopener"><span>SMOTE-MVDCNN Phase-1 presentation</span><em>Slides ↗</em></a></li>
+              <li><a class="row" href="https://github.com/ZEROBYTE57/intelunnati_INTEL-Trio/blob/main/docs/Project%20Report.docx" target="_blank" rel="noopener"><span>Road object detection report</span><em>Report ↗</em></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- LIVE CODING ACTIVITY (handles in data/profiles.json, filled by live.js) -->
     <section id="activity" class="section">
       <div class="wrap">
         <div class="sec-head">
-          <p class="label">04 — Coding activity</p>
+          <p class="label">05 — Coding activity</p>
           <h2 class="section-title">Live across <em>platforms</em>.</h2>
           <p class="sec-lede">Pulled from each platform's public profile. <span class="updated" id="statsUpdated"></span></p>
         </div>
@@ -377,9 +408,9 @@
     <section id="interests" class="section">
       <div class="wrap">
         <div class="sec-head">
-          <p class="label">05 — Beyond research</p>
+          <p class="label">06 — Beyond research</p>
           <h2 class="section-title">Technical <em>interests</em>.</h2>
-          <p class="sec-lede">I write about these on my <a class="inline-link" href="blog/">blog</a>. For the off-duty side, visit <a class="inline-link" href="realm/">404 Realm →</a></p>
+          <p class="sec-lede">I write about these on my <a class="inline-link" href="blog/">blog</a>. For life off the grid, visit <a class="inline-link" href="realm/">404 Realm →</a></p>
         </div>
 
         <div class="bento">
@@ -441,68 +472,58 @@
       </div>
     </section>
 
-    <!-- ACHIEVEMENTS -->
-    <section id="achievements" class="section">
-      <div class="wrap">
-        <div class="sec-head">
-          <p class="label">06 — Achievements</p>
-          <h2 class="section-title">Certifications and <em>recognition</em>.</h2>
-        </div>
-        <div class="ach-grid">
-          <div class="tile">
-            <p class="tile-label">Recognition</p>
-            <ul class="list"><li><div class="row"><span>TCS CodeVita Season 11, global rank 4,774</span><em>Competitive programming</em></div></li></ul>
-            <p class="tile-label spaced">Certifications</p>
-            <ul class="list">
-              <li><div class="row"><span>Intermediate Deep Learning with PyTorch</span><em>DataCamp</em></div></li>
-              <li><div class="row"><span>Power Platform Fundamentals</span><em>Microsoft</em></div></li>
-              <li><div class="row"><span>Crash Course on Python</span><em>Google</em></div></li>
-            </ul>
-          </div>
-          <div class="tile">
-            <p class="tile-label">Notes and reports</p>
-            <ul class="list">
-              <li><a class="row" href="https://github.com/ZEROBYTE57/Deep-Learning/blob/main/Intermediate-Deep-Learning-With-Pytorch.md" target="_blank" rel="noopener"><span>Intermediate Deep Learning with PyTorch</span><em>Notes ↗</em></a></li>
-              <li><a class="row" href="https://github.com/ZEROBYTE57/Advanced-Algorithemic-Design-24AM601" target="_blank" rel="noopener"><span>Advanced Algorithmic Design (Java)</span><em>Assignments ↗</em></a></li>
-              <li><a class="row" href="https://github.com/ZEROBYTE57/SMOTE-MVDCNN/blob/main/SMOTE%2BMVDCNN_Phase_1.pptx" target="_blank" rel="noopener"><span>SMOTE-MVDCNN Phase-1 presentation</span><em>Slides ↗</em></a></li>
-              <li><a class="row" href="https://github.com/ZEROBYTE57/intelunnati_INTEL-Trio/blob/main/docs/Project%20Report.docx" target="_blank" rel="noopener"><span>Road object detection report</span><em>Report ↗</em></a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- WRITING (latest blog articles, loaded from blog/posts/index.json) -->
+    <!-- OFF THE GRID: blog + 404 Realm -->
     <section id="writing" class="section">
       <div class="wrap">
         <div class="sec-head">
-          <p class="label">07 — Writing</p>
-          <h2 class="section-title">Latest from the <em>blog</em>.</h2>
-          <p class="sec-lede">Write-ups behind my projects and notes on Linux, games and game development, connected in a knowledge graph.</p>
+          <p class="label">07 — Off the grid</p>
+          <h2 class="section-title">Off the <em>grid</em>.</h2>
+          <p class="sec-lede">The write-ups behind my projects, linked in a knowledge graph, and the gaming side of things.</p>
         </div>
-        <div class="writing-grid" id="writingList"></div>
-        <div class="writing-cta">
-          <a class="btn primary" href="blog/">Read the blog <span aria-hidden="true">→</span></a>
-          <a class="btn" href="blog/#graph">Explore the graph <span aria-hidden="true">→</span></a>
+        <div class="portal-grid">
+          <a class="tile portal portal-blog" href="blog/">
+            <svg class="pg-graph" viewBox="0 0 220 160" aria-hidden="true">
+              <g class="pg-edges"><path d="M40 40L110 78L180 36M110 78L70 128M110 78L168 118M40 40L70 128M180 36L168 118"/></g>
+              <g class="pg-nodes"><circle cx="110" cy="78" r="9" class="hub"/><circle cx="40" cy="40" r="5"/><circle cx="180" cy="36" r="6"/><circle cx="70" cy="128" r="5"/><circle cx="168" cy="118" r="6"/></g>
+            </svg>
+            <p class="portal-kicker">Blog · knowledge graph</p>
+            <h3 class="portal-title">Notes on models, machines and games.</h3>
+            <p class="portal-latest" id="portalLatest">Write-ups behind my projects, plus Linux and game development.</p>
+            <ul class="portal-stats" id="portalBlogStats"><li>Articles</li><li>Linked graph</li></ul>
+            <span class="portal-cta">Open the blog <b aria-hidden="true">→</b></span>
+          </a>
+          <a class="tile portal portal-realm" href="realm/">
+            <span class="pr-404" aria-hidden="true">404</span>
+            <span class="hud c-tl"></span><span class="hud c-tr"></span><span class="hud c-bl"></span><span class="hud c-br"></span>
+            <p class="portal-kicker"><span class="pr-live"><i></i>Live</span> 404 Realm</p>
+            <h3 class="portal-title">Off the grid: games, rigs and the terminal.</h3>
+            <p class="portal-latest" id="portalRealm">Game library, gaming rig and the 404 Realm Discord.</p>
+            <ul class="portal-stats" id="portalRealmStats"><li>ROG Strix G16</li><li>Discord server</li></ul>
+            <span class="portal-cta">Enter the realm <b aria-hidden="true">→</b></span>
+          </a>
         </div>
       </div>
     </section>
 
     <!-- CONTACT -->
-    <section id="contact" class="section contact">
+    <section id="contact" class="section contact contact-linked">
       <div class="wrap">
-        <div class="tile contact-card">
-          <div>
-            <p class="label">08 — Contact</p>
-            <h2 class="section-title">Let's <em>work together</em>.</h2>
-            <p class="contact-lede">Open to entry-level AI Engineer and Data Scientist roles. Email is the fastest way to reach me.</p>
+        <div class="contact-pane">
+          <div class="cp-main">
+            <p class="cp-label"><span class="cp-dot" aria-hidden="true"></span>08 — Contact · open to work</p>
+            <h2 class="cp-title">Let's build something that <em>holds up</em>.</h2>
+            <p class="cp-lede">Open to entry-level AI Engineer and Data Scientist roles.</p>
           </div>
-          <div class="contact-actions">
-            <a class="btn primary big" href="mailto:srinivas57.dev@gmail.com">srinivas57.dev@gmail.com <span aria-hidden="true">→</span></a>
-            <ul class="contact-links">
+          <div class="cp-side">
+            <p class="cp-reach">Reach out to me at</p>
+            <div class="cp-mail">
+              <a class="cp-mail-link" href="mailto:srinivas57.dev@gmail.com"><span class="cp-p" aria-hidden="true">$</span><span class="cp-cmd"> mail</span> <b>srinivas57.dev@gmail.com</b></a>
+              <button class="cp-copy" type="button" data-copy="srinivas57.dev@gmail.com">Copy</button>
+            </div>
+            <ul class="cp-links">
               <li><a href="https://linkedin.com/in/srinivas57d" target="_blank" rel="noopener">LinkedIn ↗</a></li>
               <li><a href="https://github.com/ZEROBYTE57" target="_blank" rel="noopener">GitHub ↗</a></li>
-              <li><a href="https://discord.gg/ZbmZp9K2Pb" target="_blank" rel="noopener">Discord · 404 Realm ↗</a></li>
+              <li><a href="https://discord.gg/ZbmZp9K2Pb" target="_blank" rel="noopener">Discord ↗</a></li>
               <li><a href="Devisetty_Lakshmi_Srinivas_M.Tech.pdf" target="_blank" rel="noopener">Resume ↓</a></li>
             </ul>
           </div>
@@ -512,12 +533,16 @@
   </main>
 
   <footer class="footer">
-    <div class="wrap footer-inner">
-      <p>© <span id="year">2026</span> Devisetty Lakshmi Srinivas</p>
-      <p class="mono">Bengaluru · <span id="clock2">--:--</span> IST</p>
-      <a href="blog/" class="to-top">Blog ↗</a>
-      <a href="realm/" class="to-top">404 Realm ↗</a>
-      <a href="#top" class="to-top">Back to top ↑</a>
+    <div class="wrap">
+      <div class="statusbar">
+        <span class="sb-seg sb-brand"><span>zerobyte<b>57</b></span></span>
+        <span class="sb-seg sb-loc"><i class="sb-dot" aria-hidden="true"></i>Bengaluru · <span id="clock2">--:--</span> IST</span>
+        <span class="sb-seg sb-copy">© <span id="year">2026</span> Devisetty Lakshmi Srinivas</span>
+        <span class="sb-fill" aria-hidden="true"></span>
+        <a class="sb-seg sb-link" href="blog/">blog ↗</a>
+        <a class="sb-seg foot-prompt" href="realm/" aria-label="Go to 404 Realm"><span class="fp-p" aria-hidden="true">$</span> <span class="fp-cmd" aria-hidden="true">cd ~/404-realm</span><span class="fp-cursor" aria-hidden="true"></span></a>
+        <a class="sb-seg sb-link" href="#top">top ↑</a>
+      </div>
     </div>
   </footer>
 

@@ -26,7 +26,7 @@
   if (seen || reduce) st.classList.add("off"); else setTimeout(() => st.classList.add("off"), 1400);
   $("#year").textContent = new Date().getFullYear();
   const clockF = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kolkata" });
-  const tickClock = () => ($("#clock").textContent = clockF.format(new Date()) + " IST");
+  const tickClock = () => { const t = clockF.format(new Date()); $("#clock").textContent = t + " IST"; const f = $("#footClock"); if (f) f.textContent = t; };
   tickClock(); setInterval(tickClock, 30000);
 
   let toastT;
@@ -175,6 +175,12 @@
         c.append(d); return c;
       }));
       if (s.playing) setTicker("steam-now", "STEAM", `In game: ${s.playing}`);
+      // Live now: Steam summary in the Discord status card, so both cards carry the same weight.
+      $("#pSteam").hidden = false;
+      $("#psLevel").textContent = fmt(s.level); $("#psGames").textContent = fmt(s.gameCount); $("#psHours").textContent = fmt(Math.round(s.totalHours));
+      const top = (s.recent || []).slice().sort((a, b) => b.hours - a.hours)[0];
+      if (s.playing || top) { const p = $("#psLast"); p.hidden = false; p.replaceChildren(el("span", null, s.playing ? "In game" : "Most played"), el("b", null, s.playing || top.name), el("em", null, s.playing ? "now" : `${fmt(Math.round(top.hours))} h`)); }
+      if (s.url) $("#psLink").href = s.url;
     }
 
     renderTracker(g);
@@ -352,4 +358,19 @@
     addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
     addEventListener("resize", () => { if (innerWidth > 900) setMenu(false); }, { passive: true });
   }
+})();
+
+// Footer prompt: types "cd ~/portfolio" when the footer comes into view.
+(() => {
+  const cmd = document.querySelector(".foot-prompt .fp-cmd");
+  if (!cmd || matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  const full = cmd.textContent;
+  cmd.style.minWidth = full.length + "ch";
+  cmd.textContent = "";
+  const io = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return; io.disconnect();
+    let i = 0; const step = () => { cmd.textContent = full.slice(0, ++i); if (i < full.length) setTimeout(step, 70 + Math.random() * 60); };
+    setTimeout(step, 300);
+  }, { threshold: 1 });
+  io.observe(cmd.parentElement);
 })();

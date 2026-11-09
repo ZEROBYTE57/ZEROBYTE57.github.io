@@ -18,8 +18,9 @@ document.getElementById("year").textContent = new Date().getFullYear();
 const clockFmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kolkata" });
 const tickClock = () => {
   const t = clockFmt.format(new Date());
-  document.getElementById("clock").textContent = t + " IST";
-  document.getElementById("clock2").textContent = t;
+  const c1 = document.getElementById("clock"), c2 = document.getElementById("clock2");
+  if (c1) c1.textContent = t + " IST";
+  if (c2) c2.textContent = t;
 };
 tickClock();
 setInterval(tickClock, 15000);
@@ -112,23 +113,6 @@ if ("IntersectionObserver" in window && !reduceMotion) {
   });
 }
 
-// Writing: latest blog articles.
-const writing = document.getElementById("writingList");
-if (writing) {
-  fetch("blog/posts/index.json").then((r) => r.json()).then((posts) => {
-    const fmtD = (d) => new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-    writing.replaceChildren(...posts.slice(0, 3).map((p) => {
-      const a = document.createElement("a");
-      a.className = "tile write-card"; a.href = "blog/post.html?p=" + encodeURIComponent(p.slug);
-      const t = document.createElement("time"); t.textContent = `${fmtD(p.date)} · ${p.minutes} min read`;
-      const h = document.createElement("h3"); h.textContent = p.title;
-      const s = document.createElement("p"); s.textContent = p.summary || "";
-      const ul = document.createElement("ul"); ul.className = "chips";
-      p.tags.slice(0, 4).forEach((x) => { const li = document.createElement("li"); li.textContent = "#" + x; ul.append(li); });
-      a.append(t, h, s, ul); return a;
-    }));
-  }).catch(() => { writing.closest("section").hidden = true; });
-}
 
 // Navigation: highlight the section on screen with a sliding pill.
 const links = [...document.querySelectorAll(".nav-links a")];
@@ -305,3 +289,84 @@ if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a 
   new MutationObserver(readAccent).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readAccent);
 })();
+
+// Portal cards: latest blog post + counts, and stats for 404 Realm.
+(() => {
+  const li = (t) => Object.assign(document.createElement("li"), { textContent: t });
+  const bold = (t) => Object.assign(document.createElement("b"), { textContent: t });
+  const latest = document.getElementById("portalLatest"), bStats = document.getElementById("portalBlogStats");
+  const getJSON = (u) => fetch(u).then((r) => r.json()).catch(() => []);
+  // Same topic count as the blog page: tags from posts, projects and GitHub notes.
+  if (bStats) Promise.all(["blog/posts/index.json", "blog/projects.json", "blog/notes.json"].map(getJSON)).then(([posts, projects, notes]) => {
+    if (!posts.length) return;
+    const topics = new Set([...posts.flatMap((p) => p.tags || []), ...projects.flatMap((p) => p.topics || []), ...notes.flatMap((n) => n.topics || [])]);
+    if (latest) latest.replaceChildren("Latest: ", bold(posts[0].title));
+    bStats.replaceChildren(li(posts.length + " articles"), li(topics.size + " topics"), li("Linked graph"));
+  }).catch(() => {});
+  const realm = document.getElementById("portalRealm"), rStats = document.getElementById("portalRealmStats");
+  if (realm && rStats) fetch("data/gaming.json").then((r) => r.json()).then((g) => {
+    const s = g.steam || {}, top = (s.recent || []).slice().sort((a, b) => b.hours - a.hours)[0];
+    if (top) realm.replaceChildren("Most played: ", bold(top.name + " · " + Math.round(top.hours) + " h"));
+    rStats.replaceChildren(...[s.gameCount ? s.gameCount + " Steam games" : "", "ROG Strix G16", "Discord server"].filter(Boolean).map(li));
+  }).catch(() => {});
+})();
+
+// Hero "Latest post" tile: newest blog article.
+(() => {
+  const tile = document.getElementById("miniPost");
+  if (!tile) return;
+  fetch("blog/posts/index.json").then((r) => r.json()).then((posts) => {
+    const p = posts[0]; if (!p) return;
+    const d = new Date(p.date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    tile.href = "blog/post.html?p=" + encodeURIComponent(p.slug);
+    document.getElementById("miniPostTitle").textContent = p.title;
+    document.getElementById("miniPostMeta").textContent = d + " · " + p.minutes + " min read";
+  }).catch(() => {});
+})();
+
+// Floating dock (bottom right, stacked above back-to-top): Blog + 404 Realm icon buttons with a count and a live dot. Shows after the hero, hides once the
+// "Off the grid" section (which has the full cards) or the contact section is on screen.
+(() => {
+  const hero = document.querySelector(".hero"), beyond = document.getElementById("writing");
+  if (!hero) return;
+  const dock = document.createElement("nav");
+  dock.className = "explore-dock"; dock.setAttribute("aria-label", "Blog and 404 Realm");
+  dock.innerHTML =
+    '<a class="ed-btn ed-blog" href="blog/" aria-label="Blog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5z"/><path d="M8 7h6M8 11h6"/></svg>' +
+      '<b class="ed-count" id="edCount" hidden></b><span class="ed-label" aria-hidden="true"><span>Blog</span><span id="edCountLabel">articles</span></span></a>' +
+    '<a class="ed-btn ed-realm" href="realm/" aria-label="404 Realm"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15.5 12h.01M18 13.5h.01"/></svg>' +
+      '<i class="ed-live" aria-hidden="true"></i><span class="ed-label" aria-hidden="true"><span>404 Realm</span><span>● live</span></span></a>';
+  document.body.append(dock);
+  fetch("blog/posts/index.json").then((r) => r.json()).then((p) => {
+    const n = dock.querySelector("#edCount"); n.textContent = p.length; n.hidden = false;
+    dock.querySelector("#edCountLabel").textContent = p.length + " articles";
+    dock.querySelector(".ed-blog").setAttribute("aria-label", "Blog, " + p.length + " articles");
+  }).catch(() => {});
+  const update = () => {
+    const past = hero.getBoundingClientRect().bottom < 0;
+    const near = beyond && beyond.getBoundingClientRect().top < innerHeight * 0.9;
+    dock.classList.toggle("show", past && !near);
+  };
+  addEventListener("scroll", update, { passive: true }); addEventListener("resize", update); update();
+})();
+
+// Footer prompt: types "cd ~/404-realm" when the footer comes into view.
+(() => {
+  const cmd = document.querySelector(".foot-prompt .fp-cmd");
+  if (!cmd || matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  const full = cmd.textContent;
+  cmd.style.minWidth = full.length + "ch";   // reserve the final width so the bar does not shift while typing
+  cmd.textContent = "";
+  const io = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return; io.disconnect();
+    let i = 0; const step = () => { cmd.textContent = full.slice(0, ++i); if (i < full.length) setTimeout(step, 70 + Math.random() * 60); };
+    setTimeout(step, 300);
+  }, { threshold: 1 });
+  io.observe(cmd.parentElement);
+})();
+
+// Contact: copy the email address.
+document.querySelectorAll(".cp-copy").forEach((b) => b.addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copied"; } catch (e) { b.textContent = "Failed"; }
+  setTimeout(() => { b.textContent = "Copy"; }, 1600);
+}));
