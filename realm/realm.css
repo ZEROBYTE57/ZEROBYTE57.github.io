@@ -96,6 +96,8 @@ h1, h2, h3, p { margin: 0; }
   body .ticker { top: 54px; }
 }
 @media (max-width: 380px) { .onair { display: none; } }
+/* between full nav and the menu button: tighten the links and drop the clock so nothing spills */
+@media (max-width: 1000px) and (min-width: 901px) { .sb-nav { margin-left: 8px; } .sb-nav a { padding: 0 11px; } .sb-clock { display: none; } }
 
 /* ============ TICKER ============ */
 .ticker { position: sticky; top: 58px; z-index: 55; overflow: hidden; height: 34px; background: var(--s1); border-bottom: 1px solid var(--line); }
@@ -116,6 +118,15 @@ h1, h2, h3, p { margin: 0; }
 .slant { display: inline-block; font-family: var(--display); font-weight: 700; font-size: 12px; letter-spacing: .08em; color: var(--ink); background: var(--rog); padding: 5px 12px; transform: skewX(-12deg); }
 .name { display: flex; flex-direction: column; font-family: var(--display); font-weight: 800; font-size: clamp(3rem, 9.5vw, 7.4rem); line-height: .92; letter-spacing: -.02em; text-transform: uppercase; margin-bottom: 22px; }
 .name .outline { color: transparent; -webkit-text-stroke: 2px var(--rog-text); }
+/* Size the name to its own column so the longest line never runs into the player card.
+   Container units (cqi) follow the column width; the clamp above stays as the fallback. */
+.hero-copy { container-type: inline-size; }
+@supports (font-size: 1cqi) { .name { font-size: clamp(2.6rem, 16.2cqi, 7.4rem); } }
+/* stacked layout (tablets): the column is full width, so cap the name a little lower */
+@media (max-width: 920px) { @supports (font-size: 1cqi) { .name { font-size: clamp(2.6rem, 16.2cqi, 5.6rem); } } }
+/* Paint the stroke under a background-coloured fill: hides the overlapping inner contours
+   of the font (the stray lines inside R and W) and keeps a clean single outline. */
+.name .outline { color: var(--ink); -webkit-text-stroke: 4px var(--rog-text); paint-order: stroke fill; }
 .motto { position: relative; font-family: var(--display); font-weight: 700; font-size: clamp(1.05rem, 2.2vw, 1.45rem); letter-spacing: .01em; text-transform: uppercase; margin: -6px 0 16px; padding-left: 16px; }
 .motto::before { content: ""; position: absolute; left: 0; top: .15em; bottom: .15em; width: 4px; background: var(--rog); transform: skewX(-12deg); }
 .motto em { font-style: normal; color: var(--rog-text); }
