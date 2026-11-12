@@ -1,7 +1,25 @@
 [
  {
+  "slug": "local-llms-guide",
+  "title": "Running LLMs locally, a practical guide",
+  "date": "2026-11-12",
+  "tags": [
+   "machine-learning",
+   "llms",
+   "linux"
+  ],
+  "related": [
+   "llm-preference"
+  ],
+  "summary": "How to run open-weight language, vision, speech and image models on your own machine. Covers the tools, how much hardware you need, settings like temperature, the best models right now, fake models to avoid, and what changed in 2026.",
+  "minutes": 15,
+  "links": [
+   "fedora-on-rog-strix-g16"
+  ]
+ },
+ {
   "slug": "brain-disorders-ml-literature",
-  "title": "Machine learning for brain disorders, what the literature says",
+  "title": "Machine learning for brain disorders, where the current research leads to.",
   "date": "2026-11-08",
   "tags": [
    "machine-learning",
@@ -130,9 +148,16 @@
   "minutes": 1,
   "links": [
    "algorithm-design",
+   "brain-disorders-ml-literature",
+   "cachyos-kernel-on-fedora",
+   "fedora-on-rog-strix-g16",
    "gnn-architectures",
+   "local-llms-guide",
+   "nvidia-hybrid-graphics-fedora",
+   "nvidia-secure-boot-fixes",
    "pytorch-notes",
    "retinal-gnn-review",
+   "schedulers-on-linux",
    "text-analysis-notes"
   ]
  }

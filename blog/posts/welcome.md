@@ -14,7 +14,12 @@ My study notes so far live in my GitHub repos:
 - **Graph neural networks:** [[gnn-architectures]] and a [[retinal-gnn-review|literature review on retinal vessel graphs]].
 - **Algorithms:** [[algorithm-design]] in Java.
 
-Coming next: notes on Linux (Fedora, custom kernels and schedulers), games and game development.
+Newer articles:
+
+- **Linux:** [[fedora-on-rog-strix-g16]] is the overview, with [[cachyos-kernel-on-fedora]], [[nvidia-secure-boot-fixes]], [[nvidia-hybrid-graphics-fedora]] and [[schedulers-on-linux]].
+- **Machine learning:** [[local-llms-guide]] and [[brain-disorders-ml-literature]].
+
+Coming next: games and game development.
 
 Each note links to its topics, so the graph shows how they connect.
 
