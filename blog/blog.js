@@ -83,7 +83,7 @@
       const projById = Object.fromEntries(projects.map((p) => [p.id, p]));
       const noteById = Object.fromEntries(notes.map((n) => [n.id, n]));
       const topics = [...new Set([...posts.flatMap((p) => p.tags), ...projects.flatMap((p) => p.topics), ...notes.flatMap((n) => n.topics)])];
-      const stats = $("#blogStats");
+      const stats = $("#blogStats"); stats.replaceChildren();   // drop the loading placeholders
       [[posts.length, "article"], [notes.length, "GitHub note"], [projects.length, "linked project"], [topics.length, "topic"]].forEach(([n, l]) => {
         const li = el("li"); li.append(el("b", null, String(n)), document.createTextNode(" " + (n === 1 ? l : l + "s"))); stats.append(li);
       });
@@ -173,7 +173,8 @@
   // ================= POST =================
   function post() {
     const slug = new URLSearchParams(location.search).get("p");
-    const fail = (m) => { $("#postTitle").textContent = "Article not found"; $("#article").replaceChildren(el("p", "empty", m)); };
+    const ready = () => { document.body.classList.remove("is-loading"); document.body.classList.add("is-ready"); $("#article").removeAttribute("aria-busy"); };
+    const fail = (m) => { $("#postTitle").textContent = "Article not found"; $("#article").replaceChildren(el("p", "empty", m)); ready(); };
     if (!/^[a-z0-9][a-z0-9-]*$/i.test(slug || "")) return fail("This link looks broken. Head back to the blog.");
 
     Promise.all([loadAll(), fetch(`posts/${slug}.md`).then((r) => (r.ok ? r.text() : Promise.reject(r.status)))])
@@ -200,6 +201,7 @@
         });
         const html = window.marked ? marked.parse(body) : esc(body);
         $("#article").innerHTML = window.DOMPurify ? DOMPurify.sanitize(html) : html;
+        ready();
         $("#article").querySelectorAll("img").forEach((img) => { const s = img.getAttribute("src"); if (s && !/^(https?:|\/|data:)/.test(s)) img.src = "posts/" + s; img.loading = "lazy"; img.decoding = "async"; });
         $("#article").querySelectorAll("a[href^='http']").forEach((a) => { a.target = "_blank"; a.rel = "noopener"; });
 

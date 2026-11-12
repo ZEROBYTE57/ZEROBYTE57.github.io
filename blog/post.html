@@ -17,7 +17,7 @@
   <script defer src="graph.js"></script>
   <script defer src="blog.js"></script>
 </head>
-<body data-page="post">
+<body data-page="post" class="is-loading">
   <a class="skip" href="#main">Skip to content</a>
   <div class="progress" aria-hidden="true"><span id="progress"></span></div>
   <div class="bg-fx" aria-hidden="true"></div>
@@ -45,12 +45,18 @@
       <a class="back" href="./">← All articles</a>
       <header class="post-head">
         <div class="post-tags" id="postTags"></div>
-        <h1 id="postTitle">Loading…</h1>
+        <h1 id="postTitle"><span class="skel skel-title" aria-hidden="true"></span><span class="sr-only">Loading article</span></h1>
         <p class="post-meta" id="postMeta"></p>
         <div class="share-bar" id="shareTop" hidden></div>
       </header>
       <details class="toc-mobile" id="tocMobile" hidden><summary>On this page</summary><ol class="toc" id="tocM"></ol></details>
-      <div class="prose-body" id="article"></div>
+      <div class="prose-body" id="article" aria-busy="true">
+        <div class="skel-block" aria-hidden="true">
+          <span class="skel w100"></span><span class="skel w95"></span><span class="skel w70"></span>
+          <span class="skel w100 gap"></span><span class="skel w90"></span><span class="skel w97"></span><span class="skel w60"></span>
+          <span class="skel w100 gap"></span><span class="skel w85"></span><span class="skel w92"></span>
+        </div>
+      </div>
       <section class="share-end" id="shareEnd" hidden aria-label="Share this article">
         <div>
           <p class="share-end-k">Found this useful?</p>

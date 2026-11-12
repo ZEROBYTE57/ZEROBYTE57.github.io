@@ -235,3 +235,21 @@
   .post-tags a { border-color: #999 !important; color: #333 !important; }
 }
 @media (max-width: 400px) { .share-bar:not(.has-native) .sh-main span { display: none; } }
+
+/* ---------- loading state: skeleton until the article arrives, then everything fades in together ---------- */
+.share-end[hidden], .share-bar[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.is-loading .post-side, .is-loading .post-nav, .is-loading .toc-mobile, .is-loading .footer { visibility: hidden; }
+.skel { display: block; height: 14px; border-radius: 7px; background: linear-gradient(90deg, var(--surface-2) 25%, color-mix(in srgb, var(--surface-2) 55%, var(--border-strong)) 50%, var(--surface-2) 75%) 0 0 / 200% 100%; animation: skel 1.3s ease-in-out infinite; }
+.skel-title { height: .9em; width: min(560px, 85%); border-radius: 10px; margin: .1em 0; }
+.skel-block { display: grid; gap: 12px; padding-top: 6px; }
+.skel.gap { margin-top: 14px; }
+.skel.w100 { width: 100%; } .skel.w97 { width: 97%; } .skel.w95 { width: 95%; } .skel.w92 { width: 92%; } .skel.w90 { width: 90%; } .skel.w85 { width: 85%; } .skel.w70 { width: 70%; } .skel.w60 { width: 60%; }
+@keyframes skel { to { background-position: -200% 0; } }
+.is-ready .post-head, .is-ready #article, .is-ready .post-side, .is-ready .share-end, .is-ready .post-nav { animation: postIn .35s ease-out both; }
+.is-ready .post-side { animation-delay: .08s; }
+@keyframes postIn { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .skel, .is-ready .post-head, .is-ready #article, .is-ready .post-side, .is-ready .share-end, .is-ready .post-nav { animation: none; } }
+/* blog index: placeholder chips keep the stats row's height while it loads (no jump) */
+.blog-stats .stat-skel { width: 104px; height: 33.4px; padding: 0; border-color: transparent; background: linear-gradient(90deg, var(--surface-2) 25%, color-mix(in srgb, var(--surface-2) 55%, var(--border-strong)) 50%, var(--surface-2) 75%) 0 0 / 200% 100%; animation: skel 1.3s ease-in-out infinite; }
+.blog-stats .stat-skel:nth-child(2) { width: 135px; } .blog-stats .stat-skel:nth-child(3) { width: 158px; } .blog-stats .stat-skel:nth-child(4) { width: 96px; }
