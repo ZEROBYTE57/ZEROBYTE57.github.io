@@ -186,3 +186,52 @@
 .lightbox { position: fixed; inset: 0; z-index: 210; display: grid; place-items: center; padding: 24px; background: color-mix(in srgb, #000 80%, transparent); cursor: zoom-out; animation: lbIn .2s ease-out; }
 .lightbox img { max-width: min(1400px, 100%); max-height: 100%; border-radius: 10px; background: #fff; box-shadow: 0 30px 80px -20px rgba(0,0,0,.6); }
 @keyframes lbIn { from { opacity: 0; } }
+
+/* ---------- sharing ---------- */
+.share-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 18px; }
+.sh { display: inline-flex; align-items: center; gap: 7px; height: 36px; min-width: 36px; padding: 0 10px; justify-content: center; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); font: 500 var(--fs-sm) var(--sans); text-decoration: none; cursor: pointer;
+  transition: border-color .2s, background .2s, color .2s, transform .15s; }
+.sh svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.sh:hover { border-color: var(--accent); color: var(--accent-ink); transform: translateY(-1px); }
+.sh-main { background: var(--text); color: var(--bg); border-color: var(--text); padding: 0 14px; }
+.sh-main:hover { background: var(--accent); border-color: var(--accent); color: #04181b; }
+.sh-x:hover { color: var(--text); border-color: var(--text); }
+.sh-li:hover { color: #0a66c2; border-color: #0a66c2; }
+.sh-wa:hover { color: #25d366; border-color: #25d366; }
+.sh-sep { width: 1px; height: 22px; background: var(--border-strong); margin: 0 4px; }
+.sh-save[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
+.sh-save[aria-pressed="true"] svg { fill: currentColor; }
+.share-end { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; margin-top: 48px; padding: 22px 24px;
+  border: 1px solid var(--border); border-radius: 16px; background: radial-gradient(420px 160px at 100% 0%, var(--accent-soft), transparent 70%), var(--surface); }
+.share-end .share-bar { margin-top: 0; }
+.share-end-k { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); }
+.share-end-t { margin-top: 4px; color: var(--muted); font-size: var(--fs-md); max-width: 40ch; }
+@media (max-width: 560px) {
+  .sh span { display: none; } .sh-main span { display: inline; } .share-end { padding: 18px; }
+  .share-bar { gap: 5px; } .sh-mail, .sh-sep { display: none; }
+  /* the phone's own share sheet already covers X, LinkedIn, WhatsApp and email */
+  .has-native .sh-x, .has-native .sh-li, .has-native .sh-wa { display: none; }
+}
+/* quote sharing popover */
+.quote-pop { position: absolute; z-index: 90; display: flex; gap: 2px; padding: 4px; border-radius: 10px; background: #0c0c0e; border: 1px solid #2e2e33; box-shadow: 0 12px 30px -10px rgba(0,0,0,.5); }
+.quote-pop[hidden] { display: none; }
+.quote-pop button { border: 0; background: transparent; color: #e4e4e7; font: 500 12.5px var(--sans); padding: 7px 10px; border-radius: 7px; cursor: pointer; white-space: nowrap; }
+.quote-pop button:hover { background: #1d1d21; color: #6cc5cf; }
+.share-toast { position: fixed; left: 50%; bottom: 24px; z-index: 95; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; padding: 10px 16px; border-radius: 10px;
+  background: #0c0c0e; color: #fafafa; border: 1px solid #2e2e33; font: 500 var(--fs-sm) var(--sans); box-shadow: 0 12px 30px -10px rgba(0,0,0,.5); transition: opacity .2s, transform .2s; }
+.share-toast.show { opacity: 1; transform: translate(-50%, 0); }
+/* saved articles on the blog index */
+.filter-saved { border-color: var(--accent); color: var(--accent-ink); }
+.saved-star { color: var(--accent-ink); }
+/* ---------- print / save as PDF: just the article ---------- */
+@media print {
+  .dock, .progress, .bg-fx, .post-side, .share-bar, .share-end, .post-nav, .footer, .back, .fab-top, .toc-mobile, .quote-pop, .share-toast, .h-anchor, .term-copy, .skip { display: none !important; }
+  body { background: #fff !important; color: #111 !important; }
+  .post-layout { display: block; padding-top: 0; }
+  .prose-body, .prose-body p, .prose-body li { color: #111 !important; font-size: 12pt; }
+  .prose-body a { color: #0b5f69 !important; }
+  .prose-body pre, .prose-body .term { break-inside: avoid; }
+  .post-tags a { border-color: #999 !important; color: #333 !important; }
+}
+@media (max-width: 400px) { .share-bar:not(.has-native) .sh-main span { display: none; } }

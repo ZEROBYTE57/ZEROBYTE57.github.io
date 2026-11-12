@@ -126,23 +126,27 @@
       const postTags = ["all", ...new Set(posts.flatMap((p) => p.tags))];
       if (!postTags.includes(tag)) tag = "all";
       const filters = $("#filters");
+      const saved = getSaved().filter((s) => posts.some((p) => p.slug === s));
+      if (saved.length) postTags.splice(1, 0, "saved");
+      if (new URLSearchParams(location.search).get("tag") === "saved" && saved.length) tag = "saved";
       postTags.forEach((t) => {
-        const b = el("button", "filter", t === "all" ? "All" : "#" + t); b.type = "button"; b.dataset.tag = t;
+        const b = el("button", "filter" + (t === "saved" ? " filter-saved" : ""), t === "all" ? "All" : t === "saved" ? `★ Saved (${saved.length})` : "#" + t); b.type = "button"; b.dataset.tag = t;
         b.addEventListener("click", () => setTag(t)); filters.append(b);
       });
       function setTag(t) {
         tag = postTags.includes(t) ? t : "all";
         filters.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tag === tag)));
-        g.setFocus(tag === "all" ? null : "tag:" + tag);
+        g.setFocus(tag === "all" || tag === "saved" ? null : "tag:" + tag);
         render();
       }
       function render() {
         const q = $("#search").value.trim().toLowerCase();
-        const shown = posts.filter((p) => (tag === "all" || p.tags.includes(tag)) && (!q || `${p.title} ${p.summary} ${p.tags.join(" ")}`.toLowerCase().includes(q)));
+        const shown = posts.filter((p) => (tag === "all" || (tag === "saved" ? saved.includes(p.slug) : p.tags.includes(tag))) && (!q || `${p.title} ${p.summary} ${p.tags.join(" ")}`.toLowerCase().includes(q)));
         $("#posts").replaceChildren(...shown.map((p) => {
           const a = Object.assign(el("a", "tile post-card"), { href: `post.html?p=${encodeURIComponent(p.slug)}` });
           const t = el("time", null, fmtDate(p.date)); t.dateTime = p.date;
           const body = el("div"); body.append(el("h3", null, p.title));
+          if (saved.includes(p.slug)) { a.classList.add("is-saved"); body.firstChild.append(el("span", "saved-star", " ★")); }
           if (p.summary) body.append(el("p", null, p.summary));
           const chips = el("ul", "chips");
           p.tags.forEach((x) => chips.append(el("li", null, "#" + x)));
@@ -161,6 +165,11 @@
     }).catch(() => { $("#posts").append(el("p", "empty", "Could not load articles.")); });
   }
 
+  // ---------- saved articles (per browser, used for the "Saved" filter) ----------
+  const SAVED_KEY = "blog-saved";
+  const getSaved = () => { try { return JSON.parse(localStorage.getItem(SAVED_KEY) || "[]"); } catch (e) { return []; } };
+  const setSaved = (list) => { try { localStorage.setItem(SAVED_KEY, JSON.stringify(list)); } catch (e) {} };
+
   // ================= POST =================
   function post() {
     const slug = new URLSearchParams(location.search).get("p");
@@ -178,6 +187,7 @@
         $("#postTitle").textContent = meta.title;
         $("#postMeta").textContent = [meta.date && fmtDate(meta.date), `${meta.minutes} min read`].filter(Boolean).join(" · ");
         meta.tags.forEach((t) => $("#postTags").append(Object.assign(el("a", null, "#" + t), { href: `./?tag=${encodeURIComponent(t)}` })));
+        setupSharing(meta);
 
         // [[wikilinks]] -> posts, portfolio projects or GitHub notes.
         let body = md.replace(/^---[\s\S]*?\n---\s*\n/, "").replace(/<!--[\s\S]*?-->/g, "");
@@ -322,6 +332,91 @@
       const max = document.documentElement.scrollHeight - innerHeight;
       bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
     }, { passive: true });
+  }
+
+  // ---------- sharing: native share, copy link, social, save, PDF, quote sharing ----------
+  function setupSharing(meta) {
+    // Share links point at blog/s/<slug>.html: a small static page with the article's preview
+    // (title, summary, image) for LinkedIn / X / WhatsApp, which then opens the article.
+    const base = location.origin + location.pathname.replace(/post\.html$/, "");
+    const url = `${base}s/${encodeURIComponent(meta.slug)}.html`;
+    const title = meta.title, text = meta.summary || "";
+    const enc = encodeURIComponent;
+    const toast = (m) => { const t = $("#shareToast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 1800); };
+    const copy = async (s, ok) => { try { await navigator.clipboard.writeText(s); toast(ok); } catch (e) { prompt("Copy this:", s); } };
+    const ICON = {
+      share: '<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>',
+      link: '<path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/>',
+      x: '<path d="M4 4l16 16M20 4L4 20" />',
+      li: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/>',
+      wa: '<path d="M4 20l1.4-4.2A8 8 0 1 1 8.4 18.8L4 20z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-2.3-2.3l.8-1-1-2L9 9.5z"/>',
+      mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+      save: '<path d="M6 3h12v18l-6-4-6 4V3z"/>',
+      pdf: '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>',
+    };
+    const svg = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
+    const social = {
+      x: `https://twitter.com/intent/tweet?text=${enc(title)}&url=${enc(url)}`,
+      li: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}`,
+      wa: `https://wa.me/?text=${enc(title + " " + url)}`,
+      mail: `mailto:?subject=${enc(title)}&body=${enc((text ? text + "\n\n" : "") + url)}`,
+    };
+    const isSaved = () => getSaved().includes(meta.slug);
+    function build(box) {
+      box.replaceChildren(); box.classList.toggle("has-native", !!navigator.share);
+      const btn = (cls, icon, label, tip) => { const b = el("button", "sh " + cls); b.type = "button"; b.innerHTML = svg(icon) + (label ? `<span>${label}</span>` : ""); b.setAttribute("aria-label", tip || label); b.title = tip || label; return b; };
+      const link = (cls, icon, href, tip) => { const a = Object.assign(el("a", "sh " + cls), { href, target: "_blank", rel: "noopener" }); a.innerHTML = svg(icon); a.setAttribute("aria-label", tip); a.title = tip; return a; };
+      if (navigator.share) {
+        const b = btn("sh-main", "share", "Share", "Share this article");
+        b.addEventListener("click", () => navigator.share({ title, text, url }).catch(() => {}));
+        box.append(b);
+      }
+      const c = btn(navigator.share ? "" : "sh-main", "link", "Copy link", "Copy link to this article");
+      c.addEventListener("click", () => copy(url, "Link copied"));
+      box.append(c,
+        link("sh-x", "x", social.x, "Share on X"),
+        link("sh-li", "li", social.li, "Share on LinkedIn"),
+        link("sh-wa", "wa", social.wa, "Share on WhatsApp"),
+        Object.assign(link("sh-mail", "mail", social.mail, "Share by email"), { target: "_self" }));
+      box.append(el("span", "sh-sep"));
+      const s = btn("sh-save", "save", isSaved() ? "Saved" : "Save", "Save to your reading list on this browser");
+      s.setAttribute("aria-pressed", String(isSaved()));
+      s.addEventListener("click", () => {
+        const list = getSaved(), on = !list.includes(meta.slug);
+        setSaved(on ? [meta.slug, ...list] : list.filter((x) => x !== meta.slug));
+        document.querySelectorAll(".sh-save").forEach((x) => { x.setAttribute("aria-pressed", String(on)); x.querySelector("span").textContent = on ? "Saved" : "Save"; });
+        toast(on ? "Saved · find it under ★ Saved on the blog" : "Removed from saved");
+      });
+      const p = btn("sh-pdf", "pdf", "PDF", "Save as PDF or print");
+      p.addEventListener("click", () => print());
+      box.append(s, p);
+    }
+    [$("#shareTop"), $("#shareBottom")].forEach((b) => b && build(b));
+    $("#shareTop").hidden = false; $("#shareEnd").hidden = false;
+
+    // Select text in the article to copy or post it as a quote with the link.
+    const pop = $("#quotePop"), art = $("#article");
+    let quote = "";
+    const hide = () => { pop.hidden = true; };
+    document.addEventListener("selectionchange", () => {
+      const sel = getSelection(); const t = sel && sel.toString().trim();
+      if (!t || t.length < 12 || !art.contains(sel.anchorNode) || !art.contains(sel.focusNode)) return hide();
+      quote = t.length > 240 ? t.slice(0, 237).trim() + "…" : t;
+      const r = sel.getRangeAt(0).getBoundingClientRect();
+      pop.hidden = false;
+      const w = pop.offsetWidth;
+      pop.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + "px";
+      pop.style.top = Math.max(8, r.top - pop.offsetHeight - 10) + scrollY + "px";
+    });
+    pop.addEventListener("mousedown", (e) => e.preventDefault());   // keep the selection while clicking
+    pop.addEventListener("click", (e) => {
+      const k = e.target.closest("button")?.dataset.q; if (!k) return;
+      if (k === "copy") copy(`"${quote}"\n— ${title}\n${url}`, "Quote copied with link");
+      if (k === "x") open(`https://twitter.com/intent/tweet?text=${enc(`"${quote}"`)}&url=${enc(url)}`, "_blank", "noopener");
+      if (k === "li") open(social.li, "_blank", "noopener");
+      hide(); getSelection().removeAllRanges();
+    });
+    addEventListener("scroll", () => { if (!pop.hidden && !getSelection().toString().trim()) hide(); }, { passive: true });
   }
 
   ({ index, post })[page]?.();

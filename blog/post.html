@@ -47,9 +47,17 @@
         <div class="post-tags" id="postTags"></div>
         <h1 id="postTitle">Loading…</h1>
         <p class="post-meta" id="postMeta"></p>
+        <div class="share-bar" id="shareTop" hidden></div>
       </header>
       <details class="toc-mobile" id="tocMobile" hidden><summary>On this page</summary><ol class="toc" id="tocM"></ol></details>
       <div class="prose-body" id="article"></div>
+      <section class="share-end" id="shareEnd" hidden aria-label="Share this article">
+        <div>
+          <p class="share-end-k">Found this useful?</p>
+          <p class="share-end-t">Share it with someone who would like it, or save it for later.</p>
+        </div>
+        <div class="share-bar" id="shareBottom"></div>
+      </section>
       <nav class="post-nav" id="postNav" aria-label="More articles"></nav>
     </article>
 
@@ -88,5 +96,11 @@
       </div>
     </div>
   </footer>
+  <div class="quote-pop" id="quotePop" role="dialog" aria-label="Share selected text" hidden>
+    <button type="button" data-q="copy">Copy quote</button>
+    <button type="button" data-q="x">Post on X</button>
+    <button type="button" data-q="li">LinkedIn</button>
+  </div>
+  <div class="share-toast" id="shareToast" role="status" aria-live="polite"></div>
 </body>
 </html>

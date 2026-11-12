@@ -65,11 +65,57 @@ def parse(path):
     }
 
 
+SITE = "https://zerobyte57.github.io"
+SHARE = POSTS.parent / "s"
+SHARE_IMG = "https://avatars.githubusercontent.com/u/95509860?v=4"
+
+
+def share_page(p):
+    """Small static page per article: gives link previews (Open Graph / X card) when the
+    article is shared, then sends the reader to the real article."""
+    from html import escape
+    t, d = escape(p["title"]), escape(p["summary"] or "An article on the blog of Devisetty Lakshmi Srinivas.")
+    target = f"../post.html?p={p['slug']}"
+    url = f"{SITE}/blog/s/{p['slug']}.html"
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{t} · Blog · Devisetty Lakshmi Srinivas</title>
+  <meta name="description" content="{d}" />
+  <link rel="canonical" href="{SITE}/blog/post.html?p={p['slug']}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="zerobyte57 · Blog" />
+  <meta property="og:title" content="{t}" />
+  <meta property="og:description" content="{d}" />
+  <meta property="og:url" content="{url}" />
+  <meta property="og:image" content="{SHARE_IMG}" />
+  <meta property="article:published_time" content="{p['date']}" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="{t}" />
+  <meta name="twitter:description" content="{d}" />
+  <meta name="twitter:image" content="{SHARE_IMG}" />
+  <meta http-equiv="refresh" content="0; url={target}" />
+  <script>location.replace("{target}" + location.hash);</script>
+</head>
+<body><p><a href="{target}">{t}</a></p></body>
+</html>
+"""
+
+
 def main():
     posts = [parse(p) for p in sorted(POSTS.glob("*.md")) if not p.name.startswith("_")]
     posts.sort(key=lambda p: p["date"], reverse=True)
     (POSTS / "index.json").write_text(json.dumps(posts, indent=1, ensure_ascii=False), encoding="utf-8")
-    print(f"Indexed {len(posts)} post(s).")
+    SHARE.mkdir(exist_ok=True)
+    keep = set()
+    for p in posts:
+        f = SHARE / f"{p['slug']}.html"; keep.add(f.name)
+        f.write_text(share_page(p), encoding="utf-8")
+    for old in SHARE.glob("*.html"):
+        if old.name not in keep:
+            old.unlink()
+    print(f"Indexed {len(posts)} post(s), wrote {len(keep)} share page(s).")
 
 
 if __name__ == "__main__":
