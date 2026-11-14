@@ -253,3 +253,19 @@
 /* blog index: placeholder chips keep the stats row's height while it loads (no jump) */
 .blog-stats .stat-skel { width: 104px; height: 33.4px; padding: 0; border-color: transparent; background: linear-gradient(90deg, var(--surface-2) 25%, color-mix(in srgb, var(--surface-2) 55%, var(--border-strong)) 50%, var(--surface-2) 75%) 0 0 / 200% 100%; animation: skel 1.3s ease-in-out infinite; }
 .blog-stats .stat-skel:nth-child(2) { width: 135px; } .blog-stats .stat-skel:nth-child(3) { width: 158px; } .blog-stats .stat-skel:nth-child(4) { width: 96px; }
+
+/* ---------- graph: click to engage, so it never traps page scrolling ---------- */
+.graph-canvas { touch-action: pan-x pan-y; cursor: pointer; }
+.graph-canvas.engaged, .graph-canvas.modal { touch-action: none; cursor: grab; }
+.graph-canvas.engaged:active { cursor: grabbing; }
+.graph-canvas.engaged { box-shadow: 0 0 0 2px var(--accent), 0 0 0 6px var(--glow); }
+.graph-stage, .side-tile { position: relative; }
+[data-graph] { --gbadge: ""; }
+[data-graph]::after { position: absolute; z-index: 3; right: 12px; bottom: 12px; padding: 5px 10px; border-radius: 999px; pointer-events: none;
+  font: 500 var(--fs-2xs) var(--mono); letter-spacing: .02em; background: color-mix(in srgb, var(--surface) 88%, transparent); border: 1px solid var(--border);
+  color: var(--muted); backdrop-filter: blur(6px); transition: opacity .25s; }
+[data-graph="idle"]::after { content: "click to interact"; opacity: 0; }
+[data-graph="idle"]:hover::after { opacity: 1; }
+[data-graph="live"]::after { content: "● interactive · Esc to release"; color: var(--accent-ink); border-color: var(--accent); opacity: 1; }
+.side-tile[data-graph]::after { right: 26px; bottom: 26px; }
+@media (hover: none) { [data-graph="idle"]::after { content: "tap to interact"; opacity: 1; } }

@@ -91,7 +91,9 @@
       // Graph + hover card
       const { nodes, links } = buildGraph(posts, projects, notes);
       const tip = $("#graphTip");
-      if (matchMedia("(pointer: coarse)").matches) $("#graphHint").textContent = "Tap a node to open it · drag nodes sideways · use + and − to zoom";
+      $("#graphHint").textContent = matchMedia("(pointer: coarse)").matches
+        ? "Tap the graph to interact · tap a node to open it"
+        : "Click the graph to interact · then scroll to zoom, drag to pan · Esc to release";
       const KIND = { post: "Article", project: "Portfolio project", note: "GitHub note", tag: "Topic" };
       const ACTION = { post: "Click to read", project: "Click to view in portfolio", note: "Click to open on GitHub", tag: "Click to filter articles" };
       const g = window.KnowledgeGraph($("#graphCanvas"), {

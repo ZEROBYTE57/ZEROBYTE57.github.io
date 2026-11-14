@@ -320,11 +320,34 @@
     const emitHover = (n) => { if (!opts.onHover) return; if (!n) return opts.onHover(null); const [x, y] = toScreen(n); opts.onHover(n, x, y); };
     const setHover = (n) => { if (n === hover) return; hover = n; canvas.style.cursor = n ? "pointer" : "grab"; emitHover(n); kick(); };
 
+    // Click-to-engage: on the page the graph lets scrolling pass through until you click it.
+    // While engaged, wheel zooms, drag pans and touch moves nodes. Esc, a click outside or
+    // scrolling the graph off screen releases it. The fullscreen view (modal) is always engaged.
+    const needsEngage = !canvas.classList.contains("modal") && opts.engage !== false;
+    let engaged = !needsEngage;
+    const host = canvas.parentElement;
+    function setEngaged(on) {
+      if (!needsEngage || on === engaged) return;
+      engaged = on;
+      canvas.classList.toggle("engaged", on);
+      host && host.setAttribute("data-graph", on ? "live" : "idle");
+      if (!on) { setHover(null); drag && (drag.node.fx = drag.node.fy = null); drag = pan = pinch = downAt = null; pointers.clear(); alphaTarget = 0; }
+    }
+    if (needsEngage && host) host.setAttribute("data-graph", "idle");
+    const onDocDown = (e) => { if (engaged && !canvas.contains(e.target) && !(host && host.contains(e.target) && e.target.closest(".gbtn-s, .graph-find"))) setEngaged(false); };
+    const onKeyEsc = (e) => { if (e.key === "Escape") setEngaged(false); };
+    if (needsEngage) { document.addEventListener("pointerdown", onDocDown, true); addEventListener("keydown", onKeyEsc); }
+
     const pointers = new Map();
     let drag = null, pan = null, pinch = null, downAt = null;
     function onDown(e) {
-      canvas.setPointerCapture(e.pointerId);
       const [sx, sy] = pos(e);
+      if (!engaged) {
+        // First click (or tap) only engages. A click straight on a node still opens it.
+        if (e.pointerType !== "touch") { const n = pick(sx, sy); if (n) { downAt = [sx, sy]; drag = { node: n, peek: true }; return; } }
+        setEngaged(true); return;
+      }
+      canvas.setPointerCapture(e.pointerId);
       pointers.set(e.pointerId, [sx, sy]);
       if (pointers.size === 2) {                            // pinch zoom
         const [[ax, ay], [bx, by]] = [...pointers.values()];
@@ -346,6 +369,7 @@
         view = { k, x: pinch.cx - W / 2 - wx * k, y: pinch.cy - H / 2 - wy * k };
         userMoved = true; draw(); return;
       }
+      if (drag && drag.peek) { if (Math.hypot(sx - downAt[0], sy - downAt[1]) > 5) { drag = null; downAt = null; setEngaged(true); } return; }
       if (drag) { const [wx, wy] = toWorld(sx, sy); drag.node.fx = wx; drag.node.fy = wy; kick(); emitHover(drag.node); return; }
       if (pan) { userMoved = true; view.x = pan.vx + (sx - pan.sx); view.y = pan.vy + (sy - pan.sy); draw(); emitHover(hover); return; }
       if (e.pointerType !== "touch") setHover(pick(sx, sy));
@@ -355,6 +379,7 @@
       pointers.delete(e.pointerId);
       if (pinch) { if (pointers.size < 2) pinch = null; return; }
       const moved = downAt && Math.hypot(sx - downAt[0], sy - downAt[1]) > 5;
+      if (drag && drag.peek) { const n = drag.node; drag = null; downAt = null; if (opts.onOpen) opts.onOpen(n); return; }
       if (drag) {
         drag.node.fx = drag.node.fy = null; alphaTarget = 0;
         if (!moved && opts.onOpen) opts.onOpen(drag.node);
@@ -363,6 +388,7 @@
     }
     function onCancel(e) { pointers.delete(e.pointerId); if (drag) { drag.node.fx = drag.node.fy = null; alphaTarget = 0; } drag = pan = pinch = downAt = null; }
     function onWheel(e) {
+      if (!engaged) return;                                   // let the page scroll
       e.preventDefault(); userMoved = true;
       const [sx, sy] = pos(e);
       const k = Math.min(cfg.maxZoom + 1, Math.max(0.25, view.k * Math.exp(-e.deltaY * 0.0015)));
@@ -388,7 +414,7 @@
       if (fitted && !userMoved) fit(false); else draw();
     }
     const ro = new ResizeObserver(resize); ro.observe(canvas);
-    const io = "IntersectionObserver" in window ? new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) kick(); }) : null;
+    const io = "IntersectionObserver" in window ? new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) kick(); else setEngaged(false); }) : null;
     io && io.observe(canvas);
     const mo = new MutationObserver(() => { readColors(); draw(); });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
@@ -416,7 +442,8 @@
         if (n) { userMoved = true; const k = Math.max(view.k, 1.4); animateView({ k, x: -n.x * k, y: -n.y * k }); }
         return n;
       },
-      destroy() { dead = true; cancelAnimationFrame(raf); ro.disconnect(); io && io.disconnect(); mo.disconnect(); mq.removeEventListener?.("change", onScheme); },
+      engage(on = true) { setEngaged(on); },
+      destroy() { dead = true; document.removeEventListener("pointerdown", onDocDown, true); removeEventListener("keydown", onKeyEsc); cancelAnimationFrame(raf); ro.disconnect(); io && io.disconnect(); mo.disconnect(); mq.removeEventListener?.("change", onScheme); },
     };
   }
   window.KnowledgeGraph = KnowledgeGraph;
