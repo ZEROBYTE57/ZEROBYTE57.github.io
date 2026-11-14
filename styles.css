@@ -478,17 +478,29 @@ a.row:hover { padding-left: 6px; color: var(--accent-ink); }
 @keyframes pgFloat { 50% { transform: translateY(-4px) scale(1.12); } }
 .portal-blog:hover { border-color: var(--accent); }
 /* realm card: always dark, ROG red, esports HUD */
-.portal-realm { --rr: #ff2e4f; color: #f4f4f5; border-color: #2a1a20;
-  background: radial-gradient(120% 90% at 100% 0%, rgba(255,46,79,.22), transparent 55%), linear-gradient(160deg, #141018, #0a0a0d 70%); }
+/* 404 Realm card: rich red on a warm light surface in light mode, the dark esports look in dark mode */
+.portal-realm { --rr: #e11d48; --rr-ink: #be123c; --rr-deep: #9f1239; --rr-text: #2a0a12; --rr-muted: #6b4450; --rr-chip: rgba(225,29,72,.06); --rr-chip-line: rgba(225,29,72,.28);
+  --rr-scan: rgba(159,18,57,.04); --rr-404: rgba(190,18,60,.30); --rr-glow: rgba(190,18,60,.45);
+  color: var(--rr-text); border-color: rgba(190,18,60,.35); border-top: 3px solid #e11d48;
+  background: radial-gradient(85% 120% at 100% 0%, rgba(225,29,72,.42), rgba(225,29,72,.10) 45%, transparent 70%),
+    radial-gradient(70% 70% at 0% 100%, rgba(159,18,57,.12), transparent 65%), linear-gradient(160deg, #fff7f8, #ffe4ea 80%); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .portal-realm { --rr: #ff2e4f; --rr-ink: #ff6b80; --rr-deep: #ff2e4f; --rr-text: #f4f4f5; --rr-muted: #b4b4bb;
+  --rr-chip: rgba(255,255,255,.04); --rr-chip-line: rgba(255,46,79,.35); --rr-scan: rgba(255,255,255,.025); --rr-404: rgba(255,46,79,.3); --rr-glow: rgba(255,46,79,.55);
+  border-color: #2a1a20; border-top-color: #2a1a20; border-top-width: 1px; background: radial-gradient(120% 90% at 100% 0%, rgba(255,46,79,.22), transparent 55%), linear-gradient(160deg, #141018, #0a0a0d 70%); } }
+:root[data-theme="dark"] .portal-realm { --rr: #ff2e4f; --rr-ink: #ff6b80; --rr-deep: #ff2e4f; --rr-text: #f4f4f5; --rr-muted: #b4b4bb;
+  --rr-chip: rgba(255,255,255,.04); --rr-chip-line: rgba(255,46,79,.35); --rr-scan: rgba(255,255,255,.025); --rr-404: rgba(255,46,79,.3); --rr-glow: rgba(255,46,79,.55);
+  border-color: #2a1a20; border-top-color: #2a1a20; border-top-width: 1px; background: radial-gradient(120% 90% at 100% 0%, rgba(255,46,79,.22), transparent 55%), linear-gradient(160deg, #141018, #0a0a0d 70%); }
 .portal-realm .hud { border-color: var(--rr); }
-.portal-realm .portal-kicker { color: #ff6b80; }
-.portal-realm .portal-latest { color: #b4b4bb; }
-.portal-realm .portal-latest b { color: #fff; }
-.portal-realm .portal-stats li { background: rgba(255,255,255,.04); border-color: rgba(255,46,79,.35); color: #e4e4e7; }
-.portal-realm .portal-cta { color: #ff6b80; }
-.portal-realm:hover { border-color: var(--rr); box-shadow: 0 18px 50px -20px rgba(255,46,79,.55); }
-.portal-realm::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px); }
-.pr-404 { position: absolute; right: 22px; bottom: -30px; font: 700 150px/1 var(--display); letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1.5px rgba(255,46,79,.3); pointer-events: none; user-select: none; }
+.portal-realm .portal-kicker { color: var(--rr-ink); }
+.portal-realm .portal-title { color: var(--rr-text); }
+.portal-realm .portal-kicker, .portal-realm .portal-cta { font-weight: 600; }
+.portal-realm .portal-latest { color: var(--rr-muted); }
+.portal-realm .portal-latest b { color: var(--rr-text); }
+.portal-realm .portal-stats li { background: var(--rr-chip); border-color: var(--rr-chip-line); color: var(--rr-text); }
+.portal-realm .portal-cta { color: var(--rr-ink); }
+.portal-realm:hover { border-color: var(--rr); box-shadow: 0 18px 50px -20px var(--rr-glow); }
+.portal-realm::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, var(--rr-scan) 0 1px, transparent 1px 4px); }
+.pr-404 { position: absolute; right: 22px; bottom: -30px; font: 700 150px/1 var(--display); letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1.5px var(--rr-404); pointer-events: none; user-select: none; }
 .pr-live { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; background: var(--rr); color: #fff; font-weight: 600; letter-spacing: .08em; }
 .pr-live i { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: blink 1.4s steps(1) infinite; }
 @media (max-width: 760px) {

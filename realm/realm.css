@@ -388,3 +388,4 @@ a.card:hover { transform: translateY(-3px); border-color: var(--rog); }
 }
 /* very narrow phones: keep the top bar inside the screen */
 @media (max-width: 420px) { .sb-logo { padding: 0 12px 0 10px; } .sb-right { gap: 6px; padding-right: 6px; } .sb-exit { padding: 7px 8px; letter-spacing: .03em; } }
+@media (max-width: 420px) { .sb-dev { flex-wrap: wrap; justify-content: center; gap: 6px 14px; white-space: normal; } }

@@ -259,13 +259,13 @@
 .graph-canvas.engaged, .graph-canvas.modal { touch-action: none; cursor: grab; }
 .graph-canvas.engaged:active { cursor: grabbing; }
 .graph-canvas.engaged { box-shadow: 0 0 0 2px var(--accent), 0 0 0 6px var(--glow); }
-.graph-stage, .side-tile { position: relative; }
-[data-graph] { --gbadge: ""; }
-[data-graph]::after { position: absolute; z-index: 3; right: 12px; bottom: 12px; padding: 5px 10px; border-radius: 999px; pointer-events: none;
-  font: 500 var(--fs-2xs) var(--mono); letter-spacing: .02em; background: color-mix(in srgb, var(--surface) 88%, transparent); border: 1px solid var(--border);
-  color: var(--muted); backdrop-filter: blur(6px); transition: opacity .25s; }
-[data-graph="idle"]::after { content: "click to interact"; opacity: 0; }
-[data-graph="idle"]:hover::after { opacity: 1; }
-[data-graph="live"]::after { content: "● interactive · Esc to release"; color: var(--accent-ink); border-color: var(--accent); opacity: 1; }
-.side-tile[data-graph]::after { right: 26px; bottom: 26px; }
-@media (hover: none) { [data-graph="idle"]::after { content: "tap to interact"; opacity: 1; } }
+.graph-host { position: relative; }
+.graph-badge { position: absolute; z-index: 3; right: 12px; bottom: 12px; padding: 4px 10px; border-radius: 999px; pointer-events: none;
+  font: 500 var(--fs-2xs) var(--mono); letter-spacing: .02em; white-space: nowrap; background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border: 1px solid var(--border); color: var(--muted); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity: 0; transition: opacity .25s; }
+.graph-badge::before { content: "click to interact"; }
+[data-graph="idle"]:hover > .graph-badge { opacity: 1; }
+[data-graph="live"] > .graph-badge { opacity: 1; color: var(--accent-ink); border-color: var(--accent); }
+[data-graph="live"] > .graph-badge::before { content: "● interactive · Esc to release"; }
+.side-tile > .graph-badge { right: 26px; bottom: 26px; }
+@media (hover: none) { [data-graph="idle"] > .graph-badge { opacity: 1; } [data-graph="idle"] > .graph-badge::before { content: "tap to interact"; } [data-graph="live"] > .graph-badge::before { content: "● interactive"; } }

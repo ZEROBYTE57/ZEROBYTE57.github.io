@@ -333,7 +333,13 @@
       host && host.setAttribute("data-graph", on ? "live" : "idle");
       if (!on) { setHover(null); drag && (drag.node.fx = drag.node.fy = null); drag = pan = pinch = downAt = null; pointers.clear(); alphaTarget = 0; }
     }
-    if (needsEngage && host) host.setAttribute("data-graph", "idle");
+    // Small status badge in the graph's corner (its own element, so it never clashes with the card's glow layer).
+    if (needsEngage && host) {
+      host.setAttribute("data-graph", "idle");
+      host.classList.add("graph-host");
+      const badge = document.createElement("span"); badge.className = "graph-badge"; badge.setAttribute("aria-hidden", "true");
+      host.append(badge);
+    }
     const onDocDown = (e) => { if (engaged && !canvas.contains(e.target) && !(host && host.contains(e.target) && e.target.closest(".gbtn-s, .graph-find"))) setEngaged(false); };
     const onKeyEsc = (e) => { if (e.key === "Escape") setEngaged(false); };
     if (needsEngage) { document.addEventListener("pointerdown", onDocDown, true); addEventListener("keydown", onKeyEsc); }
@@ -443,7 +449,7 @@
         return n;
       },
       engage(on = true) { setEngaged(on); },
-      destroy() { dead = true; document.removeEventListener("pointerdown", onDocDown, true); removeEventListener("keydown", onKeyEsc); cancelAnimationFrame(raf); ro.disconnect(); io && io.disconnect(); mo.disconnect(); mq.removeEventListener?.("change", onScheme); },
+      destroy() { dead = true; host && host.querySelector(":scope > .graph-badge")?.remove(); document.removeEventListener("pointerdown", onDocDown, true); removeEventListener("keydown", onKeyEsc); cancelAnimationFrame(raf); ro.disconnect(); io && io.disconnect(); mo.disconnect(); mq.removeEventListener?.("change", onScheme); },
     };
   }
   window.KnowledgeGraph = KnowledgeGraph;
