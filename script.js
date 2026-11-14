@@ -212,7 +212,7 @@ if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a 
     const r = cv.getBoundingClientRect(); dpr = Math.min(devicePixelRatio || 1, 2);
     W = r.width; H = r.height; if (!W || !H) return;
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const R = Math.min(W, H) * 0.36, N = W < 420 ? 56 : 72, step = (2 * R) / N, cx = W / 2, cy = H / 2;
+    const R = Math.min(W, H) * 0.36, N = W < 420 ? 50 : 62, step = (2 * R) / N, cx = W / 2, cy = H / 2;
     const off = document.createElement("canvas"); off.width = off.height = N;
     const o = off.getContext("2d"); o.drawImage(img, 0, 0, N, N);
     let px; try { px = o.getImageData(0, 0, N, N).data; } catch (e) { return false; }
@@ -221,6 +221,7 @@ if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a 
       const dx = x - N / 2 + .5, dy = y - N / 2 + .5;
       if (dx * dx + dy * dy > (N / 2) ** 2) continue;
       const i = (y * N + x) * 4, lum = (0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2]) / 255;
+      if (px[i + 3] < 128) continue;   // transparent corners of the round logo
       const tx = cx + dx * step, ty = cy + dy * step, prev = old[dots.length];
       dots.push({ tx, ty, x: prev ? prev.x : Math.random() * W, y: prev ? prev.y : Math.random() * H, vx: 0, vy: 0,
         step, lum, c: `rgb(${px[i]},${px[i + 1]},${px[i + 2]})`, ph: Math.random() * 6.28 });
@@ -262,7 +263,7 @@ if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a 
       } else { d.x = d.tx; d.y = d.ty; }
       if (d.ring) { ctx.fillStyle = accent; ctx.globalAlpha = .45 + .45 * Math.sin(t / 700 + d.ph * 3); }
       else { ctx.fillStyle = d.c; ctx.globalAlpha = 1; }
-      const sz = d.ring ? d.s : d.step * (0.28 + 0.2 * d.lum);
+      const sz = d.ring ? d.s : d.step * (0.32 + 0.2 * d.lum);
       ctx.beginPath(); ctx.arc(d.x, d.y, sz, 0, 6.283); ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -370,3 +371,6 @@ document.querySelectorAll(".cp-copy").forEach((b) => b.addEventListener("click",
   try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copied"; } catch (e) { b.textContent = "Failed"; }
   setTimeout(() => { b.textContent = "Copy"; }, 1600);
 }));
+
+// Offline support and faster repeat visits (see /sw.js).
+if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));

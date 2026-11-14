@@ -374,3 +374,7 @@
   }, { threshold: 1 });
   io.observe(cmd.parentElement);
 })();
+
+// Offline support and faster repeat visits (see /sw.js).
+if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+

@@ -37,7 +37,7 @@ def parse(path):
         raise ValueError(f"{path.name}: missing front matter")
     meta = {}
     for line in m.group(1).splitlines():
-        if ":" not in line:
+        if ":" not in line or line.lstrip().startswith("#"):
             continue
         key, val = line.split(":", 1)
         val = val.strip()
@@ -60,6 +60,8 @@ def parse(path):
         "tags": as_list(meta.get("tags")),
         "related": as_list(meta.get("related")),
         "summary": meta.get("summary", ""),
+        "series": meta.get("series", ""),
+        "part": int(meta["part"]) if str(meta.get("part", "")).isdigit() else 0,
         "minutes": max(1, round(words / 220)),
         "links": sorted({l.lower() for l in WIKILINK.findall(prose) if l.lower() != path.stem}),
     }
@@ -67,7 +69,7 @@ def parse(path):
 
 SITE = "https://zerobyte57.github.io"
 SHARE = POSTS.parent / "s"
-SHARE_IMG = "https://avatars.githubusercontent.com/u/95509860?v=4"
+SHARE_IMG = SITE + "/assets/img/og-blog.jpg"
 
 
 def share_page(p):
@@ -90,8 +92,10 @@ def share_page(p):
   <meta property="og:description" content="{d}" />
   <meta property="og:url" content="{url}" />
   <meta property="og:image" content="{SHARE_IMG}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="article:published_time" content="{p['date']}" />
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="{t}" />
   <meta name="twitter:description" content="{d}" />
   <meta name="twitter:image" content="{SHARE_IMG}" />
@@ -101,6 +105,19 @@ def share_page(p):
 <body><p><a href="{target}">{t}</a></p></body>
 </html>
 """
+
+
+def write_sitemap(posts):
+    """sitemap.xml for search engines: the main pages, every article and every project case study."""
+    root = POSTS.parent.parent
+    latest = max((p["date"] for p in posts), default="")
+    urls = [(SITE + "/", latest), (SITE + "/blog/", latest), (SITE + "/realm/", "")]
+    urls += [(f"{SITE}/blog/post.html?p={p['slug']}", p["date"]) for p in posts]
+    work = root / "work"
+    if work.is_dir():
+        urls += [(f"{SITE}/work/", "")] + [(f"{SITE}/work/{f.name}", "") for f in sorted(work.glob("*.html")) if f.name != "index.html"]
+    rows = "".join(f"  <url><loc>{u.replace('&', '&amp;')}</loc>{f'<lastmod>{d}</lastmod>' if d else ''}</url>\n" for u, d in urls)
+    (root / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + rows + "</urlset>\n", encoding="utf-8")
 
 
 def main():
@@ -115,7 +132,8 @@ def main():
     for old in SHARE.glob("*.html"):
         if old.name not in keep:
             old.unlink()
-    print(f"Indexed {len(posts)} post(s), wrote {len(keep)} share page(s).")
+    write_sitemap(posts)
+    print(f"Indexed {len(posts)} post(s), wrote {len(keep)} share page(s) and sitemap.xml.")
 
 
 if __name__ == "__main__":

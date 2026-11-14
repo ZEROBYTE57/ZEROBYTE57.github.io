@@ -5,14 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Blog · Devisetty Lakshmi Srinivas</title>
   <meta name="description" content="Articles by Devisetty Lakshmi Srinivas on machine learning, Linux, games and game development, connected in a knowledge graph with portfolio projects." />
-  <meta property="og:title" content="Blog · Devisetty Lakshmi Srinivas" />
-  <meta property="og:description" content="Notes on machine learning, Linux, games and game development." />
   <meta name="theme-color" content="#09090b" />
-  <link rel="icon" href="https://avatars.githubusercontent.com/u/95509860?s=64&v=4" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="canonical" href="https://zerobyte57.github.io/blog/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="zerobyte57" />
+  <meta property="og:url" content="https://zerobyte57.github.io/blog/" />
+  <meta property="og:title" content="Blog · Devisetty Lakshmi Srinivas" />
+  <meta property="og:description" content="Notes on machine learning, Linux, games and game development, linked in a knowledge graph." />
+  <meta property="og:image" content="https://zerobyte57.github.io/assets/img/og-blog.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="zerobyte57 blog: notes on models, machines and games" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Blog · Devisetty Lakshmi Srinivas" />
+  <meta name="twitter:description" content="Notes on machine learning, Linux, games and game development, linked in a knowledge graph." />
+  <meta name="twitter:image" content="https://zerobyte57.github.io/assets/img/og-blog.jpg" />
+  <link rel="icon" href="../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png" />
+  <link rel="manifest" href="../site.webmanifest" />
+  <link rel="preload" href="../assets/fonts/geist-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../assets/fonts/space-grotesk-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../assets/fonts/site.css" />
   <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../assets/js/konami.css" />
   <link rel="stylesheet" href="blog.css" />
   <script>try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
   <script defer src="graph.js"></script>
@@ -27,17 +43,19 @@
     <nav aria-label="Primary">
       <ul class="nav-links">
         <li><a href="../">Portfolio</a></li>
-        <li><a href="../#projects">Projects</a></li>
-        <li><a href="./" class="active" aria-current="page">Blog</a></li>
+        <li><a href="../work/">Projects</a></li>
+        <li><a href="./" aria-current="page">Blog</a></li>
         <li><a href="#graph">Graph</a></li>
         <li><a href="../realm/">Realm</a></li>
       </ul>
     </nav>
-    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
-      <svg class="i-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <svg class="i-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-    </button>
-    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
+    <div class="dock-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
+    </div>
   </header>
 
   <main id="main" class="wrap blog-main">
@@ -100,5 +118,6 @@
       </div>
     </div>
   </footer>
+  <script defer src="../assets/js/konami.js"></script>
 </body>
 </html>

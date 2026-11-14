@@ -3,6 +3,8 @@ title: Schedulers on Linux
 date: 2026-11-05
 tags: [linux, fedora, kernel, schedulers]
 related: []
+series: Linux on a ROG laptop
+part: 4
 summary: An overview of Linux CPU schedulers (EEVDF, BORE, BMQ and sched-ext), which one suits which workload, and how to run sched-ext schedulers on Fedora with scxctl.
 ---
 

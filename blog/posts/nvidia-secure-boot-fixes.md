@@ -3,6 +3,8 @@ title: When NVIDIA breaks under Secure Boot on Fedora
 date: 2026-11-05
 tags: [linux, fedora, nvidia, secure-boot]
 related: []
+series: Linux on a ROG laptop
+part: 3
 summary: Three ways the NVIDIA driver broke on my Fedora laptop with Secure Boot, what caused each one, and the purge-and-rebuild fix that worked.
 ---
 

@@ -156,6 +156,7 @@
           refs.filter((x) => projById[x]).forEach((x) => chips.append(el("li", "chip-proj", "◆ " + shortTitle(projById[x].title))));
           const nNotes = refs.filter((x) => noteById[x]).length;
           if (nNotes) chips.append(el("li", "chip-note", `${nNotes} GitHub note${nNotes > 1 ? "s" : ""}`));
+          if (p.series) { const tot = posts.filter((x) => x.series === p.series).length; chips.prepend(el("li", "chip-series", `Part ${p.part}/${tot} · ${p.series}`)); }
           chips.append(el("li", null, `${p.minutes} min read`));
           body.append(chips); a.append(t, body); return a;
         }));
@@ -165,6 +166,42 @@
       $("#search").addEventListener("input", render);
       setTag(tag);
     }).catch(() => { $("#posts").append(el("p", "empty", "Could not load articles.")); });
+  }
+
+  // ---------- small syntax highlighter for code blocks (shell, ini / toml, python, json, yaml) ----------
+  // Tokenises with one regex per language and wraps matches in spans; everything else is escaped text.
+  const span = (c, t) => `<span class="hl-${c}">${esc(t)}</span>`;
+  function tokenize(text, rules) {
+    const re = new RegExp(rules.map(([, r]) => `(${r.source})`).join("|"), "gm");
+    let out = "", last = 0, m;
+    while ((m = re.exec(text))) {
+      if (m[0] === "") { re.lastIndex++; continue; }
+      if (m.index > last) out += esc(text.slice(last, m.index));
+      const k = m.slice(1).findIndex((g) => g !== undefined);
+      out += rules[k][0] ? span(rules[k][0], m[0]) : esc(m[0]);
+      last = re.lastIndex;
+    }
+    return out + esc(text.slice(last));
+  }
+  const RULES = {
+    sh: [["c", /#.*$/], ["s", /"(?:\\.|[^"\\])*"|'[^']*'/], ["v", /\$\{?[A-Za-z_]\w*\}?/],
+      ["k", /\b(?:if|then|else|elif|fi|for|in|do|done|while|case|esac|function|return|export|local|sudo)\b/],
+      ["o", /(?<=\s)--?[A-Za-z][\w-]*/], ["n", /\b\d+(?:\.\d+)*\b/]],
+    ini: [["c", /^\s*[#;].*$/], ["k", /^\s*\[[^\]\n]+\]/], ["f", /^\s*[\w.-]+(?=\s*=)/], ["s", /"(?:\\.|[^"\\])*"|'[^']*'/], ["n", /\b(?:\d+(?:\.\d+)?|true|false)\b/]],
+    py: [["c", /#.*$/], ["s", /"{3}[\s\S]*?"{3}|'{3}[\s\S]*?'{3}|f?"(?:\\.|[^"\\\n])*"|f?'(?:\\.|[^'\\\n])*'/],
+      ["k", /\b(?:def|class|import|from|as|return|if|elif|else|for|while|in|not|and|or|with|try|except|finally|raise|lambda|yield|None|True|False|pass|break|continue|is)\b/],
+      ["f", /\b[A-Za-z_]\w*(?=\()/], ["n", /\b\d+(?:\.\d+)?\b/]],
+    json: [["f", /"(?:\\.|[^"\\])*"(?=\s*:)/], ["s", /"(?:\\.|[^"\\])*"/], ["n", /-?\b\d+(?:\.\d+)?\b|\b(?:true|false|null)\b/]],
+    yaml: [["c", /#.*$/], ["f", /^\s*-?\s*[\w.-]+(?=:)/], ["s", /"(?:\\.|[^"\\])*"|'[^']*'/], ["n", /\b(?:\d+(?:\.\d+)?|true|false|null)\b/]],
+  };
+  const ALIAS = { bash: "sh", sh: "sh", shell: "sh", zsh: "sh", console: "sh", ini: "ini", toml: "ini", conf: "ini", cfg: "ini", python: "py", py: "py", json: "json", yaml: "yaml", yml: "yaml" };
+  function highlight(text, lang) { const r = RULES[ALIAS[lang]]; return r ? tokenize(text, r) : esc(text); }
+  // One shell command line: program names, flags, strings, variables, pipes and redirects.
+  function hlShell(cmd, cont) {
+    return tokenize(cmd, [["s", /"(?:\\.|[^"\\])*"|'[^']*'/], ["v", /\$\{?[A-Za-z_]\w*\}?/], ["c", /(?<=\s)#\s.*$/],
+      ["p", /\|\||&&|\||;|>>?|</],
+      ...(cont ? [] : [["f", /^(?:sudo\s+)?[A-Za-z][\w.+-]*/]]),
+      ["f", /(?<=(?:\||&&|;)\s*)[A-Za-z][\w.+-]*/], ["o", /(?<=\s)--?[A-Za-z][\w-]*(?:=[^\s"']*)?/]]);
   }
 
   // ---------- saved articles (per browser, used for the "Saved" filter) ----------
@@ -191,6 +228,37 @@
         $("#postMeta").textContent = [meta.date && fmtDate(meta.date), `${meta.minutes} min read`].filter(Boolean).join(" · ");
         meta.tags.forEach((t) => $("#postTags").append(Object.assign(el("a", null, "#" + t), { href: `./?tag=${encodeURIComponent(t)}` })));
         setupSharing(meta);
+        // "Discuss on GitHub": a pre-filled issue on the site repo (no outside script, no tracking).
+        { const REPO = "https://github.com/ZEROBYTE57/ZEROBYTE57.github.io", link = location.origin + location.pathname + "?p=" + encodeURIComponent(slug);
+          const body = `**Article:** [${meta.title}](${link})
+
+<!-- Write your question or thoughts below -->
+`;
+          $("#discussNew").href = `${REPO}/issues/new?title=${encodeURIComponent("Discussion: " + meta.title)}&body=${encodeURIComponent(body)}`;
+          $("#discussSee").href = `${REPO}/issues?q=${encodeURIComponent('is:issue "' + meta.title + '"')}`;
+          $("#discuss").hidden = false; }
+        // Series: a "Part n of N" box under the header and a "next part" card at the end.
+        if (meta.series) {
+          const parts = posts.filter((p) => p.series === meta.series).sort((a, b) => (a.part || 99) - (b.part || 99));
+          const at = parts.findIndex((p) => p.slug === slug);
+          const box = el("nav", "series-box"); box.setAttribute("aria-label", "Series: " + meta.series);
+          const head = el("p", "series-k"); head.append(el("span", null, "Series"), el("b", null, meta.series), el("span", "series-n", `Part ${at + 1} of ${parts.length}`));
+          const ol = el("ol");
+          parts.forEach((p, k) => {
+            const li = el("li", k === at ? "here" : k < at ? "read" : "");
+            li.append(k === at ? el("span", null, p.title) : Object.assign(el("a", null, p.title), { href: `post.html?p=${encodeURIComponent(p.slug)}` }));
+            ol.append(li);
+          });
+          const bar = el("span", "series-bar"); bar.style.setProperty("--f", ((at + 1) / parts.length).toFixed(3));
+          box.append(head, bar, ol);
+          $(".post-head").after(box);
+          const nx = parts[at + 1];
+          if (nx) {
+            const a = Object.assign(el("a", "series-next"), { href: `post.html?p=${encodeURIComponent(nx.slug)}` });
+            a.append(el("small", null, `Next in "${meta.series}" · Part ${at + 2} of ${parts.length}`), el("b", null, nx.title + " →"));
+            $("#postNav").before(a);
+          }
+        }
 
         // [[wikilinks]] -> posts, portfolio projects or GitHub notes.
         let body = md.replace(/^---[\s\S]*?\n---\s*\n/, "").replace(/<!--[\s\S]*?-->/g, "");
@@ -231,11 +299,11 @@
             : lines.join("\n");
           if (shell) {
             code.innerHTML = lines.map((l, i) =>
-              kinds[i] === "cmd" ? `<span class="t-prompt">$</span> <span class="t-cmd">${esc(l.slice(2))}</span>`
-              : kinds[i] === "more" ? `<span class="t-cmd">${esc(l)}</span>`
+              kinds[i] === "cmd" ? `<span class="t-prompt">$</span> <span class="t-cmd">${hlShell(l.slice(2))}</span>`
+              : kinds[i] === "more" ? `<span class="t-cmd">${hlShell(l, true)}</span>`
               : kinds[i] === "comment" ? `<span class="t-comment">${esc(l)}</span>`
               : `<span class="t-out">${esc(l)}</span>`).join("\n");
-          } else code.textContent = lines.join("\n");
+          } else code.innerHTML = highlight(lines.join("\n"), lang);
 
           const term = el("div", "term"), bar = el("div", "term-bar");
           const copy = Object.assign(el("button", "term-copy", "Copy"), { type: "button" });
@@ -448,3 +516,6 @@
   const onScroll = () => fab.classList.toggle("show", scrollY > 700);
   addEventListener("scroll", onScroll, { passive: true }); onScroll();
 })();
+
+// Offline support and faster repeat visits (see /sw.js).
+if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));

@@ -343,6 +343,18 @@
     const onDocDown = (e) => { if (engaged && !canvas.contains(e.target) && !(host && host.contains(e.target) && e.target.closest(".gbtn-s, .graph-find"))) setEngaged(false); };
     const onKeyEsc = (e) => { if (e.key === "Escape") setEngaged(false); };
     if (needsEngage) { document.addEventListener("pointerdown", onDocDown, true); addEventListener("keydown", onKeyEsc); }
+    // Keyboard: Tab to the graph, Enter or Space to interact, arrows pan, + / - zoom, 0 refits, Esc releases.
+    if (!canvas.hasAttribute("tabindex")) canvas.tabIndex = 0;
+    canvas.addEventListener("keydown", (e) => {
+      if (!engaged && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setEngaged(true); return; }
+      if (!engaged) return;
+      const step = 40, pan = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] }[e.key];
+      if (pan) { e.preventDefault(); userMoved = true; view.x += pan[0]; view.y += pan[1]; draw(); }
+      else if (e.key === "+" || e.key === "=") { e.preventDefault(); userMoved = true; animateView({ k: Math.min(cfg.maxZoom + 1, view.k * 1.25), x: view.x * 1.25, y: view.y * 1.25 }, 180); }
+      else if (e.key === "-" || e.key === "_") { e.preventDefault(); userMoved = true; animateView({ k: Math.max(0.25, view.k / 1.25), x: view.x / 1.25, y: view.y / 1.25 }, 180); }
+      else if (e.key === "0") { e.preventDefault(); userMoved = false; fit(true); }
+    });
+    canvas.addEventListener("blur", () => setEngaged(false));
 
     const pointers = new Map();
     let drag = null, pan = null, pinch = null, downAt = null;

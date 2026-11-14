@@ -3,6 +3,8 @@ title: Your post title
 date: 2026-11-03
 tags: [linux]
 related: []
+# series: Name of the series   (optional: posts with the same series name are linked as Part 1, 2, 3...)
+# part: 1
 summary: One or two sentences shown on the blog list.
 ---
 

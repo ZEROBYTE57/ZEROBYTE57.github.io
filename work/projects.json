@@ -1,0 +1,268 @@
+[
+ {
+  "slug": "cxb",
+  "title": "Connectome Explanation Benchmark (CXB)",
+  "short": "CXB",
+  "tagline": "Do brain-network explanations find the disease or the scanner?",
+  "kind": "M.Tech Dissertation · 2026",
+  "status": "wip",
+  "summary": "A benchmark that plants a known connectivity effect into real ABIDE I fMRI connectomes (848 subjects, 19 hospitals), so model explanations can be scored against an exact ground truth.",
+  "glance": [
+   [
+    "848",
+    "subjects from ABIDE I"
+   ],
+   [
+    "19",
+    "hospitals (scanner sites)"
+   ],
+   [
+    "+0.43",
+    "scanner share of top explanation edges as the shortcut grows (MLP)"
+   ],
+   [
+    "+0.15",
+    "AUPRC disease recovery with CF-Site over plain training"
+   ]
+  ],
+  "stack": [
+   "PyTorch Geometric",
+   "Captum",
+   "nilearn",
+   "scikit-learn",
+   "ComBat"
+  ],
+  "links": [
+   [
+    "Code on GitHub",
+    "https://github.com/ZEROBYTE57/GNN-in-Medical-Imaging/tree/main/CXB"
+   ]
+  ],
+  "related_posts": [
+   "brain-disorders-ml-literature"
+  ],
+  "sections": [
+   [
+    "The problem",
+    "<p>Graph neural networks on brain connectomes are often explained with saliency maps that highlight the connections a model relied on. With real patients, though, nobody knows which connections truly carry the disease, so there is no way to tell whether an explanation points at the disease or at something else, such as which hospital scanner recorded the data.</p><p>Multi-site datasets like ABIDE mix 19 hospitals, and scanner differences can quietly become a shortcut the model learns instead of the disease.</p>"
+   ],
+   [
+    "The approach",
+    "<p>CXB makes the correct answer known:</p><ol><li><b>Planted ground truth.</b> A known connectivity effect is planted into real healthy-control connectomes from ABIDE, so the \"disease\" connections are known exactly. The signal is added to the time series of 10 regions and connectivity is recomputed, so every matrix stays a valid correlation matrix.</li><li><b>Scanner shortcut.</b> A scanner effect, sized from real differences between ABIDE hospitals, is added to the planted scans and linked to the label during training only.</li><li><b>Scoring explanations.</b> Explanations are scored on whether they point at the planted effect or at the scanner. Fixes are compared: four ComBat harmonisation versions and <b>counterfactual site training (CF-Site)</b>, where each training scan is paired with its counterfactual at another scanner.</li></ol>"
+   ],
+   [
+    "Set-up",
+    "<table><tbody><tr><th>Data</th><td>ABIDE I (Preprocessed Connectomes Project, CPAC, no global signal regression), AAL-116 atlas, 848 subjects from 19 hospitals</td></tr><tr><th>Models</th><td>Logistic regression, MLP, GCN (BrainGB set-up), BrainNetCNN; BrainGNN and Brain Network Transformer reimplemented and reported where they fail a sanity test</td></tr><tr><th>Explainers</th><td>Saliency, Integrated Gradients, a GNNExplainer-style input mask</td></tr><tr><th>Metrics</th><td>Disease AUPRC on the planted connections, scanner share of the explanation, test accuracy</td></tr><tr><th>Evaluation</th><td>Leave-site-out folds, model selection on validation data only, split-level confidence intervals, paired tests with Holm correction</td></tr></tbody></table>"
+   ],
+   [
+    "Results",
+    "<ul><li><b>Accuracy hides the scanner shortcut; the explanation shows it.</b> As the scanner–label link in training grows from 50% to 90%, the scanner share of the top explanation connections rises by 0.43 (MLP) and 0.22 (GCN), while test accuracy falls by only 0.03 (MLP) and 0.07 (GCN), over 10 splits × 3 seeds.</li><li><b>The ComBat version decides the outcome.</b> Under the shortcut, GCN disease recovery ranges from 0.02 to 0.63 across four common ComBat versions.</li><li><b>CF-Site</b> beats plain training by +0.15 AUPRC and matches the best ComBat without harmonising new-site data. With the true other-scanner scan (oracle CF-Site), recovery reaches 0.85–0.90: the limit is the scanner model, not the training method.</li></ul>"
+   ],
+   [
+    "What it shows",
+    "<p>A model can look fine on accuracy while its explanations quietly drift to the scanner. Benchmarks with a planted, known answer make that drift measurable, and they show that the choice of harmonisation matters as much as the model.</p>"
+   ]
+  ],
+  "figures": [
+   [
+    "cxb-flow.jpg",
+    "The CXB pipeline: (a) building the benchmark, (b) training, explaining and scoring."
+   ],
+   [
+    "cxb-drift.jpg",
+    "Scanner share, disease recovery and accuracy as the scanner shortcut strengthens."
+   ],
+   [
+    "cxb-methods.jpg",
+    "Disease recovery and scanner share for each fix (ComBat versions, CF-Site, oracle CF-Site)."
+   ]
+  ]
+ },
+ {
+  "slug": "llm-preference",
+  "title": "LLM Response Preference Prediction",
+  "short": "LLM preference",
+  "tagline": "Predicting which of two chatbot answers a human preferred.",
+  "kind": "Kaggle · 2026",
+  "status": "wip",
+  "summary": "Predicting which of two LLM answers a human preferred (A, B or tie) on 57K Chatbot Arena battles across 64 LLMs, evaluated on log loss.",
+  "glance": [
+   [
+    "57,477",
+    "training battles"
+   ],
+   [
+    "64",
+    "distinct LLMs"
+   ],
+   [
+    "3",
+    "classes: A, B or tie"
+   ],
+   [
+    "Log loss",
+    "evaluation metric"
+   ]
+  ],
+  "stack": [
+   "pandas",
+   "NumPy",
+   "scikit-learn",
+   "Matplotlib",
+   "Seaborn",
+   "Kaggle Notebooks"
+  ],
+  "links": [
+   [
+    "Code on GitHub",
+    "https://github.com/ZEROBYTE57/LLM-Classfication-Finetuning"
+   ],
+   [
+    "Kaggle competition",
+    "https://www.kaggle.com/competitions/llm-classification-finetuning"
+   ]
+  ],
+  "related_posts": [
+   "local-llms-guide"
+  ],
+  "sections": [
+   [
+    "The problem",
+    "<p>Given a user prompt and two responses from different LLMs (A and B), predict which response a human preferred: A, B or a tie. It is a 3-class probabilistic classification on pairwise text, scored on log loss (lower is better).</p><p>The catch: the training data names the models, but the test set does not, so predictions have to come from the text itself.</p>"
+   ],
+   [
+    "What I did",
+    "<ol><li><b>Exploratory analysis.</b> Found 64 distinct models across both sides of the 57,477 battles (no model ever plays itself), counted wins, losses and ties per model and position, and compared per-model win rates in side-by-side heatmaps.</li><li><b>Pipeline fixes.</b> Fixed a loss count computed with the win formula; found that the test set has no model columns, so per-model win rates cannot be used directly; removed an ID-to-model pairing that broke submissions on the hidden test set.</li><li><b>Validated baseline.</b> Built a submission pipeline that predicts the training class priors, with checks for column order, row count and missing values, and fixed a Kaggle \"incorrect format\" scoring error.</li></ol>"
+   ],
+   [
+    "Next steps",
+    "<ul><li><b>Text features:</b> TF-IDF on the prompt and both responses, plus response length and word counts.</li><li><b>Model attribution:</b> predict which model most likely wrote each response from its text, then use that model's regularised win rate.</li><li><b>Fine-tuning:</b> train a transformer on the prompt and both responses and compare it with the baselines on log loss.</li></ul>"
+   ]
+  ],
+  "figures": [
+   [
+    "llm-models.jpg",
+    "Wins, losses and ties per model as A and B (left), and win rates (right), sorted by total games."
+   ]
+  ]
+ },
+ {
+  "slug": "smote-mvdcnn",
+  "title": "SMOTE-Enhanced Multi-View Deep CNN for Mammogram Classification",
+  "short": "SMOTE-MVDCNN",
+  "tagline": "Completing missing mammogram views to train a four-view CNN.",
+  "kind": "M.Tech Thesis · 2025",
+  "status": "done",
+  "summary": "A 2.24M-parameter multi-view (CC and MLO) CNN for benign and malignant classification on CBIS-DDSM (1,566 patients), with stratified patient-level 70/15/15 splits.",
+  "glance": [
+   [
+    "93.24%",
+    "AUC on the test set"
+   ],
+   [
+    "92.86%",
+    "recall (sensitivity)"
+   ],
+   [
+    "84.02%",
+    "accuracy"
+   ],
+   [
+    "105 → 1,223",
+    "complete four-view cases after SMOTE view completion"
+   ]
+  ],
+  "stack": [
+   "PyTorch",
+   "Albumentations",
+   "CLAHE",
+   "SMOTE",
+   "scikit-learn"
+  ],
+  "links": [
+   [
+    "Code on GitHub",
+    "https://github.com/ZEROBYTE57/SMOTE-MVDCNN"
+   ],
+   [
+    "Read the thesis (PDF)",
+    "https://github.com/ZEROBYTE57/SMOTE-MVDCNN/blob/main/SMOTE_Enhanced_Multi_View_Deep_Convolutional_Neural_Network_for_Mammogram_Classification_Done.pdf"
+   ]
+  ],
+  "related_posts": [],
+  "sections": [
+   [
+    "The problem",
+    "<p>A screening mammogram has four views: CC and MLO of each breast. Multi-view models use all four, but in CBIS-DDSM only 105 of 1,566 labelled patients have all four views; most cases miss two. Throwing those away leaves too little data, and the remaining classes are imbalanced.</p>"
+   ],
+   [
+    "The approach",
+    "<ol><li><b>Pre-processing:</b> DICOM to PNG, CLAHE contrast enhancement, resize to 224×224, grouped into patient-level cases.</li><li><b>SMOTE view completion:</b> a missing view is synthesised by donor-based convex interpolation between similar patients with the same label (Beta(2,2) blending, quality-checked with SSIM and correlation). Complete four-view cases grow from 105 to 1,223.</li><li><b>Hybrid class balancing:</b> undersampling plus case-level SMOTE oversampling, giving 1,122 cases (561 benign, 561 malignant).</li><li><b>MV-DCNN:</b> four separate branches (Conv3×3 + BN + ReLU, 32/64/128/256 filters) fused into a 1024-D vector and a small fully connected head: 2.24M parameters.</li><li><b>Training:</b> Adam, BCE-with-logits, learning-rate scheduling on plateau, early stopping, patient-level 70/15/15 split.</li></ol>"
+   ],
+   [
+    "Three-tier experiment",
+    "<table><thead><tr><th>Tier</th><th>View completion</th><th>Class balancing</th><th>Data</th></tr></thead><tbody><tr><td>Baseline</td><td>–</td><td>–</td><td>105 complete four-view cases</td></tr><tr><td>Tier 1</td><td>✓</td><td>–</td><td>1,223 cases</td></tr><tr><td>Tier 2 (final)</td><td>✓</td><td>✓</td><td>1,122 balanced cases</td></tr></tbody></table>"
+   ],
+   [
+    "Results",
+    "<p>The final Tier-2 model reached <b>84.02% accuracy, 78.79% precision, 92.86% recall, 75.29% specificity, 85.25% F1 and 93.24% AUC</b> on the held-out test set (169 patients).</p>"
+   ],
+   [
+    "Limitations and honesty notes",
+    "<ul><li>View completion runs before the split, so a test patient's synthetic view can be built from training-set donors. Labels never leak, because donors share the target's label, and the evaluation also reports metrics on the real-views-only test subset.</li><li>The original code was lost; the public repository is a faithful rebuild from the thesis report and presentation, with the assumed settings clearly marked in the config.</li></ul>"
+   ]
+  ],
+  "figures": []
+ },
+ {
+  "slug": "yolov3",
+  "title": "Road Object Detection using YOLOv3",
+  "short": "YOLOv3 road detection",
+  "tagline": "A YOLOv3 detector in PyTorch for Indian road scenes.",
+  "kind": "Intel Unnati Industrial Training · 2023",
+  "status": "done",
+  "summary": "A YOLOv3 (Darknet-53) object detector implemented in PyTorch for Indian road scenes.",
+  "glance": [
+   [
+    "YOLOv3",
+    "Darknet-53 backbone"
+   ],
+   [
+    "416×416",
+    "input resolution"
+   ],
+   [
+    "IDD",
+    "Indian Driving Dataset images"
+   ],
+   [
+    "PyTorch",
+    "implementation"
+   ]
+  ],
+  "stack": [
+   "PyTorch",
+   "OpenCV",
+   "NumPy",
+   "Matplotlib"
+  ],
+  "links": [
+   [
+    "Code on GitHub",
+    "https://github.com/ZEROBYTE57/intelunnati_INTEL-Trio"
+   ]
+  ],
+  "related_posts": [],
+  "sections": [
+   [
+    "The problem",
+    "<p>The goal of this Intel Unnati industrial training project was an object detector for Indian road scenes, built by implementing YOLOv3 (Darknet-53) in PyTorch rather than calling a ready-made detector.</p>"
+   ],
+   [
+    "What I built",
+    "<ul><li>Implemented YOLOv3 in PyTorch, including the Darknet config parser, the pre-trained weight loader and the detection layers.</li><li>Wrote the post-processing pipeline: bounding-box decoding, IoU, confidence thresholding and non-maximum suppression.</li><li>Ran inference on 416×416 Indian Driving Dataset images and timed it against an OpenCV DNN pipeline.</li></ul>"
+   ]
+  ],
+  "figures": []
+ }
+]

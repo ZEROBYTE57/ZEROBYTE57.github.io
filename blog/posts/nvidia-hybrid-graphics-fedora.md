@@ -3,6 +3,8 @@ title: NVIDIA hybrid graphics on a ROG laptop with Fedora
 date: 2026-11-05
 tags: [linux, fedora, nvidia, games]
 related: []
+series: Linux on a ROG laptop
+part: 2
 summary: How I get games and apps onto the RTX 4060 instead of the Intel iGPU on Fedora, with supergfxctl, PRIME offload and per-app fixes for Steam, DaVinci Resolve, Kdenlive and VLC.
 ---
 

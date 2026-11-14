@@ -1,0 +1,38 @@
+name: Site checks
+
+# Catches broken links, broken data files, JavaScript errors and layout overflow
+# before they reach the live site. Runs on every push and pull request.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "data/stats.json"
+      - "data/gaming.json"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: JavaScript syntax
+        run: |
+          for f in script.js live.js sw.js blog/*.js realm/*.js work/*.js assets/js/*.js; do node --check "$f"; done
+      - name: Static checks (links, data, images)
+        run: python scripts/check_site.py
+      - name: Browser checks (JS errors, layout in light and dark mode)
+        run: |
+          pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+          python scripts/check_site.py --browser

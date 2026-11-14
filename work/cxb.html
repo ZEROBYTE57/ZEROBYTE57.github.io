@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Connectome Explanation Benchmark (CXB) · Case study · Devisetty Lakshmi Srinivas</title>
+  <meta name="description" content="A benchmark that plants a known connectivity effect into real ABIDE I fMRI connectomes (848 subjects, 19 hospitals), so model explanations can be scored against an exact ground truth." />
+  <meta name="theme-color" content="#09090b" />
+  <link rel="canonical" href="https://zerobyte57.github.io/work/cxb.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="zerobyte57" />
+  <meta property="og:url" content="https://zerobyte57.github.io/work/cxb.html" />
+  <meta property="og:title" content="Connectome Explanation Benchmark (CXB) · Case study · Devisetty Lakshmi Srinivas" />
+  <meta property="og:description" content="A benchmark that plants a known connectivity effect into real ABIDE I fMRI connectomes (848 subjects, 19 hospitals), so model explanations can be scored against an exact ground truth." />
+  <meta property="og:image" content="https://zerobyte57.github.io/assets/img/og-portfolio.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png" />
+  <link rel="manifest" href="../site.webmanifest" />
+  <link rel="preload" href="../assets/fonts/geist-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../assets/fonts/site.css" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../assets/js/konami.css" />
+  <link rel="stylesheet" href="work.css" />
+  <script>try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+  <div class="bg-fx" aria-hidden="true"></div>
+  <header class="dock">
+    <a class="brand" href="../">zerobyte<span>57</span></a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../">Portfolio</a></li>
+        <li><a href="./" aria-current="page">Projects</a></li>
+        <li><a href="../blog/">Blog</a></li>
+        <li><a href="../realm/">Realm</a></li>
+        <li><a href="../#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="dock-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode"><svg class="i-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
+    </div>
+  </header>
+  <main id="main" class="wrap work-main">
+    <a class="cs-back" href="./"><span aria-hidden="true">←</span> All projects</a>
+    <header class="cs-head">
+      <div class="p-top"><span class="tag">M.Tech Dissertation · 2026</span><span class="badge wip">In progress</span></div>
+      <h1>Connectome Explanation Benchmark (CXB)</h1>
+      <p class="cs-tagline">Do brain-network explanations find the disease or the scanner?</p>
+      <p class="cs-summary">A benchmark that plants a known connectivity effect into real ABIDE I fMRI connectomes (848 subjects, 19 hospitals), so model explanations can be scored against an exact ground truth.</p>
+      <div class="cs-links"><a class="btn primary" href="https://github.com/ZEROBYTE57/GNN-in-Medical-Imaging/tree/main/CXB" target="_blank" rel="noopener">Code on GitHub <span aria-hidden="true">↗</span></a></div>
+      <ul class="chips"><li>PyTorch Geometric</li><li>Captum</li><li>nilearn</li><li>scikit-learn</li><li>ComBat</li></ul>
+    </header>
+    <div class="cs-glance"><div class="tile cs-stat"><b>848</b><span>subjects from ABIDE I</span></div><div class="tile cs-stat"><b>19</b><span>hospitals (scanner sites)</span></div><div class="tile cs-stat"><b>+0.43</b><span>scanner share of top explanation edges as the shortcut grows (MLP)</span></div><div class="tile cs-stat"><b>+0.15</b><span>AUPRC disease recovery with CF-Site over plain training</span></div></div>
+    <div class="cs-layout">
+      <article class="cs-body"><section class="cs-sec" id="s0"><h2>The problem</h2><div class="cs-prose"><p>Graph neural networks on brain connectomes are often explained with saliency maps that highlight the connections a model relied on. With real patients, though, nobody knows which connections truly carry the disease, so there is no way to tell whether an explanation points at the disease or at something else, such as which hospital scanner recorded the data.</p><p>Multi-site datasets like ABIDE mix 19 hospitals, and scanner differences can quietly become a shortcut the model learns instead of the disease.</p></div></section><section class="cs-sec" id="s1"><h2>The approach</h2><div class="cs-prose"><p>CXB makes the correct answer known:</p><ol><li><b>Planted ground truth.</b> A known connectivity effect is planted into real healthy-control connectomes from ABIDE, so the "disease" connections are known exactly. The signal is added to the time series of 10 regions and connectivity is recomputed, so every matrix stays a valid correlation matrix.</li><li><b>Scanner shortcut.</b> A scanner effect, sized from real differences between ABIDE hospitals, is added to the planted scans and linked to the label during training only.</li><li><b>Scoring explanations.</b> Explanations are scored on whether they point at the planted effect or at the scanner. Fixes are compared: four ComBat harmonisation versions and <b>counterfactual site training (CF-Site)</b>, where each training scan is paired with its counterfactual at another scanner.</li></ol></div></section><section class="cs-sec" id="s2"><h2>Set-up</h2><div class="cs-prose"><table><tbody><tr><th>Data</th><td>ABIDE I (Preprocessed Connectomes Project, CPAC, no global signal regression), AAL-116 atlas, 848 subjects from 19 hospitals</td></tr><tr><th>Models</th><td>Logistic regression, MLP, GCN (BrainGB set-up), BrainNetCNN; BrainGNN and Brain Network Transformer reimplemented and reported where they fail a sanity test</td></tr><tr><th>Explainers</th><td>Saliency, Integrated Gradients, a GNNExplainer-style input mask</td></tr><tr><th>Metrics</th><td>Disease AUPRC on the planted connections, scanner share of the explanation, test accuracy</td></tr><tr><th>Evaluation</th><td>Leave-site-out folds, model selection on validation data only, split-level confidence intervals, paired tests with Holm correction</td></tr></tbody></table></div></section><section class="cs-sec" id="s3"><h2>Results</h2><div class="cs-prose"><ul><li><b>Accuracy hides the scanner shortcut; the explanation shows it.</b> As the scanner–label link in training grows from 50% to 90%, the scanner share of the top explanation connections rises by 0.43 (MLP) and 0.22 (GCN), while test accuracy falls by only 0.03 (MLP) and 0.07 (GCN), over 10 splits × 3 seeds.</li><li><b>The ComBat version decides the outcome.</b> Under the shortcut, GCN disease recovery ranges from 0.02 to 0.63 across four common ComBat versions.</li><li><b>CF-Site</b> beats plain training by +0.15 AUPRC and matches the best ComBat without harmonising new-site data. With the true other-scanner scan (oracle CF-Site), recovery reaches 0.85–0.90: the limit is the scanner model, not the training method.</li></ul></div></section><section class="cs-sec" id="s4"><h2>What it shows</h2><div class="cs-prose"><p>A model can look fine on accuracy while its explanations quietly drift to the scanner. Benchmarks with a planted, known answer make that drift measurable, and they show that the choice of harmonisation matters as much as the model.</p></div></section><section class="cs-sec" id="figures"><h2>Figures</h2><figure class="tile cs-fig"><a href="../assets/img/work/cxb-flow.jpg" target="_blank" rel="noopener"><img src="../assets/img/work/cxb-flow.jpg" alt="The CXB pipeline: (a) building the benchmark, (b) training, explaining and scoring." loading="lazy" decoding="async" /></a><figcaption>The CXB pipeline: (a) building the benchmark, (b) training, explaining and scoring.</figcaption></figure><figure class="tile cs-fig"><a href="../assets/img/work/cxb-drift.jpg" target="_blank" rel="noopener"><img src="../assets/img/work/cxb-drift.jpg" alt="Scanner share, disease recovery and accuracy as the scanner shortcut strengthens." loading="lazy" decoding="async" /></a><figcaption>Scanner share, disease recovery and accuracy as the scanner shortcut strengthens.</figcaption></figure><figure class="tile cs-fig"><a href="../assets/img/work/cxb-methods.jpg" target="_blank" rel="noopener"><img src="../assets/img/work/cxb-methods.jpg" alt="Disease recovery and scanner share for each fix (ComBat versions, CF-Site, oracle CF-Site)." loading="lazy" decoding="async" /></a><figcaption>Disease recovery and scanner share for each fix (ComBat versions, CF-Site, oracle CF-Site).</figcaption></figure></section><section class="cs-sec"><h2>On the blog</h2><div class="cs-rel"><a class="tile cs-post" href="../blog/post.html?p=brain-disorders-ml-literature"><small>2026-11-08 · 6 min read</small><b>Machine learning for brain disorders, where the current research leads to.</b><span>A short review of how graph neural networks and other models are used to study autism, ADHD, depression and schizophrenia from brain scans, how well they work, and where the field still falls short.</span></a></div></section></article>
+      <aside class="cs-side"><div class="tile cs-toc"><p class="tile-label">On this page</p><ol><li><a href="#s0">The problem</a></li><li><a href="#s1">The approach</a></li><li><a href="#s2">Set-up</a></li><li><a href="#s3">Results</a></li><li><a href="#s4">What it shows</a></li><li><a href="#figures">Figures</a></li></ol></div></aside>
+    </div>
+    <nav class="cs-nav" aria-label="More projects"><span></span><a class="tile next" href="llm-preference.html"><small>Next →</small><b>LLM Response Preference Prediction</b></a></nav>
+  </main>
+  <footer class="footer">
+    <div class="wrap">
+      <div class="statusbar">
+        <a class="sb-seg sb-brand" href="../"><span>zerobyte<b>57</b></span></a>
+        <span class="sb-seg sb-loc"><i class="sb-dot" aria-hidden="true"></i>Bengaluru · <span id="clock2">--:--</span> IST</span>
+        <span class="sb-seg sb-copy">© <span id="year">2026</span> Devisetty Lakshmi Srinivas</span>
+        <span class="sb-fill" aria-hidden="true"></span>
+        <a class="sb-seg sb-link" href="../blog/">blog ↗</a>
+        <a class="sb-seg foot-prompt" href="../realm/" aria-label="Go to 404 Realm"><span class="fp-p" aria-hidden="true">$</span> <span class="fp-cmd" aria-hidden="true">cd ~/404-realm</span><span class="fp-cursor" aria-hidden="true"></span></a>
+        <a class="sb-seg sb-link" href="#main">top ↑</a>
+      </div>
+    </div>
+  </footer>
+  <script defer src="work.js"></script>
+  <script defer src="../assets/js/konami.js"></script>
+</body>
+</html>

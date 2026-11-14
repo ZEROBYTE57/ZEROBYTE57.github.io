@@ -1,0 +1,22 @@
+[
+ {
+  "slug": "cxb",
+  "title": "Connectome Explanation Benchmark (CXB)",
+  "tagline": "Do brain-network explanations find the disease or the scanner?"
+ },
+ {
+  "slug": "llm-preference",
+  "title": "LLM Response Preference Prediction",
+  "tagline": "Predicting which of two chatbot answers a human preferred."
+ },
+ {
+  "slug": "smote-mvdcnn",
+  "title": "SMOTE-Enhanced Multi-View Deep CNN for Mammogram Classification",
+  "tagline": "Completing missing mammogram views to train a four-view CNN."
+ },
+ {
+  "slug": "yolov3",
+  "title": "Road Object Detection using YOLOv3",
+  "tagline": "A YOLOv3 detector in PyTorch for Indian road scenes."
+ }
+]

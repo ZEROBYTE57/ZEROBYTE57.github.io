@@ -3,6 +3,8 @@ title: CachyOS kernel on Fedora with signed NVIDIA drivers
 date: 2026-11-05
 tags: [linux, fedora, kernel, nvidia]
 related: []
+series: Linux on a ROG laptop
+part: 5
 summary: A start-to-finish guide to running the CachyOS kernel on Fedora with Secure Boot on and the NVIDIA driver signed, based on what worked on my ROG laptop.
 ---
 

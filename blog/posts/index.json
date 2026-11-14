@@ -12,6 +12,8 @@
    "llm-preference"
   ],
   "summary": "How to run open-weight language, vision, speech and image models on your own machine. Covers the tools, how much hardware you need, settings like temperature, the best models right now, fake models to avoid, and what changed in 2026.",
+  "series": "",
+  "part": 0,
   "minutes": 15,
   "links": [
    "fedora-on-rog-strix-g16"
@@ -31,6 +33,8 @@
    "cxb"
   ],
   "summary": "A short review of how graph neural networks and other models are used to study autism, ADHD, depression and schizophrenia from brain scans, how well they work, and where the field still falls short.",
+  "series": "",
+  "part": 0,
   "minutes": 6,
   "links": [
    "cxb",
@@ -49,6 +53,8 @@
   ],
   "related": [],
   "summary": "A start-to-finish guide to running the CachyOS kernel on Fedora with Secure Boot on and the NVIDIA driver signed, based on what worked on my ROG laptop.",
+  "series": "Linux on a ROG laptop",
+  "part": 5,
   "minutes": 6,
   "links": [
    "fedora-on-rog-strix-g16",
@@ -68,6 +74,8 @@
   ],
   "related": [],
   "summary": "Notes from three months of running Fedora 43 and 44 on an ROG Strix G16, covering audio, power, the CachyOS kernel, NVIDIA under Secure Boot, and the mistakes that broke things.",
+  "series": "Linux on a ROG laptop",
+  "part": 1,
   "minutes": 5,
   "links": [
    "cachyos-kernel-on-fedora",
@@ -88,6 +96,8 @@
   ],
   "related": [],
   "summary": "How I get games and apps onto the RTX 4060 instead of the Intel iGPU on Fedora, with supergfxctl, PRIME offload and per-app fixes for Steam, DaVinci Resolve, Kdenlive and VLC.",
+  "series": "Linux on a ROG laptop",
+  "part": 2,
   "minutes": 3,
   "links": [
    "cachyos-kernel-on-fedora",
@@ -106,6 +116,8 @@
   ],
   "related": [],
   "summary": "Three ways the NVIDIA driver broke on my Fedora laptop with Secure Boot, what caused each one, and the purge-and-rebuild fix that worked.",
+  "series": "Linux on a ROG laptop",
+  "part": 3,
   "minutes": 3,
   "links": [
    "cachyos-kernel-on-fedora",
@@ -124,6 +136,8 @@
   ],
   "related": [],
   "summary": "An overview of Linux CPU schedulers (EEVDF, BORE, BMQ and sched-ext), which one suits which workload, and how to run sched-ext schedulers on Fedora with scxctl.",
+  "series": "Linux on a ROG laptop",
+  "part": 4,
   "minutes": 6,
   "links": [
    "cachyos-kernel-on-fedora",
@@ -145,6 +159,8 @@
   ],
   "related": [],
   "summary": "Short notes written while learning, plus my study notes from GitHub, all linked in one place.",
+  "series": "",
+  "part": 0,
   "minutes": 1,
   "links": [
    "algorithm-design",

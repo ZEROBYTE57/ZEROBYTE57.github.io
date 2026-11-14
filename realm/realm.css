@@ -143,7 +143,7 @@ h1, h2, h3, p { margin: 0; }
 /* Player card */
 .pcard { position: relative; max-width: 420px; justify-self: center; width: 100%; }
 .pcard-art { position: relative; aspect-ratio: 1 / 1.05; background: var(--stripes), linear-gradient(160deg, var(--rog), #6d0a1b 50%, var(--ink)); clip-path: polygon(0 0, 100% 0, 100% 88%, 88% 100%, 0 100%); display: grid; place-items: end center; overflow: hidden; }
-.pcard-art img { width: 64%; margin-bottom: 9%; border-radius: 50%; border: 4px solid var(--rog); box-shadow: 0 0 0 10px rgba(9,9,14,.35); }
+.pcard-art img { width: 64%; height: auto; aspect-ratio: 1; object-fit: cover; margin-bottom: 9%; border-radius: 50%; border: 4px solid var(--rog); box-shadow: 0 0 0 10px rgba(9,9,14,.35); }
 .pnum { position: absolute; top: 4%; left: 6%; font-family: var(--display); font-weight: 800; font-size: clamp(4rem, 9vw, 6rem); line-height: 1; color: var(--rog-text); text-shadow: 6px 6px 0 rgba(9,9,14,.4); }
 .pcard-plate { display: grid; grid-template-columns: 1fr 1fr; background: var(--s1); border: 1px solid var(--line); border-top: 3px solid var(--rog); }
 .pcard-plate div { padding: 12px 16px; border-bottom: 1px solid var(--line); }
@@ -389,3 +389,5 @@ a.card:hover { transform: translateY(-3px); border-color: var(--rog); }
 /* very narrow phones: keep the top bar inside the screen */
 @media (max-width: 420px) { .sb-logo { padding: 0 12px 0 10px; } .sb-right { gap: 6px; padding-right: 6px; } .sb-exit { padding: 7px 8px; letter-spacing: .03em; } }
 @media (max-width: 420px) { .sb-dev { flex-wrap: wrap; justify-content: center; gap: 6px 14px; white-space: normal; } }
+
+@media (max-width: 360px) { .sb-logo { padding: 0 10px 0 8px; font-size: 12px; } .sb-exit { padding: 7px 7px; font-size: 11px; letter-spacing: .02em; } .sb-right { gap: 5px; padding-right: 5px; } }

@@ -82,6 +82,7 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 .brand { font-family: var(--mono); font-weight: 500; font-size: var(--fs-sm); text-decoration: none; }
 .brand span { color: var(--accent-ink); }
 .dock nav { margin-left: auto; }
+.dock-actions { display: flex; align-items: center; gap: 8px; }
 .nav-links { position: relative; display: flex; list-style: none; margin: 0; padding: 0; }
 .nav-links a { position: relative; z-index: 1; display: flex; align-items: center; padding: 7px 14px; border-radius: 999px; text-decoration: none; color: var(--muted); font-size: var(--fs-sm); font-weight: 500; transition: color .2s; }
 .nav-links a::before { content: "▸"; width: 0; opacity: 0; overflow: hidden; font-size: 10px; color: var(--accent-ink); transition: width .2s, opacity .2s, margin .2s; }
@@ -652,3 +653,37 @@ a.row:hover { padding-left: 6px; color: var(--accent-ink); }
 @media (max-width: 480px) { .cp-cmd { display: none; } .cp-mail-link { padding: 13px 12px; font-size: var(--fs-xs); } .cp-copy { padding: 0 12px; } }
 @media (max-width: 380px) { .cp-mail-link { font-size: 11.5px; padding: 13px 10px; } .cp-copy { padding: 0 10px; } }
 @media (max-width: 420px) { .cp-links li { flex-basis: 50%; border-bottom: 1px solid var(--cp-line); } .cp-links li:nth-child(2n) { border-right: 0; } }
+
+/* Project cards: link to the full case study */
+.cs-link { align-self: flex-start; display: inline-flex; gap: 6px; margin-top: 4px; font-weight: 600; font-size: var(--fs-md); color: var(--accent-ink); text-decoration: none; }
+.cs-link span { transition: transform .25s; } .cs-link:hover span { transform: translateX(4px); }
+
+/* ---------- accessibility: AA contrast for small text on accent colours in light mode ---------- */
+.sb-brand, .cp-copy { background: var(--accent-ink); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sb-brand, :root:not([data-theme="light"]) .cp-copy { background: var(--accent); } }
+:root[data-theme="dark"] .sb-brand, :root[data-theme="dark"] .cp-copy { background: var(--accent); }
+.ed-realm .ed-text small { color: #be123c; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ed-realm .ed-text small { color: #ff6b80; } }
+:root[data-theme="dark"] .ed-realm .ed-text small { color: #ff6b80; }
+.pr-live { background: #e11d48; }
+
+/* ---------- dock layout: brand left, links centred, search + theme on the right ---------- */
+@media (min-width: 921px) {
+  .dock { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 16px; }
+  .dock .brand { justify-self: start; }
+  .dock nav { margin: 0; justify-self: center; }
+  .dock-actions { justify-self: end; }
+}
+@media (max-width: 920px) {
+  .dock-actions { margin-left: auto; }
+  .dock .theme-toggle { margin-left: 0; }
+}
+/* pages without the sliding pill (blog, case studies): the current page gets the same pill look */
+.nav-links a[aria-current="page"] { color: var(--text); background: linear-gradient(180deg, #ffffff, #fbfbfc);
+  box-shadow: 0 0 0 1px rgba(9,9,11,.10), inset 0 .5px 0 #fff, 0 .5px 1.5px rgba(9,9,11,.16), 0 3px 8px -2px rgba(9,9,11,.14); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .nav-links a[aria-current="page"] { background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.07));
+  box-shadow: 0 0 0 1px rgba(255,255,255,.10), inset 0 .5px 0 rgba(255,255,255,.18), 0 1px 2px rgba(0,0,0,.45), 0 4px 10px -3px rgba(0,0,0,.5); } }
+:root[data-theme="dark"] .nav-links a[aria-current="page"] { background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.07));
+  box-shadow: 0 0 0 1px rgba(255,255,255,.10), inset 0 .5px 0 rgba(255,255,255,.18), 0 1px 2px rgba(0,0,0,.45), 0 4px 10px -3px rgba(0,0,0,.5); }
+.nav-links a[aria-current="page"]::before { width: 9px; opacity: 1; margin-right: 4px; }
+@media (max-width: 920px) { .nav-links a[aria-current="page"] { box-shadow: none; background: var(--surface-2); } }

@@ -3,6 +3,8 @@ title: Fedora on an ASUS ROG Strix G16
 date: 2026-11-05
 tags: [linux, fedora, laptop, nvidia]
 related: []
+series: Linux on a ROG laptop
+part: 1
 summary: Notes from three months of running Fedora 43 and 44 on an ROG Strix G16, covering audio, power, the CachyOS kernel, NVIDIA under Secure Boot, and the mistakes that broke things.
 ---
 

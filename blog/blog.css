@@ -269,3 +269,46 @@
 [data-graph="live"] > .graph-badge::before { content: "● interactive · Esc to release"; }
 .side-tile > .graph-badge { right: 26px; bottom: 26px; }
 @media (hover: none) { [data-graph="idle"] > .graph-badge { opacity: 1; } [data-graph="idle"] > .graph-badge::before { content: "tap to interact"; } [data-graph="live"] > .graph-badge::before { content: "● interactive"; } }
+
+/* ---------- syntax colours inside the terminal code windows (always on the dark screen) ---------- */
+.prose-body .term .hl-c { color: #7f8592; font-style: italic; }
+.prose-body .term .hl-s { color: #a5d6a7; }
+.prose-body .term .hl-k { color: #c792ea; }
+.prose-body .term .hl-f { color: #82aaff; }
+.prose-body .term .hl-o { color: #f6c177; }
+.prose-body .term .hl-v, .prose-body .term .hl-n { color: #f78c6c; }
+.prose-body .term .hl-p { color: #89ddff; }
+.prose-body .term .t-cmd .hl-f { font-weight: 600; }
+
+/* ---------- series: "Part n of N" box, progress bar and next-part card ---------- */
+.series-box { margin: -12px 0 32px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+.series-k { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; font-size: var(--fs-sm); }
+.series-k span:first-child { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: .1em; text-transform: uppercase; color: var(--accent-ink); }
+.series-k b { font-weight: 600; }
+.series-n { margin-left: auto; font-family: var(--mono); font-size: var(--fs-xs); color: var(--muted); }
+.series-bar { display: block; height: 3px; margin: 10px 0 12px; border-radius: 3px; background: var(--border);
+  background-image: linear-gradient(var(--accent), var(--accent)); background-repeat: no-repeat; background-size: calc(var(--f) * 100%) 100%; }
+.series-box ol { margin: 0; padding-left: 1.4em; display: grid; gap: 4px; font-size: var(--fs-sm); }
+.series-box li::marker { color: var(--muted); font-family: var(--mono); font-size: var(--fs-xs); }
+.series-box li a { color: var(--muted); text-decoration: none; } .series-box li a:hover { color: var(--accent-ink); }
+.series-box li.read a { color: var(--text); }
+.series-box li.here { font-weight: 600; } .series-box li.here::marker { color: var(--accent); }
+.series-next { display: block; margin-top: 40px; padding: 18px 20px; border-radius: 16px; border: 1px solid var(--accent); text-decoration: none;
+  background: linear-gradient(90deg, var(--accent-soft), transparent 80%); transition: transform .2s; }
+.series-next:hover { transform: translateY(-2px); }
+.series-next small { display: block; font-family: var(--mono); font-size: var(--fs-2xs); color: var(--accent-ink); margin-bottom: 4px; }
+.series-next b { font-weight: 600; font-size: var(--fs-h5); }
+.chip-series { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)) !important; color: var(--accent-ink) !important; }
+.is-loading .series-box { display: none; }
+
+.graph-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- Discuss on GitHub ---------- */
+.discuss { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px 18px; margin-top: 16px; padding: 20px 22px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.discuss[hidden], .is-loading .discuss { display: none; }
+.discuss svg { width: 30px; height: 30px; color: var(--text); }
+.discuss-k { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); }
+.discuss-t { margin-top: 3px; color: var(--muted); font-size: var(--fs-md); }
+.discuss-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 720px) { .discuss { grid-template-columns: auto minmax(0, 1fr); } .discuss-actions { grid-column: 1 / -1; } }
+@media print { .discuss { display: none !important; } }
