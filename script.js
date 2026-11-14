@@ -325,9 +325,9 @@ if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a 
 })();
 
 // Floating dock (bottom centre, macOS style): Blog + 404 Realm with an article count and a live dot. Shows after the hero, hides once the
-// "Off the grid" section (which has the full cards) or the contact section is on screen.
+// contact section or the contact section is on screen.
 (() => {
-  const hero = document.querySelector(".hero"), beyond = document.getElementById("writing");
+  const hero = document.querySelector(".hero"), beyond = document.getElementById("contact");
   if (!hero) return;
   const dock = document.createElement("nav");
   dock.className = "explore-dock"; dock.setAttribute("aria-label", "Blog and 404 Realm");
