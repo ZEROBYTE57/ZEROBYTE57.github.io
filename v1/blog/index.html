@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blog · Devisetty Lakshmi Srinivas</title>
+  <meta name="description" content="Articles by Devisetty Lakshmi Srinivas on machine learning, Linux, games and game development, connected in a knowledge graph with portfolio projects." />
+  <meta name="theme-color" content="#09090b" />
+  <link rel="canonical" href="https://zerobyte57.github.io/blog/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="zerobyte57" />
+  <meta property="og:url" content="https://zerobyte57.github.io/blog/" />
+  <meta property="og:title" content="Blog · Devisetty Lakshmi Srinivas" />
+  <meta property="og:description" content="Notes on machine learning, Linux, games and game development, linked in a knowledge graph." />
+  <meta property="og:image" content="https://zerobyte57.github.io/assets/img/og-blog.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="zerobyte57 blog: notes on models, machines and games" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Blog · Devisetty Lakshmi Srinivas" />
+  <meta name="twitter:description" content="Notes on machine learning, Linux, games and game development, linked in a knowledge graph." />
+  <meta name="twitter:image" content="https://zerobyte57.github.io/assets/img/og-blog.jpg" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="preload" href="/assets/fonts/geist-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/assets/fonts/space-grotesk-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/assets/fonts/site.css" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../assets/js/konami.css" />
+  <link rel="stylesheet" href="blog.css" />
+  <script>try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script defer src="graph.js"></script>
+  <script defer src="blog.js"></script>
+</head>
+<body data-page="index">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="bg-fx" aria-hidden="true"></div>
+
+  <header class="dock">
+    <a class="brand" href="../">zerobyte<span>57</span></a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../">Portfolio</a></li>
+        <li><a href="../work/">Projects</a></li>
+        <li><a href="./" aria-current="page">Blog</a></li>
+        <li><a href="#graph">Graph</a></li>
+        <li><a href="../realm/">Realm</a></li>
+      </ul>
+    </nav>
+    <div class="dock-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
+    </div>
+  </header>
+
+  <main id="main" class="wrap blog-main">
+    <header class="blog-hero">
+      <p class="label">Blog</p>
+      <h1>Notes on <em>models</em>, machines and games.</h1>
+      <p class="lede">Longer write-ups behind my portfolio projects, plus what I explore on the side: Linux, games and game development. Every post is linked to its topics, my GitHub notes and my projects in the graph below.</p>
+      <ul class="blog-stats" id="blogStats" aria-label="Blog statistics"><li class="stat-skel" aria-hidden="true"></li><li class="stat-skel" aria-hidden="true"></li><li class="stat-skel" aria-hidden="true"></li><li class="stat-skel" aria-hidden="true"></li></ul>
+    </header>
+
+    <section class="tile graph-tile" id="graph" aria-labelledby="graphTitle">
+      <div class="graph-bar">
+        <div>
+          <h2 class="graph-title" id="graphTitle">Knowledge graph</h2>
+          <p class="graph-hint" id="graphHint">Drag nodes · scroll to zoom · drag the background to pan · click to open</p>
+        </div>
+        <div class="graph-tools">
+          <label class="sr" for="graphFind">Find in graph</label>
+          <input class="graph-find" id="graphFind" type="search" placeholder="Find in graph…" autocomplete="off" />
+          <button type="button" class="gbtn-s" id="zoomIn" aria-label="Zoom in">+</button>
+          <button type="button" class="gbtn-s" id="zoomOut" aria-label="Zoom out">−</button>
+          <button type="button" class="gbtn-s" id="zoomReset" aria-label="Fit graph to view">⟲</button>
+          <button type="button" class="gbtn-s" id="graphExpand" aria-label="Open fullscreen graph" title="Fullscreen"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        </div>
+      </div>
+      <div class="legend" role="group" aria-label="Show or hide node types">
+        <button type="button" class="lg" data-type="post" aria-pressed="true"><i class="lg-post"></i>Articles</button>
+        <button type="button" class="lg" data-type="project" aria-pressed="true"><i class="lg-project"></i>Projects</button>
+        <button type="button" class="lg" data-type="note" aria-pressed="true"><i class="lg-note"></i>GitHub notes</button>
+        <button type="button" class="lg" data-type="tag" aria-pressed="true"><i class="lg-tag"></i>Topics</button>
+      </div>
+      <div class="graph-stage">
+        <canvas class="graph-canvas" id="graphCanvas" role="img" aria-label="Interactive graph linking blog articles, GitHub notes, topics and portfolio projects"></canvas>
+        <div class="graph-tip" id="graphTip" hidden></div>
+      </div>
+    </section>
+
+    <section class="posts-sec" aria-labelledby="postsTitle">
+      <div class="posts-head">
+        <h2 class="section-title" id="postsTitle">All <em>articles</em>.</h2>
+        <span class="count" id="count"></span>
+      </div>
+      <div class="toolbar">
+        <label class="sr" for="search">Search articles</label>
+        <input class="search" id="search" type="search" placeholder="Search articles…" autocomplete="off" />
+        <div class="filters" id="filters" role="group" aria-label="Filter by topic"></div>
+      </div>
+      <div class="post-list" id="posts"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="statusbar">
+        <a class="sb-seg sb-brand" href="../"><span>zerobyte<b>57</b></span></a>
+        <a class="sb-seg sb-link" href="../">← portfolio</a>
+        <span class="sb-seg sb-copy">© <span id="year">2026</span> Devisetty Lakshmi Srinivas</span>
+        <span class="sb-fill" aria-hidden="true"></span>
+        <a class="sb-seg foot-prompt" href="../realm/" aria-label="Go to 404 Realm"><span class="fp-p" aria-hidden="true">$</span> <span class="fp-cmd" aria-hidden="true">cd ~/404-realm</span><span class="fp-cursor" aria-hidden="true"></span></a>
+      </div>
+    </div>
+  </footer>
+  <script defer src="../assets/js/konami.js"></script>
+</body>
+</html>

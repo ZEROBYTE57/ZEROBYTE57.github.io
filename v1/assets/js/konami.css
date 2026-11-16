@@ -1,0 +1,11 @@
+/* Konami easter egg overlay (see konami.js). */
+.konami { position: fixed; inset: 0; z-index: 420; display: grid; place-items: center; background: rgba(5,5,8,.82); opacity: 0; transition: opacity .3s; pointer-events: none; }
+.konami.on { opacity: 1; }
+.konami::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 3px); }
+.konami-box { position: relative; text-align: center; color: #fff; font-family: "Unbounded", "Space Grotesk", system-ui, sans-serif; transform: scale(.9); transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+.konami.on .konami-box { transform: none; }
+.konami-box small { display: block; font: 600 12px ui-monospace, monospace; letter-spacing: .3em; text-transform: uppercase; color: #ff6b80; }
+.konami-box b { display: block; margin: 10px 0; font-size: clamp(2.4rem, 8vw, 5rem); font-weight: 800; letter-spacing: -.02em; color: #ff2e4f; text-shadow: 0 0 30px rgba(255,46,79,.7), 3px 0 #45b5c2, -3px 0 #d94dff; animation: konamiGlitch .5s steps(2) 2; }
+.konami-box span { font: 500 15px ui-monospace, monospace; color: #c9c9d0; }
+@keyframes konamiGlitch { 50% { transform: translate(-3px, 1px) skewX(-6deg); } }
+@media (prefers-reduced-motion: reduce) { .konami-box b { animation: none; } }

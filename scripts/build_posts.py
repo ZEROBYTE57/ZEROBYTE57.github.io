@@ -132,6 +132,15 @@ def main():
     for old in SHARE.glob("*.html"):
         if old.name not in keep:
             old.unlink()
+    # the classic design at /v1/ (scripts/build_v1.py) has the same share pages, opening the classic article
+    v1 = ROOT / "v1" / "blog"
+    if v1.is_dir():
+        (v1 / "s").mkdir(exist_ok=True)
+        for p in posts:
+            (v1 / "s" / f"{p['slug']}.html").write_text(share_page(p), encoding="utf-8")
+        for old in (v1 / "s").glob("*.html"):
+            if old.name not in keep:
+                old.unlink()
     write_sitemap(posts)
     print(f"Indexed {len(posts)} post(s), wrote {len(keep)} share page(s) and sitemap.xml.")
 

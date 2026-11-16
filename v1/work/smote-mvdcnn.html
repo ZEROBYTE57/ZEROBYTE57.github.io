@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SMOTE-Enhanced Multi-View Deep CNN for Mammogram Classification · Case study · Devisetty Lakshmi Srinivas</title>
+  <meta name="description" content="A 2.24M-parameter multi-view (CC and MLO) CNN for benign and malignant classification on CBIS-DDSM (1,566 patients), with stratified patient-level 70/15/15 splits." />
+  <meta name="theme-color" content="#09090b" />
+  <link rel="canonical" href="https://zerobyte57.github.io/work/smote-mvdcnn.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="zerobyte57" />
+  <meta property="og:url" content="https://zerobyte57.github.io/work/smote-mvdcnn.html" />
+  <meta property="og:title" content="SMOTE-Enhanced Multi-View Deep CNN for Mammogram Classification · Case study · Devisetty Lakshmi Srinivas" />
+  <meta property="og:description" content="A 2.24M-parameter multi-view (CC and MLO) CNN for benign and malignant classification on CBIS-DDSM (1,566 patients), with stratified patient-level 70/15/15 splits." />
+  <meta property="og:image" content="https://zerobyte57.github.io/assets/img/og-portfolio.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="preload" href="/assets/fonts/geist-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/assets/fonts/site.css" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../assets/js/konami.css" />
+  <link rel="stylesheet" href="work.css" />
+  <script>try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+  <div class="bg-fx" aria-hidden="true"></div>
+  <header class="dock">
+    <a class="brand" href="../">zerobyte<span>57</span></a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../">Portfolio</a></li>
+        <li><a href="./" aria-current="page">Projects</a></li>
+        <li><a href="../blog/">Blog</a></li>
+        <li><a href="../realm/">Realm</a></li>
+        <li><a href="../#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="dock-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode"><svg class="i-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
+    </div>
+  </header>
+  <main id="main" class="wrap work-main">
+    <a class="cs-back" href="./"><span aria-hidden="true">←</span> All projects</a>
+    <header class="cs-head">
+      <div class="p-top"><span class="tag">M.Tech Thesis · 2025</span><span class="badge done">Completed</span></div>
+      <h1>SMOTE-Enhanced Multi-View Deep CNN for Mammogram Classification</h1>
+      <p class="cs-tagline">Completing missing mammogram views to train a four-view CNN.</p>
+      <p class="cs-summary">A 2.24M-parameter multi-view (CC and MLO) CNN for benign and malignant classification on CBIS-DDSM (1,566 patients), with stratified patient-level 70/15/15 splits.</p>
+      <div class="cs-links"><a class="btn primary" href="https://github.com/ZEROBYTE57/SMOTE-MVDCNN" target="_blank" rel="noopener">Code on GitHub <span aria-hidden="true">↗</span></a><a class="btn" href="https://github.com/ZEROBYTE57/SMOTE-MVDCNN/blob/main/SMOTE_Enhanced_Multi_View_Deep_Convolutional_Neural_Network_for_Mammogram_Classification_Done.pdf" target="_blank" rel="noopener">Read the thesis (PDF) <span aria-hidden="true">↗</span></a></div>
+      <ul class="chips"><li>PyTorch</li><li>Albumentations</li><li>CLAHE</li><li>SMOTE</li><li>scikit-learn</li></ul>
+    </header>
+    <div class="cs-glance"><div class="tile cs-stat"><b>93.24%</b><span>AUC on the test set</span></div><div class="tile cs-stat"><b>92.86%</b><span>recall (sensitivity)</span></div><div class="tile cs-stat"><b>84.02%</b><span>accuracy</span></div><div class="tile cs-stat"><b>105 → 1,223</b><span>complete four-view cases after SMOTE view completion</span></div></div>
+    <div class="cs-layout">
+      <article class="cs-body"><section class="cs-sec" id="s0"><h2>The problem</h2><div class="cs-prose"><p>A screening mammogram has four views: CC and MLO of each breast. Multi-view models use all four, but in CBIS-DDSM only 105 of 1,566 labelled patients have all four views; most cases miss two. Throwing those away leaves too little data, and the remaining classes are imbalanced.</p></div></section><section class="cs-sec" id="s1"><h2>The approach</h2><div class="cs-prose"><ol><li><b>Pre-processing:</b> DICOM to PNG, CLAHE contrast enhancement, resize to 224×224, grouped into patient-level cases.</li><li><b>SMOTE view completion:</b> a missing view is synthesised by donor-based convex interpolation between similar patients with the same label (Beta(2,2) blending, quality-checked with SSIM and correlation). Complete four-view cases grow from 105 to 1,223.</li><li><b>Hybrid class balancing:</b> undersampling plus case-level SMOTE oversampling, giving 1,122 cases (561 benign, 561 malignant).</li><li><b>MV-DCNN:</b> four separate branches (Conv3×3 + BN + ReLU, 32/64/128/256 filters) fused into a 1024-D vector and a small fully connected head: 2.24M parameters.</li><li><b>Training:</b> Adam, BCE-with-logits, learning-rate scheduling on plateau, early stopping, patient-level 70/15/15 split.</li></ol></div></section><section class="cs-sec" id="s2"><h2>Three-tier experiment</h2><div class="cs-prose"><table><thead><tr><th>Tier</th><th>View completion</th><th>Class balancing</th><th>Data</th></tr></thead><tbody><tr><td>Baseline</td><td>–</td><td>–</td><td>105 complete four-view cases</td></tr><tr><td>Tier 1</td><td>✓</td><td>–</td><td>1,223 cases</td></tr><tr><td>Tier 2 (final)</td><td>✓</td><td>✓</td><td>1,122 balanced cases</td></tr></tbody></table></div></section><section class="cs-sec" id="s3"><h2>Results</h2><div class="cs-prose"><p>The final Tier-2 model reached <b>84.02% accuracy, 78.79% precision, 92.86% recall, 75.29% specificity, 85.25% F1 and 93.24% AUC</b> on the held-out test set (169 patients).</p></div></section><section class="cs-sec" id="s4"><h2>Limitations and honesty notes</h2><div class="cs-prose"><ul><li>View completion runs before the split, so a test patient's synthetic view can be built from training-set donors. Labels never leak, because donors share the target's label, and the evaluation also reports metrics on the real-views-only test subset.</li><li>The original code was lost; the public repository is a faithful rebuild from the thesis report and presentation, with the assumed settings clearly marked in the config.</li></ul></div></section></article>
+      <aside class="cs-side"><div class="tile cs-toc"><p class="tile-label">On this page</p><ol><li><a href="#s0">The problem</a></li><li><a href="#s1">The approach</a></li><li><a href="#s2">Three-tier experiment</a></li><li><a href="#s3">Results</a></li><li><a href="#s4">Limitations and honesty notes</a></li></ol></div></aside>
+    </div>
+    <nav class="cs-nav" aria-label="More projects"><a class="tile" href="llm-preference.html"><small>← Previous</small><b>LLM Response Preference Prediction</b></a><a class="tile next" href="yolov3.html"><small>Next →</small><b>Road Object Detection using YOLOv3</b></a></nav>
+  </main>
+  <footer class="footer">
+    <div class="wrap">
+      <div class="statusbar">
+        <a class="sb-seg sb-brand" href="../"><span>zerobyte<b>57</b></span></a>
+        <span class="sb-seg sb-loc"><i class="sb-dot" aria-hidden="true"></i>Bengaluru · <span id="clock2">--:--</span> IST</span>
+        <span class="sb-seg sb-copy">© <span id="year">2026</span> Devisetty Lakshmi Srinivas</span>
+        <span class="sb-fill" aria-hidden="true"></span>
+        <a class="sb-seg sb-link" href="../blog/">blog ↗</a>
+        <a class="sb-seg foot-prompt" href="../realm/" aria-label="Go to 404 Realm"><span class="fp-p" aria-hidden="true">$</span> <span class="fp-cmd" aria-hidden="true">cd ~/404-realm</span><span class="fp-cursor" aria-hidden="true"></span></a>
+        <a class="sb-seg sb-link" href="#main">top ↑</a>
+      </div>
+    </div>
+  </footer>
+  <script defer src="work.js"></script>
+  <script defer src="../assets/js/konami.js"></script>
+</body>
+</html>
