@@ -232,11 +232,19 @@ a.card:hover { transform: translateY(-3px); border-color: var(--rog); }
 
 /* Stats */
 .steam-card { margin-bottom: 0; border-left-color: var(--sky); }
-.big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.big-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
 .big-stats div { background: var(--s2); padding: 14px 16px; }
 .big-stats b { display: block; font-family: var(--display); font-weight: 800; font-size: 1.9rem; line-height: 1.1; }
 .big-stats span { font-size: 13.5px; color: var(--muted); }
 @media (max-width: 640px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+.steam-card .s-latest { margin: 10px 0 0; flex-wrap: wrap; row-gap: 2px; }
+.steam-card .s-latest b { white-space: normal; flex: 1 1 160px; }
+@media (max-width: 640px) { .steam-card .s-latest { flex-direction: column; align-items: flex-start; } .steam-card .s-latest b { flex: none; } }
+@media (max-width: 480px) { .steam-card .card-top > div { flex-basis: calc(100% - 64px); } }   /* name gets a full row on phones; Profile button wraps below */
+/* achievement progress on the Recently played cards (Steam Web API data) */
+.rgame .ach { display: block; margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.rgame .ach i { display: block; height: 3px; margin-top: 5px; background: var(--s2); }
+.rgame .ach i span { display: block; height: 100%; background: var(--sky); }
 .recent { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
 .rgame { padding: 0; overflow: hidden; border-left: 0; border-bottom: 3px solid var(--sky); }
 .rgame img { width: 100%; aspect-ratio: 460 / 215; object-fit: cover; background: var(--s2); }

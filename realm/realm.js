@@ -172,12 +172,29 @@
       if (s.library && s.totalHours != null) s.totalHours = Math.round((s.totalHours + gain) * 10) / 10;
       s.gameCount = Math.max(s.gameCount || 0, (s.library || []).length) || s.gameCount;
       $("#steamBlock").hidden = false;
-      $("#steamUpdated").textContent = g.updated ? "· synced " + new Date(g.updated).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "";
+      $("#steamUpdated").textContent = [s.since ? "member since " + s.since : "", g.updated ? "synced " + new Date(g.updated).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : ""]
+        .filter(Boolean).map((t) => "· " + t).join(" ");
       $("#sName").textContent = s.name || "Steam";
       if (s.avatar) $("#sAvatar").src = s.avatar;
       if (s.url) $("#sLink").href = s.url;
       $("#sLevel").textContent = fmt(s.level); $("#sGames").textContent = fmt(s.gameCount);
       $("#sHours").textContent = fmt(Math.round(s.totalHours)); $("#sRecent").textContent = fmt(s.recentHours);
+      const A = s.achievements;
+      if (A && A.total) {
+        $("#sAchBox").hidden = false; $("#sAch").textContent = fmt(A.unlocked);
+        $("#sAchBox").title = `${fmt(A.unlocked)} of ${fmt(A.total)} across ${A.games} game${A.games > 1 ? "s" : ""}` + (A.perfect ? ` · ${A.perfect} perfect game${A.perfect > 1 ? "s" : ""}` : "");
+        if (A.latest) {
+          const p = $("#sAchLast"); p.hidden = false;
+          const ago = (sec) => { const d = (Date.now() / 1000 - sec) / 86400, n = (v, u) => `${v} ${u}${v > 1 ? "s" : ""} ago`;
+            return d < 1 ? "today" : d < 2 ? "yesterday" : d < 30 ? n(Math.floor(d), "day") : d < 365 ? n(Math.floor(d / 30), "month") : n(Math.floor(d / 365), "year"); };
+          p.replaceChildren(el("span", null, "Latest achievement"), el("b", null, A.latest.name), el("em", null, `${A.latest.game} · ${ago(A.latest.time)}`));
+          setTicker("ach", "STEAM", `Latest achievement: ${A.latest.name} · ${A.latest.game}`);
+        }
+      }
+      if (s.linuxHours > 0 && s.totalHours > 0) {
+        $("#sLinuxBox").hidden = false; $("#sLinux").textContent = Math.round((s.linuxHours / s.totalHours) * 100) + "%";
+        $("#sLinuxBox").title = `${fmt(Math.round(s.linuxHours))} h of ${fmt(Math.round(s.totalHours))} h on Linux`;
+      }
       // Recently played: the profile's recent games, topped up to a full row by last-played date from the library.
       const seen = new Set((s.recent || []).map((x) => x.appid));
       const byLast = (s.library || s.top || []).filter((x) => x.last && !seen.has(x.appid)).sort((a, b) => b.last - a.last);
@@ -186,6 +203,10 @@
         const c = Object.assign(el("a", "card rgame"), { href: `https://store.steampowered.com/app/${x.appid}`, target: "_blank", rel: "noopener" });
         c.append(Object.assign(el("img"), { src: steamCDN(x.appid), alt: "", width: 460, height: 215, loading: "lazy", decoding: "async" }));
         const d = el("div"); d.append(el("b", null, x.name), el("small", null, x.hours2w != null ? `${x.hours2w} h past 2 weeks · ${fmt(x.hours)} h total` : `${fmt(x.hours)} h total`));
+        if (x.ach && x.ach[1]) {
+          const a = el("small", "ach", `${x.ach[0]}/${x.ach[1]} achievements`), bar = el("i"), fill = el("span");
+          fill.style.width = Math.round((x.ach[0] / x.ach[1]) * 100) + "%"; bar.append(fill); a.append(bar); d.append(a);
+        }
         c.append(d); return c;
       }));
       if (s.playing) setTicker("steam-now", "STEAM", `In game: ${s.playing}`);
@@ -232,13 +253,13 @@
     manual.forEach(addGame);
     (g.tracker || []).forEach((t) => addGame({ title: t.label || t.game, platform: `${t.platform === "riot" ? "Riot" : t.platform} · Tracker Network`, status: "playing", rank: t.rank?.name }));
     const recentIds = new Set((s?.recent || []).map((x) => x.appid));
-    (s?.library || s?.top || []).forEach((x) => addGame({ title: x.name, platform: "Steam", status: recentIds.has(x.appid) ? "playing" : "owned", hours: x.hours >= 1 ? Math.round(x.hours) : x.hours }));
+    (s?.library || s?.top || []).forEach((x) => addGame({ title: x.name, platform: "Steam", status: recentIds.has(x.appid) ? "playing" : "owned", hours: x.hours >= 1 ? Math.round(x.hours) : x.hours, ach: x.ach }));
     const games = [...lib.values()];
     if (games.length) {
       $("#library").replaceChildren(...games.map((m) => {
         const c = el("div", "game");
         c.append(el("span", `st st-${m.status || "playing"}`, m.status || "playing"), el("b", null, m.title));
-        const sub = [m.platform, m.genre, m.rank, m.hours ? `${fmt(m.hours)} h` : ""].filter(Boolean).join(" · ");
+        const sub = [m.platform, m.genre, m.rank, m.hours ? `${fmt(m.hours)} h` : "", m.ach && m.ach[1] ? `${m.ach[0]}/${m.ach[1]} achievements` : ""].filter(Boolean).join(" · ");
         if (sub) c.append(el("small", null, sub));
         if (m.note) c.append(el("small", null, m.note));
         return c;

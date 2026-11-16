@@ -1,16 +1,19 @@
 """Fetch Steam stats into data/gaming.json.
 
-Needs two things (both optional; the script skips Steam cleanly without them):
-  * a Steam Web API key in the STEAM_API_KEY environment variable
-    (GitHub repo -> Settings -> Secrets and variables -> Actions -> STEAM_API_KEY)
-  * your SteamID64 or custom profile name in data/profiles.json -> "steam"
-Your Steam profile and "Game details" must be set to Public.
+With a Steam Web API key (STEAM_API_KEY: GitHub repo -> Settings -> Secrets and variables -> Actions)
+everything comes live from the Steam Web API every run: profile, level, the full library with hours
+per game and per platform (Linux share), hours in the last two weeks and achievement progress.
+Without a key (or if the API call fails) it falls back to the public profile plus the library
+exported from the Steam client by scripts/steam_local.py, so the job never breaks.
+Needs your SteamID64 or custom profile name in data/profiles.json -> "steam", and Steam Privacy
+settings "My profile" and "Game details" set to Public.
 
 Discord data is fetched live in the browser, so it is not handled here.
 """
 import json
 import os
 import pathlib
+import time
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
@@ -21,10 +24,34 @@ OUT = ROOT / "data" / "gaming.json"
 API = "https://api.steampowered.com"
 
 
-def get(path, **params):
+def get(path, timeout=30, **params):
     url = f"{API}/{path}/?{urllib.parse.urlencode(params)}"
-    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "portfolio-stats"}), timeout=30) as r:
+    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "portfolio-stats"}), timeout=timeout) as r:
         return json.loads(r.read().decode("utf-8"))
+
+
+def achievements(key, sid, games, budget=90):
+    """Achievement progress for the played games that have community stats.
+    Returns per-game [unlocked, total] and a summary (unlocked, total, perfect games, latest unlock)."""
+    per, latest, unlocked, total, perfect, start = {}, None, 0, 0, 0, time.monotonic()
+    for g in sorted(games, key=lambda g: -g.get("playtime_forever", 0))[:40]:
+        if time.monotonic() - start > budget:
+            break
+        try:
+            ps = get("ISteamUserStats/GetPlayerAchievements/v1", timeout=15, key=key, steamid=sid, appid=g["appid"], l="english")["playerstats"]
+        except Exception:
+            continue                                   # games without achievements answer with an error
+        got_all = ps.get("achievements") or []
+        if not got_all:
+            continue
+        got = [x for x in got_all if x.get("achieved")]
+        per[g["appid"]] = [len(got), len(got_all)]
+        unlocked, total, perfect = unlocked + len(got), total + len(got_all), perfect + (len(got) == len(got_all))
+        for x in got:
+            if x.get("unlocktime") and (not latest or x["unlocktime"] > latest["time"]):
+                latest = {"name": x.get("name") or x.get("apiname"), "game": (g.get("name") or "").strip(), "appid": g["appid"], "time": x["unlocktime"]}
+    summary = {"unlocked": unlocked, "total": total, "perfect": perfect, "games": len(per), "latest": latest} if per else None
+    return per, summary
 
 
 def steam(key, ident):
@@ -34,13 +61,26 @@ def steam(key, ident):
         if res.get("success") != 1:
             raise ValueError(f"could not resolve Steam name '{ident}'")
         sid = res["steamid"]
-    p = get("ISteamUser/GetPlayerSummaries/v2", key=key, steamids=sid)["response"]["players"][0]
+    p = (get("ISteamUser/GetPlayerSummaries/v2", key=key, steamids=sid)["response"].get("players") or [{}])[0]
     owned = get("IPlayerService/GetOwnedGames/v1", key=key, steamid=sid, include_appinfo=1, include_played_free_games=1)["response"]
-    recent = get("IPlayerService/GetRecentlyPlayedGames/v1", key=key, steamid=sid, count=6)["response"]
+    games = owned.get("games") or []
+    if not games:
+        raise ValueError("no games returned (set Steam Privacy -> Game details to Public)")
+    recent = get("IPlayerService/GetRecentlyPlayedGames/v1", key=key, steamid=sid, count=10)["response"].get("games") or []
     level = get("IPlayerService/GetSteamLevel/v1", key=key, steamid=sid)["response"].get("player_level")
-    games = owned.get("games", [])
-    hrs = lambda m: round(m / 60, 1)
-    top = sorted(games, key=lambda g: g.get("playtime_forever", 0), reverse=True)[:8]
+    hrs = lambda m: round((m or 0) / 60, 1)
+    name = lambda g: (g.get("name") or "").strip()
+    per, ach = achievements(key, sid, [g for g in games if g.get("playtime_forever", 0) > 0 and g.get("has_community_visible_stats")])
+    by_id = {g["appid"]: g for g in games}
+
+    def item(g, **extra):
+        x = {"appid": g["appid"], "name": name(g) or name(by_id.get(g["appid"], {})), "hours": hrs(g.get("playtime_forever")),
+             "last": g.get("rtime_last_played") or by_id.get(g["appid"], {}).get("rtime_last_played") or None, **extra}
+        if g["appid"] in per:
+            x["ach"] = per[g["appid"]]
+        return x
+
+    library = sorted((item(g) for g in games if name(g)), key=lambda x: -x["hours"])
     return {
         "name": p.get("personaname"),
         "avatar": p.get("avatarfull"),
@@ -48,13 +88,16 @@ def steam(key, ident):
         "state": p.get("personastate", 0),          # 0 offline, 1 online, 2 busy, 3 away, 4 snooze ...
         "playing": p.get("gameextrainfo"),           # set when in-game at fetch time
         "level": level,
+        "since": datetime.fromtimestamp(p["timecreated"], timezone.utc).year if p.get("timecreated") else None,
         "gameCount": owned.get("game_count", len(games)),
         "totalHours": hrs(sum(g.get("playtime_forever", 0) for g in games)),
-        "recentHours": hrs(sum(g.get("playtime_2weeks", 0) for g in recent.get("games", []))),
-        "recent": [{"appid": g["appid"], "name": g["name"], "hours2w": hrs(g.get("playtime_2weeks", 0)),
-                    "hours": hrs(g.get("playtime_forever", 0))} for g in recent.get("games", [])],
-        "top": [{"appid": g["appid"], "name": g.get("name", str(g["appid"])), "hours": hrs(g.get("playtime_forever", 0)),
-                 "last": g.get("rtime_last_played")} for g in top if g.get("playtime_forever", 0) > 0],
+        "linuxHours": hrs(sum(g.get("playtime_linux_forever", 0) for g in games)),
+        "recentHours": hrs(sum(g.get("playtime_2weeks", 0) for g in recent)),
+        "recent": [item(g, hours2w=hrs(g.get("playtime_2weeks"))) for g in recent if name(g)],
+        "top": [x for x in library if x["hours"] > 0][:8],
+        "library": library,
+        "achievements": ach,
+        "source": "steam-api",
     }
 
 
@@ -177,10 +220,16 @@ def main():
     if key and ident:
         try:
             out["steam"] = steam(key, ident)
-            print("ok   steam")
+            print("ok   steam (Web API)")
         except Exception as e:
-            print(f"fail steam: {e}")
-            if "steam" in old:
+            print(f"fail steam Web API: {e}")
+            if ident.isdigit():                       # fall back to the public profile + exported library
+                try:
+                    out["steam"] = steam_public(ident)
+                    print("ok   steam (public profile fallback)")
+                except Exception as e2:
+                    print(f"fail steam public: {e2}")
+            if "steam" not in out and "steam" in old:
                 out["steam"] = old["steam"]
     elif ident.isdigit():
         try:
