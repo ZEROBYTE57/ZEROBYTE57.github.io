@@ -6,7 +6,8 @@ data (/data/), blog posts, projects and notes (/blog/), the Realm settings (/rea
 fonts, the favicon, the manifest and the résumé. Share links on classic articles open the classic
 article (v1/blog/s/, kept in sync by build_posts.py). Search engines are asked not to index the copy.
 
-Run after changing the v1 branch:  python scripts/build_v1.py
+Runs automatically on GitHub after every push to the v1 branch (.github/workflows/publish-classic.yml);
+by hand:  python scripts/build_v1.py
 """
 import io
 import pathlib
@@ -17,7 +18,7 @@ import tarfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "v1"
-BRANCH = "v1"
+BRANCH = "v1"   # the classic design's branch (local branch, or origin/v1 in a fresh CI checkout)
 # not copied: tooling, live content read from the main site, and site-wide files
 SKIP_DIRS = (".github/", "scripts/", "data/", "blog/posts/", "blog/s/", "assets/img/", "assets/fonts/")
 SKIP_FILES = {".gitignore", ".nojekyll", "sw.js", "sitemap.xml", "robots.txt", "favicon.ico", "site.webmanifest",
@@ -46,7 +47,11 @@ def rewrite(path, text, root_files):
 
 
 def main():
-    data = subprocess.run(["git", "archive", "--format=tar", BRANCH], cwd=ROOT, capture_output=True, check=True).stdout
+    ref = next((r for r in (f"refs/heads/{BRANCH}", f"refs/remotes/origin/{BRANCH}")
+                if subprocess.run(["git", "rev-parse", "--verify", "-q", r], cwd=ROOT, capture_output=True).returncode == 0), None)
+    if not ref:
+        raise SystemExit(f"branch '{BRANCH}' not found (run: git fetch origin {BRANCH})")
+    data = subprocess.run(["git", "archive", "--format=tar", ref], cwd=ROOT, capture_output=True, check=True).stdout
     tar = tarfile.open(fileobj=io.BytesIO(data))
     members = [m for m in tar.getmembers() if m.isfile()]
     root_files = ["favicon.ico", "site.webmanifest"] + [m.name for m in members if "/" not in m.name and m.name.endswith(".pdf")]
@@ -61,15 +66,16 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         raw = tar.extractfile(m).read()
         if name.endswith((".html", ".js", ".css")):
-            target.write_text(rewrite(name, raw.decode("utf-8"), root_files), encoding="utf-8", newline="\n")
+            # LF everywhere: git archive on Windows (autocrlf) hands out CRLF, on Linux LF, and both builds must match
+            target.write_text(rewrite(name, raw.decode("utf-8").replace("\r\n", "\n"), root_files), encoding="utf-8", newline="\n")
         else:
-            target.write_bytes(raw)
+            target.write_bytes(raw.replace(b"\r\n", b"\n") if b"\0" not in raw else raw)   # text data (JSON): LF too
         copied += 1
     share = ROOT / "blog" / "s"                     # classic share pages: same pages, they open ../post.html (the classic article)
     if share.is_dir():
         (OUT / "blog" / "s").mkdir(parents=True, exist_ok=True)
         for f in share.glob("*.html"):
-            shutil.copy2(f, OUT / "blog" / "s" / f.name)
+            (OUT / "blog" / "s" / f.name).write_bytes(f.read_bytes().replace(b"\r\n", b"\n"))
     print(f"Wrote v1/ from the '{BRANCH}' branch: {copied} files (+ share pages); live content comes from the main site.")
 
 

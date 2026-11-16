@@ -1,0 +1,36 @@
+name: Publish classic design to /v1/
+
+# Every push to the v1 branch (the classic design) rebuilds its copy at /v1/ on main, so the live site at
+# https://zerobyte57.github.io/v1/ follows it. Changes to main never touch the v1 branch.
+on:
+  push:
+    branches: [v1]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-classic
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/build_v1.py
+      - name: Commit to main if the classic copy changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898769+github-actions[bot]@users.noreply.github.com"
+          git add v1
+          git diff --staged --quiet || git commit -m "Rebuild classic design (v1) from the v1 branch"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
