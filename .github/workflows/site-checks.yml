@@ -4,7 +4,7 @@ name: Site checks
 # before they reach the live site. Runs on every push and pull request.
 on:
   push:
-    branches: [main]
+    branches: ["**"]          # every branch (main, v1, ...), not tags
     paths-ignore:
       - "data/stats.json"
       - "data/gaming.json"
