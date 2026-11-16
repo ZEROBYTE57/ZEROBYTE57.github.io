@@ -11,6 +11,7 @@
 // then fades away so it never sits behind article text); data-anchor (selector: the hole starts framing that element,
 // as it frames the portfolio logo by default); data-hole="off" (the starfield only, no black hole).
 // Pauses when the tab is hidden; still for reduced motion.
+// Two layers: the starfield (fixed to the screen) and, above it, the black hole on a layer of its own (see hv).
 (() => {
   const opt = (document.currentScript && document.currentScript.dataset) || {};
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches, root = document.documentElement, TAU = Math.PI * 2;
@@ -25,6 +26,23 @@
   if (logo) {   // the logo panel turns see-through around the logo circle, so the black hole shows around it (styles.css)
     logo.classList.add("bh-behind");
     if (isLogo) { const disc = document.createElement("i"); disc.className = "bh-disc"; disc.setAttribute("aria-hidden", "true"); logo.prepend(disc); }
+  }
+  // The black hole is drawn on a layer of its own (hv). On the portfolio that layer starts out scrolling with the page
+  // and stops once the logo has carried the hole up to the height of its path (position: sticky with top: -S). So while
+  // the hole sits behind the logo, the browser itself moves the two together, frame for frame. (A script redrawing a
+  // fixed canvas always trails a fast swipe on a phone by a few frames, because the page scrolls on a thread of its
+  // own: the hole showed below the logo.) The layer is as tall as the screen plus S, so it still fills the screen
+  // once it has stopped; its wrapper spans the whole page, which is how far the sticky layer may travel.
+  const hv = opt.hole === "off" ? null : document.createElement("canvas"), hctx = hv && hv.getContext("2d");
+  let wrap = null, S = 0, HW = 0, HH = 0, lxRest = 0, rest = 0, hasLogo = false;
+  if (hv) {
+    hv.setAttribute("aria-hidden", "true");
+    if (logo) {
+      wrap = document.createElement("div"); wrap.className = "bg-space"; wrap.setAttribute("aria-hidden", "true");
+      wrap.style.cssText = "position:absolute;left:0;top:0;width:100%;height:0;z-index:-1;pointer-events:none;overflow:clip";
+      hv.style.cssText = "position:sticky;top:0;display:block;width:100%;height:100vh;height:100lvh";
+      wrap.append(hv); cv.after(wrap);
+    } else { hv.className = "bg-space"; hv.style.cssText = cv.style.cssText; cv.after(hv); }
   }
   let seed = 31; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647), gauss = () => (rnd() + rnd() + rnd() + rnd() - 2) / .58;
 
@@ -87,8 +105,19 @@
     const m = logoCv && logoCv.clientWidth ? Math.min(logoCv.clientWidth, logoCv.clientHeight) : D >= 960 ? ((D - 176) / 12) * 5 + 62 : Math.min(D - 2, 338);
     // logo (or no anchor at all): the logo circle's size; another anchor (data-anchor): frame that element
     R0 = logo && !isLogo ? Math.min(logo.clientWidth, logo.clientHeight) * .4 : m * .36 * (dark ? 1.14 : 1.06);
-    if (logo) logo.style.setProperty("--bh-r", (dark ? R0 : R0 - 1) + "px");   // light: tucked just under the logo's own screen   // light: tucked just under the logo's own screen
-    if (W && (cv.clientWidth !== W || cv.clientHeight !== H)) size();   // e.g. a scrollbar appeared or went away
+    if (logo) logo.style.setProperty("--bh-r", (dark ? R0 : R0 - 1) + "px");   // light: tucked just under the logo's own screen
+    if (wrap) {
+      // where the logo's centre sits on the page (its layout position: the entrance animation and the 3D tilt don't
+      // move it), and S: how far the page scrolls before the logo's centre reaches the height of the hole's path
+      hasLogo = logo.offsetWidth > 0;
+      if (hasLogo) { let x = logo.offsetWidth / 2, y = logo.offsetHeight / 2;
+        for (let e = logo; e; e = e.offsetParent) { x += e.offsetLeft; y += e.offsetTop; if (e !== logo) { x += e.clientLeft; y += e.clientTop; } }
+        lxRest = x; rest = y; }
+      const h = H || root.clientHeight, pathY0 = Math.max(R0 * .9, Math.min(h - R0 * .9, h * PATH(.8))), s = hasLogo ? Math.max(0, Math.round(rest - pathY0)) : 0;
+      if (s !== S) { S = s; hv.style.top = -S + "px"; hv.style.height = `calc(100vh + ${S}px)`; hv.style.height = `calc(100lvh + ${S}px)`; }
+      wrap.style.height = "0px"; const docH = root.scrollHeight; wrap.style.height = docH + "px";   // the page's own height
+    }
+    if (W && (cv.clientWidth !== W || cv.clientHeight !== H || (hv && (hv.clientWidth !== HW || hv.clientHeight !== HH)))) size();   // e.g. a scrollbar appeared or went away
   };
   // the parabola through (top right) .8,.26 → (centre) .5,.5 → (lower left) .2,.62, in screen fractions
   const PATH = (x) => { const P = [[.8, .26], [.5, .5], [.2, .62]];
@@ -98,9 +127,11 @@
   // address bar cost nothing. Phones draw at up to 1.25x pixel density (the glow is soft anyway), desktops 1.5x.
   let dpr = 0;
   function size() {
-    const w = cv.clientWidth, h = cv.clientHeight, d = Math.min(devicePixelRatio || 1, w < 700 ? 1.25 : 1.5);
-    if (w === W && h === H && d === dpr) { measure(); return; }
-    W = w; H = h; dpr = d; cv.width = Math.round(W * d); cv.height = Math.round(H * d); ctx.setTransform(d, 0, 0, d, 0, 0); measure(); draw();
+    const w = cv.clientWidth, h = cv.clientHeight, d = Math.min(devicePixelRatio || 1, w < 700 ? 1.25 : 1.5), hw = hv ? hv.clientWidth : 0, hh = hv ? hv.clientHeight : 0;
+    if (w === W && h === H && d === dpr && hw === HW && hh === HH) { measure(); return; }
+    if (w !== W || h !== H || d !== dpr) { W = w; H = h; cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
+    if (hv && (hw !== HW || hh !== HH || d !== dpr)) { HW = hw; HH = hh; hv.width = Math.round(hw * d); hv.height = Math.round(hh * d); }
+    dpr = d; ctx.setTransform(d, 0, 0, d, 0, 0); measure(); draw();
   }
 
   function draw() {
@@ -128,22 +159,16 @@
     let cx = gx - cmx * 36, cy = pathY - cmy * 26;
     // On the portfolio it starts directly behind the logo; the logo circle itself stays exactly as on the live site
     // (an opaque disc in the panel, see .bh-disc), so only the glow, disk and ring show around it.
-    // Hand-off: the hole stays behind the logo until the logo has scrolled up from where it rests (at most mid-screen),
-    // then slides over to its path. Sideways it eases across at least 40% of a screen of scrolling. Upward it keeps
-    // the logo's pace at first and slows smoothly to a stop at the path's height (its speed relative to the logo goes
-    // 1 -> 0 along a smoothstep), so it never outruns the logo, never bounces up past the path and back (phones, where
-    // the logo starts below the fold, showed that), and never stops with a jolt. When the logo rests above the path
-    // (tall portrait screens) it simply eases down to it. rest = where the logo sits at the top of the page; it is read
-    // live, so the logo's entrance animation can't leave the hole off-centre.
+    // Hand-off: until the page has scrolled S, the hole rides behind the logo on its scrolling layer (drawn at one spot
+    // on the layer, so this needs nothing from the script). Then the layer stops, at the height of the path, the logo
+    // scrolls on, off the hole, and the hole slides over onto its path while the page scrolls another 40% of a screen
+    // (its height barely changes: it is already there). When the logo rests above the path (tall portrait screens),
+    // S is 0: the layer never moves and the hole eases down from the logo to the path instead.
     let on = 0;   // how fully the hole sits behind the logo (0..1)
-    if (logo) { const r = logo.getBoundingClientRect();
-      if (r.width) { const lx = r.left + r.width / 2, ly = r.top + r.height / 2, rest = ly + sy, start = Math.min(H * .5, rest), D = start - pathY;
-        const u = Math.max(0, Math.min(1, (start - ly) / Math.max(2 * D, H * .4))), w = u * u * (3 - 2 * u); on = 1 - w;
-        let hy;
-        if (D <= 0) hy = pathY + (rest - pathY) * (1 - w);
-        else if (ly >= start) hy = ly;
-        else { const v = Math.min(1, (start - ly) / (2 * D)); hy = pathY + D * (1 - v) ** 3 * (1 + v); }   // integral of 1 - smoothstep
-        cx = lx + (cx - lx) * w; cy = hy - cmy * 26 * w; } }   // the mouse lean only once it lets go
+    if (hasLogo) {
+      if (sy <= S) { cx = lxRest; cy = rest - sy; on = 1; }
+      else { const u = Math.min(1, (sy - S) / (H * .4)), w = u * u * (3 - 2 * u), top = rest - S; on = 1 - w;
+        cx = lxRest + (cx - lxRest) * w; cy = top + (pathY - top) * w - cmy * 26 * w; } }   // the mouse lean only once it lets go
     // hf: how visible the hole is (data-fade pages: full for the first half screen, gone after about 1.2 screens)
     const f0 = opt.fade != null ? Math.max(0, Math.min(1, 1 - (sy - H * .45) / (H * .75))) : 1, hf = opt.hole === "off" ? 0 : f0 * f0 * (3 - 2 * f0);
     const tilt = (77 - p * 15) * Math.PI / 180, sq = Math.cos(tilt), roll = (-14 + p * 22) * Math.PI / 180, cr = Math.cos(roll), sr = Math.sin(roll), lens = Rs * 1.5 * Math.sqrt(hf);
@@ -164,18 +189,23 @@
       if (z < .9) { ctx.globalAlpha = Math.min(1, .12 * fade * ks); ctx.beginPath(); ctx.arc(X, Y, (1 - z) * 9 + 2, 0, TAU); ctx.fill(); }      // out-of-focus foreground star
       ctx.globalAlpha = Math.min(1, (.2 + near * .6) * fade * tw * ks); ctx.beginPath(); ctx.arc(X, Y, .5 + near * near * 1.5, 0, TAU); ctx.fill();
     }
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
 
-    // ---- the black hole
-    if (hf < .01) { ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; return; }   // faded out (data-fade pages)
+    // ---- the black hole, on its own layer: screen positions are shifted by how far that layer has scrolled up (off),
+    //      which keeps the hole at one spot on the layer while it rides behind the logo
+    if (!hv) return;
+    hctx.setTransform(1, 0, 0, 1, 0, 0); hctx.clearRect(0, 0, hv.width, hv.height);
+    if (hf < .01) return;   // faded out (data-fade pages)
+    const off = wrap ? Math.min(sy, S) : 0;
+    hctx.setTransform(dpr, 0, 0, dpr, 0, off * dpr); hctx.globalCompositeOperation = dark ? "lighter" : "source-over";
     // colour of the disk by distance: white-hot inside, amber, then the site's accent colour at the rim
     const HOT = hotColours();
     // a dot at screen position x, y (opacity via globalAlpha; the colour is set once per colour group)
-    const dot = (x, y, r, a) => { ctx.globalAlpha = a > 1 ? 1 : a; if (r < 1.1) ctx.fillRect(x - r * .8, y - r * .8, r * 1.6, r * 1.6); else { ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); } };
+    const dot = (x, y, r, a) => { hctx.globalAlpha = a > 1 ? 1 : a; if (r < 1.1) hctx.fillRect(x - r * .8, y - r * .8, r * 1.6, r * 1.6); else { hctx.beginPath(); hctx.arc(x, y, r, 0, TAU); hctx.fill(); } };
     const fx = (x, y) => cx + (x * cr - y * sr) * Rs, fy = (x, y) => cy + (x * sr + y * cr) * Rs;   // disk plane → screen
     // The glowing disk is a smooth pre-painted image (see sprites), with the particles on top for texture and motion.
-    const layer = (img, rad, yScale, alpha) => { const n = rad * Rs; ctx.save(); ctx.translate(cx, cy); ctx.rotate(roll); ctx.scale(1, yScale);
-      ctx.globalAlpha = alpha; ctx.drawImage(img, -n, -n, n * 2, n * 2); ctx.restore(); ctx.globalAlpha = 1; };
+    const layer = (img, rad, yScale, alpha) => { const n = rad * Rs; hctx.save(); hctx.translate(cx, cy); hctx.rotate(roll); hctx.scale(1, yScale);
+      hctx.globalAlpha = alpha; hctx.drawImage(img, -n, -n, n * 2, n * 2); hctx.restore(); hctx.globalAlpha = 1; };
     const glow = (dark ? .62 : .5) * k * hf;
     layer(sprites.far, ROUT, sq, glow);              // far half of the disk
     layer(sprites.over, 2.7, .94, glow * .9);        // its light bent around the hole: an arch over the top, fading smoothly into the disk
@@ -188,43 +218,43 @@
       const tw = still ? 1 : .85 + .15 * Math.sin(t * 2 + q.s * 40), al = (dark ? .22 + (1 - q.u) * .5 : .42 + (1 - q.u) * .5) * beam * tw * kp, r = (.5 + (1 - q.u) * .55 + (q.s > .985 ? .8 : 0)) * (dark ? 1 : 1.25);
       const x = q.r * ca, y = q.r * sa * sq + q.h;
       if (sa > 0) { front.push(x, y, r, q.ci, al); continue; }                                                       // near half: drawn last, in front of the shadow
-      if (q.ci !== ci) { ci = q.ci; ctx.fillStyle = `rgb(${HOT[ci]})`; }
+      if (q.ci !== ci) { ci = q.ci; hctx.fillStyle = `rgb(${HOT[ci]})`; }
       dot(fx(x, y), fy(x, y), r * .9, al * .8);                                                                     // far half of the disk
       if (q.s < .45) { const rho = 1.1 + q.u * 1.5, lx = rho * ca, ly = rho * sa * .93; dot(fx(lx, ly), fy(lx, ly), r * .9, al * (1 - q.u * .55) * (dark ? 1 : .4)); }   // sparkle in the arch over the top (subtle on the light theme)
     }
-    ctx.globalAlpha = 1;
+    hctx.globalAlpha = 1;
     // a dense, blurred glow all the way round the hole (a tight bright halo plus a wide soft one)
-    const blur = (s, a) => { const n = 3 * Rs * s; ctx.globalAlpha = a; ctx.drawImage(halo, cx - n, cy - n, n * 2, n * 2); ctx.globalAlpha = 1; };
+    const blur = (s, a) => { const n = 3 * Rs * s; hctx.globalAlpha = a; hctx.drawImage(halo, cx - n, cy - n, n * 2, n * 2); hctx.globalAlpha = 1; };
     blur(1, (dark ? .6 : .5) * k * hf); blur(1.9, (dark ? .28 : .22) * k * hf);
     // the shadow itself, then the thin ring of light at its edge
-    ctx.globalCompositeOperation = "source-over";
+    hctx.globalCompositeOperation = "source-over";
     // Dark theme: a solid night-black shadow. Light theme: behind the logo it matches the logo's own dark screen;
     // elsewhere it is a see-through slate lens (darker toward its edge), so dark text passing over it stays readable.
     const lo = isLogo ? on : 0;   // light theme: how far the lens turns into the logo's dark screen (other anchors stay see-through)
-    if (dark) ctx.fillStyle = "#030305";
+    if (dark) hctx.fillStyle = "#030305";
     else {
       // The see-through lens must not show the bent light drawn behind it (that showed as a pale band): clear it first.
-      ctx.globalCompositeOperation = "destination-out"; ctx.globalAlpha = hf; ctx.beginPath(); ctx.arc(cx, cy, Rs, 0, TAU); ctx.fill();
-      ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
+      hctx.globalCompositeOperation = "destination-out"; hctx.globalAlpha = hf; hctx.beginPath(); hctx.arc(cx, cy, Rs, 0, TAU); hctx.fill();
+      hctx.globalCompositeOperation = "source-over"; hctx.globalAlpha = 1;
       // a faint ink-teal lens, turning into the logo's own dark screen behind the logo (on = 1)
       const mix = (a, b) => a.map((v, i) => Math.round(v + (b[i] - v) * lo)).join(","), c0 = mix([6, 38, 48], [11, 15, 18]), c1 = mix([4, 26, 34], [11, 15, 18]);
       const lp = lo + (1 - lo) * power, a0 = (.18 + .82 * lo) * lp, a1 = (.36 + .64 * lo) * lp,   // dimmed pages: a fainter lens too
-        g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Rs);
-      g.addColorStop(0, `rgba(${c0},${a0})`); g.addColorStop(.72, `rgba(${c0},${(a0 + a1) / 2})`); g.addColorStop(1, `rgba(${c1},${a1})`); ctx.fillStyle = g; }
-    ctx.globalAlpha = hf; ctx.beginPath(); ctx.arc(cx, cy, Rs, 0, TAU); ctx.fill(); ctx.globalAlpha = 1;
+        g = hctx.createRadialGradient(cx, cy, 0, cx, cy, Rs);
+      g.addColorStop(0, `rgba(${c0},${a0})`); g.addColorStop(.72, `rgba(${c0},${(a0 + a1) / 2})`); g.addColorStop(1, `rgba(${c1},${a1})`); hctx.fillStyle = g; }
+    hctx.globalAlpha = hf; hctx.beginPath(); hctx.arc(cx, cy, Rs, 0, TAU); hctx.fill(); hctx.globalAlpha = 1;
     // the thin ring of light at its edge (light theme: a crisp teal line, left out behind the logo, which has its own glow)
-    if (dark) { ctx.save(); ctx.shadowColor = `rgb(${HOT[1]})`; ctx.shadowBlur = 6; ctx.strokeStyle = `rgba(${HOT[0]},${.42 * k * hf})`; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(cx, cy, Rs * 1.012, 0, TAU); ctx.stroke(); ctx.restore(); }
-    else if (lo < .98) { ctx.strokeStyle = `rgba(${HOT[1]},${.85 * (1 - lo) * hf})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(cx, cy, Rs * 1.006, 0, TAU); ctx.stroke(); }
-    ctx.globalCompositeOperation = dark ? "lighter" : "source-over";
+    if (dark) { hctx.save(); hctx.shadowColor = `rgb(${HOT[1]})`; hctx.shadowBlur = 6; hctx.strokeStyle = `rgba(${HOT[0]},${.42 * k * hf})`; hctx.lineWidth = 1;
+      hctx.beginPath(); hctx.arc(cx, cy, Rs * 1.012, 0, TAU); hctx.stroke(); hctx.restore(); }
+    else if (lo < .98) { hctx.strokeStyle = `rgba(${HOT[1]},${.85 * (1 - lo) * hf})`; hctx.lineWidth = 1.4; hctx.beginPath(); hctx.arc(cx, cy, Rs * 1.006, 0, TAU); hctx.stroke(); }
+    hctx.globalCompositeOperation = dark ? "lighter" : "source-over";
     layer(sprites.near, ROUT, sq, glow);             // near half of the disk, crossing in front of the shadow
     ci = -1;
     for (let i = 0; i < front.length; i += 5) {
-      if (front[i + 3] !== ci) { ci = front[i + 3]; ctx.fillStyle = `rgb(${HOT[ci]})`; }
+      if (front[i + 3] !== ci) { ci = front[i + 3]; hctx.fillStyle = `rgb(${HOT[ci]})`; }
       dot(fx(front[i], front[i + 1]), fy(front[i], front[i + 1]), front[i + 2], front[i + 4]);
     }
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = "source-over";
+    hctx.globalAlpha = 1;
+    hctx.globalCompositeOperation = "source-over";
   }
   function frame(now) { raf = 0; if (document.hidden) return; dtF = Math.max(0, Math.min(50, now - last)) / 1000; t += dtF; last = now; draw(); dtF = 0; raf = requestAnimationFrame(frame); }
   const start = () => { if (!raf && !still) { last = performance.now(); raf = requestAnimationFrame(frame); } };
