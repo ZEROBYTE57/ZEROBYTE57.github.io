@@ -16,7 +16,7 @@
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches, root = document.documentElement, TAU = Math.PI * 2;
   const cv = document.createElement("canvas");
   cv.setAttribute("aria-hidden", "true"); cv.className = "bg-space";
-  cv.style.cssText = "position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none";
+  cv.style.cssText = "position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:-1;pointer-events:none";   // lvh: steady while the address bar slides
   document.body.prepend(cv);
   const pr = document.createElement("style"); pr.textContent = "@media print{.bg-space{display:none}}"; document.head.append(pr);
   const ctx = cv.getContext("2d"), power = Math.max(0, Math.min(1, parseFloat(opt.intensity || "1")));
@@ -45,7 +45,7 @@
     // the browser's own UI colour (address bar on phones) follows the page, including a theme picked with the toggle
     const pageBg = getComputedStyle(root).getPropertyValue("--bg").trim();
     if (pageBg) document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", pageBg));
-    build(); measure();
+    build(); if (W) measure();   // the hole's size differs a little between the themes
   };
   // Pre-painted glow images: a ring of light that is white-hot at its inner edge and fades outward, brighter on the
   // right (the side moving toward you). [0] the disk, [1] the arch of bent light over the top, [2] the arch underneath.
@@ -80,26 +80,34 @@
   // R0 = radius of the logo circle (portrait + its ring of dots), measured on the portfolio. Other pages use the
   // same layout maths (the logo panel is 5 of 12 columns of the content width, or full width when stacked).
   const dock = document.querySelector(".dock"), logoCv = logo && logo.querySelector(".particles");
-  let R0 = 160;
+  let R0 = 160, gx = null, gy = null, dtF = 0;   // gx, gy: the hole's glide position; dtF: frame time (s)
   const measure = () => {
-    maxScroll = Math.max(1, root.scrollHeight - root.clientHeight);
+    maxScroll = Math.max(1, root.scrollHeight - (H || root.clientHeight));
     const D = dock ? dock.clientWidth : Math.min(W - 32, 1112);
     const m = logoCv && logoCv.clientWidth ? Math.min(logoCv.clientWidth, logoCv.clientHeight) : D >= 960 ? ((D - 176) / 12) * 5 + 62 : Math.min(D - 2, 338);
     // logo (or no anchor at all): the logo circle's size; another anchor (data-anchor): frame that element
     R0 = logo && !isLogo ? Math.min(logo.clientWidth, logo.clientHeight) * .4 : m * .36 * (dark ? 1.14 : 1.06);
-    if (logo) logo.style.setProperty("--bh-r", (dark ? R0 : R0 - 1) + "px");   // light: tucked just under the logo's own screen
-    if (W && root.clientWidth !== W) size();   // a scrollbar appeared or went away: resize the canvas to match
+    if (logo) logo.style.setProperty("--bh-r", (dark ? R0 : R0 - 1) + "px");   // light: tucked just under the logo's own screen   // light: tucked just under the logo's own screen
+    if (W && (cv.clientWidth !== W || cv.clientHeight !== H)) size();   // e.g. a scrollbar appeared or went away
   };
   // the parabola through (top right) .8,.26 → (centre) .5,.5 → (lower left) .2,.62, in screen fractions
   const PATH = (x) => { const P = [[.8, .26], [.5, .5], [.2, .62]];
     return P.reduce((s, [xi, yi], i) => s + yi * P.reduce((f, [xj], j) => (j === i ? f : (f * (x - xj)) / (xi - xj)), 1), 0); };
-  // clientWidth/Height = the area the canvas is shown in (without the scrollbar); innerWidth would include the
-  // scrollbar and squeeze the drawing sideways, pulling the hole off the logo's centre.
-  function size() { const d = Math.min(devicePixelRatio || 1, 1.5); W = root.clientWidth; H = root.clientHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); readColor(); measure(); draw(); }
+  // The canvas's own size (the page area without the scrollbar; innerWidth would include the scrollbar and squeeze
+  // the drawing sideways). Nothing is reallocated unless the size really changed, so resize events from the phone's
+  // address bar cost nothing. Phones draw at up to 1.25x pixel density (the glow is soft anyway), desktops 1.5x.
+  let dpr = 0;
+  function size() {
+    const w = cv.clientWidth, h = cv.clientHeight, d = Math.min(devicePixelRatio || 1, w < 700 ? 1.25 : 1.5);
+    if (w === W && h === H && d === dpr) { measure(); return; }
+    W = w; H = h; dpr = d; cv.width = Math.round(W * d); cv.height = Math.round(H * d); ctx.setTransform(d, 0, 0, d, 0, 0); measure(); draw();
+  }
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
-    cmx += (mx - cmx) * .05; cmy += (my - cmy) * .05; sy += (scrollY - sy) * .12;
+    // the real scroll position (a smoothed copy lagged behind the page on phones, so the hand-off from the logo,
+    // which moves with the real scroll, to the path, which followed the lagging copy, jittered)
+    cmx += (mx - cmx) * .05; cmy += (my - cmy) * .05; sy = scrollY;
     const phone = W < 700, p0 = Math.max(0, Math.min(1, sy / maxScroll)), p = p0 * p0 * (3 - 2 * p0);
     const k = power * (dark ? .68 : .6) * (phone ? .7 : 1), ink = dark ? null : "22,70,80";
     const PAL = dark ? ["255,222,186", "196,222,255", rgb, "190,150,255"] : [ink, ink, rgb, "120,90,190"];
@@ -110,14 +118,32 @@
     const Rs = R0;
     // Path: as you scroll, the hole travels a parabola from the top right, through the centre of the screen,
     // curving out to the lower left (steep at first, flattening toward the end, like one arm of a U).
-    const px = .8 - .6 * p, py = PATH(px);
-    let cx = W * px - cmx * 36, cy = Math.max(Rs * .9, Math.min(H - Rs * .9, H * py)) - cmy * 26;
+    // Glide: the point on the path is eased toward (a follower like this never overshoots), so a jump in the scroll
+    // position (Home/End, a restored position, a resize) glides instead of snapping. Ordinary scrolling moves the path
+    // point slowly, so it hardly lags. The logo is never eased: while anchored the hole stays exactly on it.
+    const px = .8 - .6 * p, py = PATH(px), a = gx === null || still ? 1 : 1 - Math.exp(-dtF / .2);
+    gx = gx === null ? W * px : gx + (W * px - gx) * a;
+    gy = gy === null ? H * py : gy + (H * py - gy) * a;
+    const pathY = Math.max(Rs * .9, Math.min(H - Rs * .9, gy));
+    let cx = gx - cmx * 36, cy = pathY - cmy * 26;
     // On the portfolio it starts directly behind the logo; the logo circle itself stays exactly as on the live site
     // (an opaque disc in the panel, see .bh-disc), so only the glow, disk and ring show around it.
+    // Hand-off: the hole stays behind the logo until the logo has scrolled up from where it rests (at most mid-screen),
+    // then slides over to its path. Sideways it eases across at least 40% of a screen of scrolling. Upward it keeps
+    // the logo's pace at first and slows smoothly to a stop at the path's height (its speed relative to the logo goes
+    // 1 -> 0 along a smoothstep), so it never outruns the logo, never bounces up past the path and back (phones, where
+    // the logo starts below the fold, showed that), and never stops with a jolt. When the logo rests above the path
+    // (tall portrait screens) it simply eases down to it. rest = where the logo sits at the top of the page; it is read
+    // live, so the logo's entrance animation can't leave the hole off-centre.
     let on = 0;   // how fully the hole sits behind the logo (0..1)
     if (logo) { const r = logo.getBoundingClientRect();
-      if (r.width) { const b = Math.max(0, Math.min(1, (r.bottom + H * .5) / (r.height + H * .5))), ep = (b * b * (3 - 2 * b)) ** 2; on = ep;
-        cx += (r.left + r.width / 2 - cx) * ep; cy += (r.top + r.height / 2 - cy) * ep; } }
+      if (r.width) { const lx = r.left + r.width / 2, ly = r.top + r.height / 2, rest = ly + sy, start = Math.min(H * .5, rest), D = start - pathY;
+        const u = Math.max(0, Math.min(1, (start - ly) / Math.max(2 * D, H * .4))), w = u * u * (3 - 2 * u); on = 1 - w;
+        let hy;
+        if (D <= 0) hy = pathY + (rest - pathY) * (1 - w);
+        else if (ly >= start) hy = ly;
+        else { const v = Math.min(1, (start - ly) / (2 * D)); hy = pathY + D * (1 - v) ** 3 * (1 + v); }   // integral of 1 - smoothstep
+        cx = lx + (cx - lx) * w; cy = hy - cmy * 26 * w; } }   // the mouse lean only once it lets go
     // hf: how visible the hole is (data-fade pages: full for the first half screen, gone after about 1.2 screens)
     const f0 = opt.fade != null ? Math.max(0, Math.min(1, 1 - (sy - H * .45) / (H * .75))) : 1, hf = opt.hole === "off" ? 0 : f0 * f0 * (3 - 2 * f0);
     const tilt = (77 - p * 15) * Math.PI / 180, sq = Math.cos(tilt), roll = (-14 + p * 22) * Math.PI / 180, cr = Math.cos(roll), sr = Math.sin(roll), lens = Rs * 1.5 * Math.sqrt(hf);
@@ -200,15 +226,15 @@
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = "source-over";
   }
-  function frame(now) { raf = 0; if (document.hidden) return; t += Math.max(0, Math.min(50, now - last)) / 1000; last = now; draw(); raf = requestAnimationFrame(frame); }
+  function frame(now) { raf = 0; if (document.hidden) return; dtF = Math.max(0, Math.min(50, now - last)) / 1000; t += dtF; last = now; draw(); dtF = 0; raf = requestAnimationFrame(frame); }
   const start = () => { if (!raf && !still) { last = performance.now(); raf = requestAnimationFrame(frame); } };
   addEventListener("resize", size, { passive: true });
-  addEventListener("pointermove", (e) => { mx = e.clientX / W - .5; my = e.clientY / H - .5; }, { passive: true });
+  addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") { mx = e.clientX / W - .5; my = e.clientY / H - .5; } }, { passive: true });
   if (still) addEventListener("scroll", () => { sy = scrollY; if (!raf) raf = requestAnimationFrame(() => { raf = 0; draw(); }); }, { passive: true });
   new MutationObserver(() => { readColor(); if (still) draw(); }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
   matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => { readColor(); if (still) draw(); });
   document.addEventListener("visibilitychange", () => (document.hidden ? (cancelAnimationFrame(raf), (raf = 0)) : start()));
   if ("ResizeObserver" in window) new ResizeObserver(measure).observe(document.body);
   if (still) sy = scrollY;
-  size(); start();
+  readColor(); size(); start();
 })();

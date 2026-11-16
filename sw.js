@@ -2,7 +2,7 @@
 // Strategy: network first for everything on this site (so a new deploy shows up straight away),
 // falling back to the last cached copy when the network is slow or offline.
 // Requests to other sites (GitHub API, Discord, Steam) are left alone.
-const CACHE = "zb57-v52";
+const CACHE = "zb57-v53";
 const CORE = [
   "/", "/styles.css", "/script.js", "/live.js",
   "/blog/", "/blog/post.html", "/blog/blog.css", "/blog/blog.js", "/blog/graph.js", "/blog/posts/index.json",
