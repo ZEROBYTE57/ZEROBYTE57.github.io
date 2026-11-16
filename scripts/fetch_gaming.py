@@ -91,15 +91,23 @@ def steam_public(sid):
         "playing": playing or None,
         "level": int(level.group(1)) if level else None,
         "gameCount": int(games.group(1).replace(",", "")) if games else None,
-        "recentHours": float(tag("hoursPlayed2Wk") or 0),
+        "recentHours": float(tag("hoursPlayed2Wk") or 0) or float((_re.search(r"([\d.]+)\s*hours past 2 weeks", page) or [0, 0])[1]),
         "recent": recent,
         "source": "public-profile",
     }
     lib_file = ROOT / "data" / "steam_library.json"
     if lib_file.exists():
         lib = json.loads(lib_file.read_text(encoding="utf-8"))
-        named = [g for g in lib.get("games", []) if not g["name"].startswith("App ")]
-        out["totalHours"] = lib.get("totalHours")
+        named = [dict(g, name=g["name"].strip()) for g in lib.get("games", []) if not g["name"].startswith("App ")]
+        # the library is a snapshot from the Steam client; the profile's recent hours are fresher
+        fresh, gain = {g["appid"]: g["hours"] for g in recent}, 0.0
+        for g in named:
+            if fresh.get(g["appid"], 0) > g["hours"]:
+                gain += fresh[g["appid"]] - g["hours"]; g["hours"] = fresh[g["appid"]]
+        named.sort(key=lambda g: -g["hours"])
+        out["totalHours"] = round((lib.get("totalHours") or 0) + gain, 1) if lib.get("totalHours") is not None else None
+        if out["gameCount"] is None or out["gameCount"] < len(named):
+            out["gameCount"] = len(named)
         out["top"] = [{"appid": g["appid"], "name": g["name"], "hours": g["hours"], "last": g.get("lastPlayed")} for g in named[:8]]
         out["library"] = [{"appid": g["appid"], "name": g["name"], "hours": g["hours"], "last": g.get("lastPlayed")} for g in named]
         out["librarySynced"] = lib.get("updated")

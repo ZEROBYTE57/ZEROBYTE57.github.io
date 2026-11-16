@@ -300,7 +300,10 @@
       let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
       for (const n of vis) { x0 = Math.min(x0, n.x - n.r); x1 = Math.max(x1, n.x + n.r); y0 = Math.min(y0, n.y - n.r); y1 = Math.max(y1, n.y + n.r + 14); }
       const pad = W < 420 ? 28 : 48;
-      const k = Math.max(0.25, Math.min(cfg.maxZoom, Math.min((W - pad * 2) / Math.max(1, x1 - x0), (H - pad * 2) / Math.max(1, y1 - y0))));
+      // the inline blog graph starts about 25% closer than a tight fit, so its nodes read larger (the outermost
+      // topic dots may sit just past the edge; drag or zoom out to see them). The fullscreen view fits everything.
+      const boost = opts.mode === "global" && !canvas.classList.contains("modal") ? 1.25 : 1;
+      const k = Math.max(0.25, Math.min(cfg.maxZoom, boost * Math.min((W - pad * 2) / Math.max(1, x1 - x0), (H - pad * 2) / Math.max(1, y1 - y0))));
       const target = { k, x: -((x0 + x1) / 2) * k, y: -((y0 + y1) / 2) * k };
       animated ? animateView(target) : ((view = target), draw());
     }
@@ -316,7 +319,7 @@
       }
       return best;
     }
-    const pos = (e) => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    const pos = (e) => { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) * (W / (r.width || W)), (e.clientY - r.top) * (H / (r.height || H))]; };
     const emitHover = (n) => { if (!opts.onHover) return; if (!n) return opts.onHover(null); const [x, y] = toScreen(n); opts.onHover(n, x, y); };
     const setHover = (n) => { if (n === hover) return; hover = n; canvas.style.cursor = n ? "pointer" : "grab"; emitHover(n); kick(); };
 
@@ -423,10 +426,12 @@
 
     // ---------- lifecycle ----------
     function resize() {
-      const r = canvas.getBoundingClientRect();
-      if (!r.width || !r.height) return;
+      // Layout size (clientWidth/Height), not getBoundingClientRect: the latter includes CSS transforms, so measuring
+      // while a card is mid-way through its 3D entrance would size the bitmap wrong and stretch circles into ovals.
+      const cw = canvas.clientWidth, ch = canvas.clientHeight;
+      if (!cw || !ch) return;
       dpr = Math.min(devicePixelRatio || 1, 2);
-      W = r.width; H = r.height;
+      W = cw; H = ch;
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
       readColors();
       if (fitted && !userMoved) fit(false); else draw();

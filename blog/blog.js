@@ -463,8 +463,7 @@
       p.addEventListener("click", () => print());
       box.append(s, p);
     }
-    [$("#shareTop"), $("#shareBottom")].forEach((b) => b && build(b));
-    $("#shareTop").hidden = false; $("#shareEnd").hidden = false;
+    build($("#shareTop")); $("#shareTop").hidden = false;
 
     // Select text in the article to copy or post it as a quote with the link.
     const pop = $("#quotePop"), art = $("#article");

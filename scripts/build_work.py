@@ -30,7 +30,8 @@ def page(title, desc, url, body, og="og-portfolio.jpg"):
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{escape(title)}</title>
   <meta name="description" content="{escape(desc)}" />
-  <meta name="theme-color" content="#09090b" />
+  <meta name="theme-color" content="#e4ecf4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme: dark)" />
   <link rel="canonical" href="{url}" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="zerobyte57" />
@@ -49,6 +50,7 @@ def page(title, desc, url, body, og="og-portfolio.jpg"):
   <link rel="stylesheet" href="../assets/fonts/site.css" />
   <link rel="stylesheet" href="../styles.css" />
   <link rel="stylesheet" href="../assets/js/konami.css" />
+  <link rel="stylesheet" href="../assets/js/depth3d.css" />
   <link rel="stylesheet" href="work.css" />
   <script>try {{ const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; }} catch (e) {{}}</script>
 </head>
@@ -90,6 +92,8 @@ def page(title, desc, url, body, og="og-portfolio.jpg"):
   </footer>
   <script defer src="work.js"></script>
   <script defer src="../assets/js/konami.js"></script>
+  <script defer src="../assets/js/depth3d.js" data-reveal=".cs-card, .cs-stat, .cs-sec > *"></script>
+  <script defer src="../assets/js/bg-space.js" data-intensity=".55"></script>
 </body>
 </html>
 """

@@ -201,7 +201,14 @@ a.card:hover { transform: translateY(-3px); border-color: var(--rog); }
 .p-last em { font-style: normal; font-family: var(--mono); font-size: 12.5px; color: var(--rog-text); }
 @media (prefers-reduced-motion: reduce) { .status-pill.live .sdot::after { animation: none; } }
 .live-grid:has(#presence[hidden]) { grid-template-columns: 1fr; }
-@media (max-width: 920px) { .live-grid { grid-template-columns: 1fr; } }
+/* Live now: the two cards stay side by side at equal size; on phones they sit side by side in a swipeable row */
+@media (max-width: 700px) {
+  .live-grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 88%; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
+  .live-grid::-webkit-scrollbar { display: none; }
+  .live-grid > .card { scroll-snap-align: start; }
+  .live-grid:has(#presence[hidden]) { grid-auto-columns: 100%; }
+}
 .activity { display: flex; gap: 14px; align-items: center; padding: 12px; background: var(--s2); border-left: 3px solid #4ade80; }
 .activity + .activity { margin-top: 10px; }
 .activity img { width: 56px; height: 56px; object-fit: cover; flex: none; }
@@ -376,8 +383,8 @@ a.card:hover { transform: translateY(-3px); border-color: var(--rog); }
 .hero-grid > *, .live-grid > *, .stats-grid > *, .career-grid > *, .blog-row > *, .card { min-width: 0; }
 @media (max-width: 600px) { .hero { padding-top: 40px; } .card:not(.rgame) { padding: 18px; } .pcard { max-width: 340px; } }
 
-/* Scroll reveal: slide in from the left like a lower third */
-.rv { opacity: 0; transform: translateX(-24px); }
+/* Scroll reveal: swing in from the left in 3D, like a lower third */
+.rv { opacity: 0; transform: perspective(1000px) translateX(-40px) rotateY(24deg) translateZ(-40px); transform-origin: 0 50%; }
 .rv.in { opacity: 1; transform: none; transition: opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1); transition-delay: var(--d, 0s); }
 
 @media (prefers-reduced-motion: reduce) {
@@ -391,3 +398,8 @@ a.card:hover { transform: translateY(-3px); border-color: var(--rog); }
 @media (max-width: 420px) { .sb-dev { flex-wrap: wrap; justify-content: center; gap: 6px 14px; white-space: normal; } }
 
 @media (max-width: 360px) { .sb-logo { padding: 0 10px 0 8px; font-size: 12px; } .sb-exit { padding: 7px 7px; font-size: 11px; letter-spacing: .02em; } .sb-right { gap: 5px; padding-right: 5px; } }
+
+/* hero: synthwave arena (wireframe floor, spinning crystal, sparks) behind the player card */
+.hero-arena { position: absolute; z-index: -1; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: .9;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%); mask-image: linear-gradient(90deg, transparent 0%, #000 45%); }
+@media (max-width: 920px) { .hero-arena { opacity: .55; -webkit-mask-image: none; mask-image: none; } }

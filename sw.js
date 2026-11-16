@@ -2,13 +2,13 @@
 // Strategy: network first for everything on this site (so a new deploy shows up straight away),
 // falling back to the last cached copy when the network is slow or offline.
 // Requests to other sites (GitHub API, Discord, Steam) are left alone.
-const CACHE = "zb57-v2";
+const CACHE = "zb57-v52";
 const CORE = [
   "/", "/styles.css", "/script.js", "/live.js",
   "/blog/", "/blog/post.html", "/blog/blog.css", "/blog/blog.js", "/blog/graph.js", "/blog/posts/index.json",
-  "/realm/", "/realm/realm.css", "/realm/realm.js", "/realm/config.js",
+  "/realm/", "/realm/realm.css", "/realm/realm.js", "/realm/config.js", "/realm/arena.js", "/realm/bg-realm.js",
   "/assets/fonts/site.css", "/assets/fonts/realm.css", "/assets/img/voidsorrow-256.png", "/assets/img/voidsorrow-256.png",
-  "/assets/img/favicon-32.png", "/favicon.ico", "/assets/js/konami.js", "/assets/js/konami.css",
+  "/assets/img/favicon-32.png", "/favicon.ico", "/assets/js/konami.js", "/assets/js/konami.css", "/assets/js/depth3d.js", "/assets/js/bg-space.js", "/assets/js/depth3d.css",
   "/work/", "/work/work.css", "/work/work.js", "/work/index.json", "/assets/fonts/geist-normal.woff2",
 ];
 

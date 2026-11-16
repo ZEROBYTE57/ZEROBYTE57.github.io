@@ -1,5 +1,5 @@
 /* Blog: builds on ../styles.css (same tokens, dock, tiles, buttons, footer). */
-:root { --g-project: #b45309; --g-note: #7c3aed; }
+:root { --g-project: #a34a07; --g-note: #6d28d9; }   /* deep enough for AA text on the tinted light theme */
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --g-project: #f59e0b; --g-note: #a78bfa; } }
 :root[data-theme="dark"] { --g-project: #f59e0b; --g-note: #a78bfa; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -7,7 +7,7 @@
 @media (max-width: 720px) { .blog-main { padding-top: 96px; } }
 
 /* Hero */
-.blog-hero { max-width: 760px; margin-bottom: 40px; }
+.blog-hero { max-width: 760px; margin-bottom: 40px; }   /* the right side stays open for the black hole background */
 .blog-hero .label { margin-bottom: 14px; }
 .blog-hero h1 { font-size: clamp(2.3rem, 4.6vw, 3.7rem); font-weight: 600; letter-spacing: -.045em; line-height: 1.06; }
 .blog-hero h1 em { color: var(--accent-ink); font-size: 1.1em; }
@@ -131,7 +131,7 @@
 @media (min-width: 721px) { .prose-body table { min-width: 0; } }
 .prose-body th, .prose-body td { border-bottom: 1px solid var(--border); padding: 10px 8px; text-align: left; }
 .post-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 56px; }
-.post-nav a { display: block; padding: 18px 20px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); text-decoration: none; transition: border-color .2s; }
+.post-nav a { display: block; padding: 18px 20px; border-radius: 16px; border: 1px solid var(--border); background: var(--card); text-decoration: none; transition: border-color .2s; }
 .post-nav a:hover { border-color: var(--accent); }
 .post-nav small { display: block; font-family: var(--mono); font-size: var(--fs-2xs); color: var(--muted); margin-bottom: 4px; }
 .post-nav b { font-weight: 600; }
@@ -170,7 +170,7 @@
 .toc a:hover { color: var(--text); }
 .toc a.active { color: var(--accent-ink); border-left-color: var(--accent); font-weight: 500; }
 .toc .lvl3 a { padding-left: 24px; font-size: var(--fs-xs); }
-.toc-mobile { display: none; margin: 0 0 28px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 12px 16px; }
+.toc-mobile { display: none; margin: 0 0 28px; border: 1px solid var(--border); border-radius: 14px; background: var(--card); padding: 12px 16px; }
 .toc-mobile summary { cursor: pointer; font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .toc-mobile .toc { margin-top: 10px; }
 @media (max-width: 1000px) { #tocTile { display: none !important; } .toc-mobile:not([hidden]) { display: block; } }
@@ -202,14 +202,8 @@
 .sh-sep { width: 1px; height: 22px; background: var(--border-strong); margin: 0 4px; }
 .sh-save[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
 .sh-save[aria-pressed="true"] svg { fill: currentColor; }
-.share-end { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; margin-top: 48px; padding: 22px 24px;
-  border: 1px solid var(--border); border-radius: 16px; background: radial-gradient(420px 160px at 100% 0%, var(--accent-soft), transparent 70%), var(--surface); }
-.share-end .share-bar { margin-top: 0; }
-.share-end-k { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); }
-.share-end-t { margin-top: 4px; color: var(--muted); font-size: var(--fs-md); max-width: 40ch; }
 @media (max-width: 560px) {
-  .sh span { display: none; } .sh-main span { display: inline; } .share-end { padding: 18px; }
-  .share-bar { gap: 5px; } .sh-mail, .sh-sep { display: none; }
+  .sh span { display: none; } .sh-main span { display: inline; }   .share-bar { gap: 5px; } .sh-mail, .sh-sep { display: none; }
   /* the phone's own share sheet already covers X, LinkedIn, WhatsApp and email */
   .has-native .sh-x, .has-native .sh-li, .has-native .sh-wa { display: none; }
 }
@@ -226,7 +220,7 @@
 .saved-star { color: var(--accent-ink); }
 /* ---------- print / save as PDF: just the article ---------- */
 @media print {
-  .dock, .progress, .bg-fx, .post-side, .share-bar, .share-end, .post-nav, .footer, .back, .fab-top, .toc-mobile, .quote-pop, .share-toast, .h-anchor, .term-copy, .skip { display: none !important; }
+  .dock, .progress, .bg-fx, .post-side, .share-bar, .post-nav, .footer, .back, .fab-top, .toc-mobile, .quote-pop, .share-toast, .h-anchor, .term-copy, .skip { display: none !important; }
   body { background: #fff !important; color: #111 !important; }
   .post-layout { display: block; padding-top: 0; }
   .prose-body, .prose-body p, .prose-body li { color: #111 !important; font-size: 12pt; }
@@ -237,7 +231,7 @@
 @media (max-width: 400px) { .share-bar:not(.has-native) .sh-main span { display: none; } }
 
 /* ---------- loading state: skeleton until the article arrives, then everything fades in together ---------- */
-.share-end[hidden], .share-bar[hidden] { display: none !important; }
+.share-bar[hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .is-loading .post-side, .is-loading .post-nav, .is-loading .toc-mobile, .is-loading .footer { visibility: hidden; }
 .skel { display: block; height: 14px; border-radius: 7px; background: linear-gradient(90deg, var(--surface-2) 25%, color-mix(in srgb, var(--surface-2) 55%, var(--border-strong)) 50%, var(--surface-2) 75%) 0 0 / 200% 100%; animation: skel 1.3s ease-in-out infinite; }
@@ -246,10 +240,10 @@
 .skel.gap { margin-top: 14px; }
 .skel.w100 { width: 100%; } .skel.w97 { width: 97%; } .skel.w95 { width: 95%; } .skel.w92 { width: 92%; } .skel.w90 { width: 90%; } .skel.w85 { width: 85%; } .skel.w70 { width: 70%; } .skel.w60 { width: 60%; }
 @keyframes skel { to { background-position: -200% 0; } }
-.is-ready .post-head, .is-ready #article, .is-ready .post-side, .is-ready .share-end, .is-ready .post-nav { animation: postIn .35s ease-out both; }
+.is-ready .post-head, .is-ready #article, .is-ready .post-side, .is-ready .post-nav { animation: postIn .35s ease-out both; }
 .is-ready .post-side { animation-delay: .08s; }
 @keyframes postIn { from { opacity: 0; transform: translateY(6px); } }
-@media (prefers-reduced-motion: reduce) { .skel, .is-ready .post-head, .is-ready #article, .is-ready .post-side, .is-ready .share-end, .is-ready .post-nav { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .skel, .is-ready .post-head, .is-ready #article, .is-ready .post-side, .is-ready .post-nav { animation: none; } }
 /* blog index: placeholder chips keep the stats row's height while it loads (no jump) */
 .blog-stats .stat-skel { width: 104px; height: 33.4px; padding: 0; border-color: transparent; background: linear-gradient(90deg, var(--surface-2) 25%, color-mix(in srgb, var(--surface-2) 55%, var(--border-strong)) 50%, var(--surface-2) 75%) 0 0 / 200% 100%; animation: skel 1.3s ease-in-out infinite; }
 .blog-stats .stat-skel:nth-child(2) { width: 135px; } .blog-stats .stat-skel:nth-child(3) { width: 158px; } .blog-stats .stat-skel:nth-child(4) { width: 96px; }
@@ -281,7 +275,7 @@
 .prose-body .term .t-cmd .hl-f { font-weight: 600; }
 
 /* ---------- series: "Part n of N" box, progress bar and next-part card ---------- */
-.series-box { margin: -12px 0 32px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+.series-box { margin: -12px 0 32px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
 .series-k { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; font-size: var(--fs-sm); }
 .series-k span:first-child { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: .1em; text-transform: uppercase; color: var(--accent-ink); }
 .series-k b { font-weight: 600; }
@@ -304,11 +298,44 @@
 .graph-canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* ---------- Discuss on GitHub ---------- */
-.discuss { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px 18px; margin-top: 16px; padding: 20px 22px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
-.discuss[hidden], .is-loading .discuss { display: none; }
-.discuss svg { width: 30px; height: 30px; color: var(--text); }
-.discuss-k { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); }
-.discuss-t { margin-top: 3px; color: var(--muted); font-size: var(--fs-md); }
-.discuss-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-@media (max-width: 720px) { .discuss { grid-template-columns: auto minmax(0, 1fr); } .discuss-actions { grid-column: 1 / -1; } }
-@media print { .discuss { display: none !important; } }
+/* comments: a comment-style composer at the end of an article (the comments themselves live on GitHub) */
+.comments { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border); }
+.comments[hidden], .is-loading .comments { display: none; }
+.comments-h { font-size: var(--fs-h4); font-weight: 600; letter-spacing: -.01em; margin-bottom: 16px; }
+.comment-compose { display: flex; align-items: flex-start; gap: 12px; }
+.comment-ava { flex: none; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: var(--muted); background: var(--surface-2); border: 1px solid var(--border); }
+.comment-box { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-height: 92px; padding: 12px 14px;
+  border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface); color: var(--muted); text-decoration: none; cursor: text; transition: border-color .2s, box-shadow .2s; }
+.comment-box:hover, .comment-box:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); outline: none; }
+.comment-ph { font-size: var(--fs-md); }
+.comment-go { align-self: flex-end; font: 500 var(--fs-sm) var(--sans); color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 16%, transparent); padding: 6px 12px; border-radius: 999px; }
+.comment-foot { margin: 12px 0 0 50px; color: var(--muted); font-size: var(--fs-xs); line-height: 1.6; }
+.comment-foot svg { vertical-align: -2px; margin-right: 4px; }
+.comment-foot a { color: var(--accent-ink); }
+@media (max-width: 560px) { .comment-ava { display: none; } .comment-foot { margin-left: 0; } }
+@media print { .comments { display: none !important; } }
+
+/* topics globe (blog/topics3d.js; drag to rotate, click a topic to filter). Not shown on the site at the moment:
+   its markup is kept as a comment in blog/index.html. */
+.blog-net { position: relative; aspect-ratio: 1; width: 100%; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--border); background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 10%, var(--surface)), var(--surface) 70%); }
+.blog-net canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; }
+.blog-net canvas:active { cursor: grabbing; }
+@media (max-width: 1000px) { .blog-net { aspect-ratio: 16 / 9; max-height: 340px; } }
+@media (max-width: 560px) { .blog-net { aspect-ratio: 1 / 1; max-height: 360px; } }
+.blog-net-k { position: absolute; z-index: 2; bottom: 16px; left: 50%; transform: translateX(-50%); margin: 0; font: 500 var(--fs-2xs) var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; pointer-events: none; }
+.blog-net-tip { position: absolute; z-index: 3; transform: translate(-50%, calc(-100% - 18px)); padding: 6px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border-strong);
+  box-shadow: 0 8px 24px -10px rgba(0,0,0,.35); font: 500 var(--fs-xs) var(--mono); color: var(--text); white-space: nowrap; pointer-events: none; }
+.blog-net-tip.below { transform: translate(-50%, 18px); }
+.blog-net .hud { z-index: 2; }
+
+/* Graphs: in the dark theme their tiles are solid, in the live site's colours, so the space background never shows
+   through the graph and its lines, labels and nodes read exactly as before */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) :is(.graph-tile, .side-tile) { background: #111113; border-color: #232327; }
+  :root:not([data-theme="light"]) .graph-canvas { --g-bg: #18181b; --g-line: #2e2e33; --g-tag: #a1a1aa; --g-star: #a1a1aa; }
+  :root:not([data-theme="light"]) .graph-canvas.small { --g-post: #a1a1aa; }
+}
+:root[data-theme="dark"] :is(.graph-tile, .side-tile) { background: #111113; border-color: #232327; }
+:root[data-theme="dark"] .graph-canvas { --g-bg: #18181b; --g-line: #2e2e33; --g-tag: #a1a1aa; --g-star: #a1a1aa; }
+:root[data-theme="dark"] .graph-canvas.small { --g-post: #a1a1aa; }

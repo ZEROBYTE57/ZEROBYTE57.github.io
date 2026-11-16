@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Blog · Devisetty Lakshmi Srinivas</title>
   <meta name="description" content="Articles by Devisetty Lakshmi Srinivas on machine learning, Linux, games and game development, connected in a knowledge graph with portfolio projects." />
-  <meta name="theme-color" content="#09090b" />
+  <meta name="theme-color" content="#e4ecf4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme: dark)" />
   <link rel="canonical" href="https://zerobyte57.github.io/blog/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="zerobyte57" />
@@ -29,6 +30,7 @@
   <link rel="stylesheet" href="../assets/fonts/site.css" />
   <link rel="stylesheet" href="../styles.css" />
   <link rel="stylesheet" href="../assets/js/konami.css" />
+  <link rel="stylesheet" href="../assets/js/depth3d.css" />
   <link rel="stylesheet" href="blog.css" />
   <script>try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
   <script defer src="graph.js"></script>
@@ -60,10 +62,12 @@
 
   <main id="main" class="wrap blog-main">
     <header class="blog-hero">
-      <p class="label">Blog</p>
-      <h1>Notes on <em>models</em>, machines and games.</h1>
-      <p class="lede">Longer write-ups behind my portfolio projects, plus what I explore on the side: Linux, games and game development. Every post is linked to its topics, my GitHub notes and my projects in the graph below.</p>
-      <ul class="blog-stats" id="blogStats" aria-label="Blog statistics"><li class="stat-skel" aria-hidden="true"></li><li class="stat-skel" aria-hidden="true"></li><li class="stat-skel" aria-hidden="true"></li><li class="stat-skel" aria-hidden="true"></li></ul>
+      <div class="blog-hero-text">
+        <p class="label">Blog</p>
+        <h1>Notes on <em>models</em>, machines and games.</h1>
+        <p class="lede">Longer write-ups behind my portfolio projects, plus what I explore on the side: Linux, games and game development. Every post is linked to its topics, my GitHub notes and my projects in the graph below.</p>
+        <ul class="blog-stats" id="blogStats" aria-label="Blog statistics"><li class="stat-skel" aria-hidden="true"></li><li class="stat-skel" aria-hidden="true"></li><li class="stat-skel" aria-hidden="true"></li><li class="stat-skel" aria-hidden="true"></li></ul>
+      </div>
     </header>
 
     <section class="tile graph-tile" id="graph" aria-labelledby="graphTitle">
@@ -104,6 +108,10 @@
         <div class="filters" id="filters" role="group" aria-label="Filter by topic"></div>
       </div>
       <div class="post-list" id="posts"></div>
+      <!-- Topics globe (blog/topics3d.js + .blog-net styles in blog.css), kept but not shown on the site.
+           To bring it back: put this block where it should appear and add <script defer src="topics3d.js"></script> in <head>.
+      <div class="blog-net"><p class="blog-net-k" aria-hidden="true">Topics · click to filter</p><canvas id="blogNet" role="img" aria-label="Topics globe: drag to spin, click a topic to filter the articles"></canvas><span class="blog-net-tip" id="blogNetTip" hidden></span><span class="hud c-tl"></span><span class="hud c-tr"></span><span class="hud c-bl"></span><span class="hud c-br"></span></div>
+      -->
     </section>
   </main>
 
@@ -119,5 +127,7 @@
     </div>
   </footer>
   <script defer src="../assets/js/konami.js"></script>
+  <script defer src="../assets/js/depth3d.js" data-reveal=".post-card, .blog-main > .tile, .side-tile, .sec-head > *"></script>
+  <script defer src="../assets/js/bg-space.js" data-intensity=".7"></script>
 </body>
 </html>

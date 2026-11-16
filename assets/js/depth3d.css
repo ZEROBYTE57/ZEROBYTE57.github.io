@@ -1,0 +1,7 @@
+/* Site-wide 3D layer (see depth3d.js) */
+.d3-on { transition: transform .12s ease-out !important; will-change: transform; }
+.card.d3-on:not(.rgame) { background-image: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,.07), transparent 60%); }
+.d3-rev { opacity: 0; }
+.d3-rev.d3-in { opacity: 1; transform-origin: 50% 100%; animation: d3-rise .9s cubic-bezier(.2,.8,.2,1) var(--d3d, 0s) backwards; }
+@keyframes d3-rise { from { opacity: 0; transform: perspective(1000px) translateY(48px) rotateX(22deg) scale(.96); } }
+@media (prefers-reduced-motion: reduce) { .d3-rev { opacity: 1; } }

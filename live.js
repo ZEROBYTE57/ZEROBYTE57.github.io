@@ -112,29 +112,38 @@
   }
 
   const getJSON = (url) => fetch(url).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
+  // Live results (and failures) are kept for 10 minutes in this tab, so moving around the site does not call the
+  // APIs again (GitHub allows only 60 anonymous calls an hour per visitor).
+  const CACHE_MS = 10 * 60 * 1000;
+  const cached = (key, make) => {
+    let c = null; try { c = JSON.parse(sessionStorage.getItem("live:" + key) || "null"); } catch (e) {}
+    if (c && Date.now() - c.t < CACHE_MS) return c.fail ? Promise.reject("recently failed") : Promise.resolve(c.v);
+    const save = (o) => { try { sessionStorage.setItem("live:" + key, JSON.stringify({ t: Date.now(), ...o })); } catch (e) {} };
+    return make().then((v) => { save({ v }); return v; }, (e) => { save({ fail: true }); throw e; });
+  };
 
   async function liveUpdate(p) {
     const tasks = [];
     if (p.github) {
-      tasks.push(Promise.all([
+      tasks.push(cached("github", () => Promise.all([
         getJSON(`https://api.github.com/users/${p.github}`),
         getJSON(`https://api.github.com/users/${p.github}/repos?per_page=100&sort=pushed`),
         getJSON(`https://github-contributions-api.jogruber.de/v4/${p.github}?y=last`),
-      ]).then(([u, repos, c]) => github({
+      ]).then(([u, repos, c]) => ({
         repos: u.public_repos,
         followers: u.followers,
         contributions: c.total.lastYear,
         calendar: c.contributions.map((x) => [x.date, x.level]),
         recent: repos.filter((r) => !r.fork && r.description && r.name.toLowerCase() !== `${p.github}.github.io`.toLowerCase())
           .slice(0, 3).map((r) => ({ name: r.name, url: r.html_url, language: r.language, description: r.description, pushed: r.pushed_at })),
-      })));
+      }))).then(github));
     }
     if (p.leetcode) {
-      tasks.push(getJSON(`https://alfa-leetcode-api.onrender.com/${p.leetcode}/solved`).then((s) =>
-        leetcode({ solved: s.solvedProblem, easy: s.easySolved, medium: s.mediumSolved, hard: s.hardSolved })));
+      tasks.push(cached("leetcode", () => getJSON(`https://alfa-leetcode-api.onrender.com/${p.leetcode}/solved`).then((s) =>
+        ({ solved: s.solvedProblem, easy: s.easySolved, medium: s.mediumSolved, hard: s.hardSolved }))).then(leetcode));
     }
     if (p.codeforces) {
-      tasks.push(getJSON(`https://codeforces.com/api/user.info?handles=${p.codeforces}`).then((r) => codeforces(r.result[0])));
+      tasks.push(cached("codeforces", () => getJSON(`https://codeforces.com/api/user.info?handles=${p.codeforces}`).then((r) => r.result[0])).then(codeforces));
     }
     await Promise.allSettled(tasks); // a failed live call simply keeps the snapshot values
   }

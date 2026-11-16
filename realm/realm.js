@@ -160,6 +160,17 @@
   getJSON("../data/gaming.json").catch(() => ({})).then((g) => {
     const s = g.steam, manual = R.games || [];
     if (s) {
+      // The full library is a snapshot from the Steam client; the profile's recent games are fresher.
+      // Take the higher hours per game, add the difference to the total, and keep counts consistent.
+      const fresh = new Map((s.recent || []).map((x) => [x.appid, x.hours]));
+      let gain = 0;
+      [s.recent, s.top, s.library].forEach((list, i) => (list || []).forEach((x) => {
+        x.name = String(x.name || "").trim(); const h = fresh.get(x.appid);
+        if (i && h > x.hours) { if (i === 2) gain += h - x.hours; x.hours = h; }
+      }));
+      (s.top || []).sort((a, b) => b.hours - a.hours);
+      if (s.library && s.totalHours != null) s.totalHours = Math.round((s.totalHours + gain) * 10) / 10;
+      s.gameCount = Math.max(s.gameCount || 0, (s.library || []).length) || s.gameCount;
       $("#steamBlock").hidden = false;
       $("#steamUpdated").textContent = g.updated ? "· synced " + new Date(g.updated).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "";
       $("#sName").textContent = s.name || "Steam";
@@ -167,7 +178,10 @@
       if (s.url) $("#sLink").href = s.url;
       $("#sLevel").textContent = fmt(s.level); $("#sGames").textContent = fmt(s.gameCount);
       $("#sHours").textContent = fmt(Math.round(s.totalHours)); $("#sRecent").textContent = fmt(s.recentHours);
-      const list = (s.recent || []).length ? s.recent : (s.top || []).slice(0, 4);
+      // Recently played: the profile's recent games, topped up to a full row by last-played date from the library.
+      const seen = new Set((s.recent || []).map((x) => x.appid));
+      const byLast = (s.library || s.top || []).filter((x) => x.last && !seen.has(x.appid)).sort((a, b) => b.last - a.last);
+      const list = [...(s.recent || []), ...byLast].slice(0, 4);
       $("#sRecentList").replaceChildren(...list.map((x) => {
         const c = Object.assign(el("a", "card rgame"), { href: `https://store.steampowered.com/app/${x.appid}`, target: "_blank", rel: "noopener" });
         c.append(Object.assign(el("img"), { src: steamCDN(x.appid), alt: "", width: 460, height: 215, loading: "lazy", decoding: "async" }));

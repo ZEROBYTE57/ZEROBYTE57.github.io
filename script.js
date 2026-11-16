@@ -232,7 +232,10 @@ if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a 
       const a = (k / ringN) * Math.PI * 2, rr = R + step * 3;
       dots.push({ tx: cx + Math.cos(a) * rr, ty: cy + Math.sin(a) * rr, x: Math.random() * W, y: Math.random() * H, vx: 0, vy: 0, s: step * .3, c: null, ph: a, ring: true });
     }
-    dust = Array.from({ length: 40 }, () => ({ a: Math.random() * 6.28, r: R * (1.15 + Math.random() * .5), sp: (Math.random() * .5 + .2) * (Math.random() < .5 ? -1 : 1) / 1000, s: Math.random() * 1.4 + .4 }));
+    // Orbiting dust: dense close to the ring, thinning out with distance (plus an extra band hugging the ring).
+    const mote = (r) => ({ a: Math.random() * 6.28, r, sp: (Math.random() * .5 + .2) * (Math.random() < .5 ? -1 : 1) / 1000, s: Math.random() * 1.4 + .4 });
+    dust = [...Array.from({ length: 66 }, () => mote(R * (1.17 + Math.pow(Math.random(), 2.4) * .65))),
+            ...Array.from({ length: 34 }, () => mote(R * (1.17 + Math.pow(Math.random(), 1.5) * .0042)))];
     return true;
   }
 
@@ -308,7 +311,8 @@ if ("ResizeObserver" in window) { const ro = new ResizeObserver(() => { const a 
   if (realm && rStats) fetch("data/gaming.json").then((r) => r.json()).then((g) => {
     const s = g.steam || {}, top = (s.recent || []).slice().sort((a, b) => b.hours - a.hours)[0];
     if (top) realm.replaceChildren("Most played: ", bold(top.name + " · " + Math.round(top.hours) + " h"));
-    rStats.replaceChildren(...[s.gameCount ? s.gameCount + " Steam games" : "", "ROG Strix G16", "Discord server"].filter(Boolean).map(li));
+    const games = Math.max(s.gameCount || 0, (s.library || []).length);   // same count as the Realm page
+    rStats.replaceChildren(...[games ? games + " Steam games" : "", "ROG Strix G16", "Discord server"].filter(Boolean).map(li));
   }).catch(() => {});
 })();
 
