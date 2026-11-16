@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-16T05:14:17+00:00",
+ "updated": "2026-11-16T09:56:46+00:00",
  "steam": {
   "name": "VOIDSORROW57",
   "avatar": "https://avatars.steamstatic.com/95409102e7bb4b1c0a57aabe4185e2a08b443ec1_full.jpg",
@@ -7,8 +7,10 @@
   "state": 0,
   "playing": null,
   "level": 10,
+  "since": 2021,
   "gameCount": 21,
   "totalHours": 125.6,
+  "linuxHours": 2.6,
   "recentHours": 0.0,
   "recent": [],
   "top": [
@@ -16,51 +18,284 @@
     "appid": 1091500,
     "name": "Cyberpunk 2077",
     "hours": 32.8,
-    "last": 1790682508
+    "last": 1790682508,
+    "ach": [
+     4,
+     57
+    ]
    },
    {
     "appid": 578080,
     "name": "PUBG: BATTLEGROUNDS",
     "hours": 13.5,
-    "last": 1790723484
+    "last": 1790723484,
+    "ach": [
+     9,
+     37
+    ]
    },
    {
     "appid": 1659420,
     "name": "UNCHARTED™: Legacy of Thieves Collection",
     "hours": 13.4,
-    "last": 1788802980
+    "last": 1788802980,
+    "ach": [
+     6,
+     101
+    ]
    },
    {
     "appid": 359550,
     "name": "Tom Clancy's Rainbow Six Siege",
     "hours": 13.1,
-    "last": 1790578969
+    "last": 1790578969,
+    "ach": [
+     16,
+     48
+    ]
    },
    {
     "appid": 730,
     "name": "Counter-Strike 2",
     "hours": 12.2,
-    "last": 1782753618
+    "last": 1782753618,
+    "ach": [
+     1,
+     1
+    ]
    },
    {
     "appid": 2561580,
     "name": "Horizon Zero Dawn™ Remastered",
     "hours": 11.2,
-    "last": 1789676420
+    "last": 1789676420,
+    "ach": [
+     8,
+     79
+    ]
    },
    {
     "appid": 1172470,
     "name": "Apex Legends",
     "hours": 9.0,
-    "last": 1784816767
+    "last": 1784816767,
+    "ach": [
+     3,
+     12
+    ]
    },
    {
     "appid": 208650,
     "name": "Batman™: Arkham Knight",
     "hours": 7.8,
-    "last": 1783508510
+    "last": 1783508510,
+    "ach": [
+     5,
+     113
+    ]
    }
-  ]
+  ],
+  "library": [
+   {
+    "appid": 1091500,
+    "name": "Cyberpunk 2077",
+    "hours": 32.8,
+    "last": 1790682508,
+    "ach": [
+     4,
+     57
+    ]
+   },
+   {
+    "appid": 578080,
+    "name": "PUBG: BATTLEGROUNDS",
+    "hours": 13.5,
+    "last": 1790723484,
+    "ach": [
+     9,
+     37
+    ]
+   },
+   {
+    "appid": 1659420,
+    "name": "UNCHARTED™: Legacy of Thieves Collection",
+    "hours": 13.4,
+    "last": 1788802980,
+    "ach": [
+     6,
+     101
+    ]
+   },
+   {
+    "appid": 359550,
+    "name": "Tom Clancy's Rainbow Six Siege",
+    "hours": 13.1,
+    "last": 1790578969,
+    "ach": [
+     16,
+     48
+    ]
+   },
+   {
+    "appid": 730,
+    "name": "Counter-Strike 2",
+    "hours": 12.2,
+    "last": 1782753618,
+    "ach": [
+     1,
+     1
+    ]
+   },
+   {
+    "appid": 2561580,
+    "name": "Horizon Zero Dawn™ Remastered",
+    "hours": 11.2,
+    "last": 1789676420,
+    "ach": [
+     8,
+     79
+    ]
+   },
+   {
+    "appid": 1172470,
+    "name": "Apex Legends",
+    "hours": 9.0,
+    "last": 1784816767,
+    "ach": [
+     3,
+     12
+    ]
+   },
+   {
+    "appid": 208650,
+    "name": "Batman™: Arkham Knight",
+    "hours": 7.8,
+    "last": 1783508510,
+    "ach": [
+     5,
+     113
+    ]
+   },
+   {
+    "appid": 230410,
+    "name": "Warframe",
+    "hours": 4.2,
+    "last": 1783510229,
+    "ach": [
+     11,
+     193
+    ]
+   },
+   {
+    "appid": 4704690,
+    "name": "MECCHA CHAMELEON",
+    "hours": 4.0,
+    "last": 1782666723
+   },
+   {
+    "appid": 1938090,
+    "name": "Call of Duty®",
+    "hours": 1.9,
+    "last": 1785823962,
+    "ach": [
+     0,
+     175
+    ]
+   },
+   {
+    "appid": 3564740,
+    "name": "Where Winds Meet",
+    "hours": 0.8,
+    "last": 1786043094,
+    "ach": [
+     0,
+     67
+    ]
+   },
+   {
+    "appid": 2139460,
+    "name": "Once Human",
+    "hours": 0.7,
+    "last": 1722066482,
+    "ach": [
+     0,
+     36
+    ]
+   },
+   {
+    "appid": 2051620,
+    "name": "Enlisted",
+    "hours": 0.6,
+    "last": 1778844513,
+    "ach": [
+     2,
+     60
+    ]
+   },
+   {
+    "appid": 332950,
+    "name": "Dark Deception",
+    "hours": 0.2,
+    "last": 1679129605,
+    "ach": [
+     0,
+     40
+    ]
+   },
+   {
+    "appid": 1815780,
+    "name": "Asphalt Legends",
+    "hours": 0.1,
+    "last": 1783774617,
+    "ach": [
+     2,
+     42
+    ]
+   },
+   {
+    "appid": 35140,
+    "name": "Batman: Arkham Asylum GOTY Edition",
+    "hours": 0.0,
+    "last": null
+   },
+   {
+    "appid": 200260,
+    "name": "Batman: Arkham City GOTY",
+    "hours": 0.0,
+    "last": null
+   },
+   {
+    "appid": 1151640,
+    "name": "Horizon Zero Dawn™ Complete Edition",
+    "hours": 0.0,
+    "last": null
+   },
+   {
+    "appid": 1593500,
+    "name": "God of War",
+    "hours": 0.0,
+    "last": null
+   },
+   {
+    "appid": 2420110,
+    "name": "Horizon Forbidden West™ Complete Edition",
+    "hours": 0.0,
+    "last": null
+   }
+  ],
+  "achievements": {
+   "unlocked": 67,
+   "total": 1061,
+   "perfect": 1,
+   "games": 15,
+   "latest": {
+    "name": "Pacifist",
+    "game": "PUBG: BATTLEGROUNDS",
+    "appid": 578080,
+    "time": 1790676516
+   }
+  },
+  "source": "steam-api"
  },
  "tracker": [
   {
