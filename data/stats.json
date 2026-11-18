@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17T15:37:29+00:00",
+ "updated": "2026-11-18T00:40:20+00:00",
  "profiles": {
   "github": "ZEROBYTE57",
   "leetcode": "VOIDSORROW",
@@ -20,7 +20,7 @@
   "repos": 8,
   "followers": 14,
   "stars": 0,
-  "contributions": 115,
+  "contributions": 116,
   "calendar": [
    [
     "2025-11-16",
@@ -1488,23 +1488,27 @@
    ],
    [
     "2026-11-17",
+    1
+   ],
+   [
+    "2026-11-18",
     0
    ]
   ],
   "recent": [
+   {
+    "name": "GNN-in-Medical-Imaging",
+    "url": "https://github.com/ZEROBYTE57/GNN-in-Medical-Imaging",
+    "language": "Python",
+    "description": "For all the research and experiments conducted during the dissertation phase.",
+    "pushed": "2026-11-17T17:54:29Z"
+   },
    {
     "name": "LLM-Classfication-Finetuning",
     "url": "https://github.com/ZEROBYTE57/LLM-Classfication-Finetuning",
     "language": "Jupyter Notebook",
     "description": "LLM Classification Fine-Tuning \u2014 Chatbot Arena -Kaggle (Human-Preference Prediction)",
     "pushed": "2026-11-12T15:52:07Z"
-   },
-   {
-    "name": "GNN-in-Medical-Imaging",
-    "url": "https://github.com/ZEROBYTE57/GNN-in-Medical-Imaging",
-    "language": "Python",
-    "description": "For all the research and experiments conducted during the dissertation phase.",
-    "pushed": "2026-11-12T15:52:04Z"
    },
    {
     "name": "SMOTE-MVDCNN",
