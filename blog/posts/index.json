@@ -1,5 +1,28 @@
 [
  {
+  "slug": "evaluation-metrics-guide",
+  "title": "Evaluation metrics in ML, deep learning, LLMs and agents",
+  "date": "2026-11-20",
+  "tags": [
+   "machine-learning",
+   "deep-learning",
+   "llms",
+   "statistics"
+  ],
+  "related": [
+   "llm-preference"
+  ],
+  "summary": "A reference guide to the metrics and statistical tests used across AI, from classification and regression to vision, speech, LLMs, RAG, agents and MCP tool use, with when to use each one.",
+  "series": "",
+  "part": 0,
+  "minutes": 20,
+  "links": [
+   "brain-disorders-ml-literature",
+   "llm-preference",
+   "local-llms-guide"
+  ]
+ },
+ {
   "slug": "local-llms-guide",
   "title": "Running LLMs locally, a practical guide",
   "date": "2026-11-12",
